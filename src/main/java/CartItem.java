@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 @Entity
 public class CartItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long cartItemId;
 
     @ManyToOne
