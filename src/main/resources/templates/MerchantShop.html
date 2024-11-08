@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Personalized Store</title>
+    <style>
+        /* General Reset and Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            color: #333;
+        }
+
+        /* Black Top Mini-Shopify Banner */
+        .mini-shopify-banner {
+            background-color: #000;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .mini-shopify-banner .cart-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Green Top Banner */
+        .top-banner {
+            background-color: #2e7d32; /* Match the green theme */
+            color: #ffffff;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.5em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            flex-grow: 1; /* Fill the available space */
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 200px;
+            background-color: #fbfffb;
+            padding: 20px;
+            box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .left-panel button {
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #1b5e20; /* Darker green for buttons */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .left-panel button:hover {
+            background-color: #144d16; /* Darker on hover */
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1; /* Fill the remaining space */
+            background-color: #f5f5f5; /* Light background for content */
+            padding: 20px;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 1em;
+            background-color: #1b5e20;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Black Mini-Shopify Banner -->
+<div class="mini-shopify-banner">
+    <span class="cart-icon">🛒</span>
+    <span>Mini-Shopify</span>
+</div>
+
+<!-- Green Top Banner -->
+<div class="top-banner">Personalized Store</div>
+
+<div class="container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <button onclick="openModal('addProductModal')">Add Product</button>
+        <button onclick="openModal('removeProductModal')">Remove Product</button>
+        <button onclick="openModal('setPromotionModal')">Set Promotion</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Placeholder for main content -->
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="addProductModal" class="modal">
+    <div class="modal-content">
+        <h3>Add Product</h3>
+        <p>Enter details to add a new product.</p>
+        <button onclick="closeModal('addProductModal')">Close</button>
+    </div>
+</div>
+
+<div id="removeProductModal" class="modal">
+    <div class="modal-content">
+        <h3>Remove Product</h3>
+        <p>Enter details to remove an existing product.</p>
+        <button onclick="closeModal('removeProductModal')">Close</button>
+    </div>
+</div>
+
+<div id="setPromotionModal" class="modal">
+    <div class="modal-content">
+        <h3>Set Promotion</h3>
+        <p>Enter details to set a promotion.</p>
+        <button onclick="closeModal('setPromotionModal')">Close</button>
+    </div>
+</div>
+
+<script>
+    // JavaScript functions to open and close modals
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

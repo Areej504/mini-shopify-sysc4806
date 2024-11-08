@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopify Main Screen</title>
+    <style>
+        /* General Reset and Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5ec;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 50px; /* Added padding to avoid overlap with top banner */
+            color: #333;
+        }
+
+        /* Top Banner */
+        .top-banner {
+            position: fixed;
+            top: 25px;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .top-banner .cart-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+        /* Button Styling */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 80%;
+            max-width: 500px; /* Adjusted max-width for larger buttons */
+        }
+
+        .button {
+            width: 100%;
+            padding: 20px 0; /* Increased padding for bigger buttons */
+            font-size: 1.5em; /* Increased font size for larger text */
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            background-color: #1b5e20;
+            color: #ffffff;
+            text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .button:hover {
+            background-color: #144d16;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Banner with Cart Icon -->
+<div class="top-banner">
+    <span class="cart-icon">🛒</span>
+    <span>Mini-Shopify</span>
+</div>
+
+<!-- Button Container -->
+<div class="button-container">
+    <button class="button" th:onclick="|window.location.href='/create-shop'|">Create a Shop</button>
+    <button class="button" th:onclick="|window.location.href='/manage-stores'|">Manage Stores</button>
+</div>
+
+</body>
+</html>
