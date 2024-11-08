@@ -47,7 +47,6 @@ public class Merchant {
     }
 
     //Methods
-
     private void createShop(){
     }
     private void uploadProduct(){

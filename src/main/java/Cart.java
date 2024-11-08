@@ -9,7 +9,7 @@ public class Cart {
     @GeneratedValue
     private Long cartId;
 
-    @ManyToOne
+    @OneToOne
     private Customer customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
