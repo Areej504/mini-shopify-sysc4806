@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Screen</title>
+    <style>
+        /* Remove default margin and padding from body */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fbfffb;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Top Banner */
+        .top-banner {
+            position: fixed;
+            top: 25px;
+            left: 0;
+            width: 100vw; /* Full viewport width */
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .top-banner .cart-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-top: 80px; /* Offset for the fixed banner */
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .search-container input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            width: 75%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Shops List */
+        .shops-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .shop-item {
+            width: 90%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+<!-- Top Banner with Cart Icon -->
+<div class="top-banner">
+    <span class="cart-icon">🛒</span>
+    <span>Mini-Shopify</span>
+</div>
+
+<!-- Search Bar -->
+<div class="search-container">
+    <input type="text" placeholder="Looking for...">
+</div>
+
+<!-- Shops List -->
+<div class="shops-list">
+    <!-- Thymeleaf to display shops dynamically -->
+    <div th:each="shop : ${shops}" class="shop-item">
+        <span th:text="${shop.name}">Shop Name</span>
+    </div>
+</div>
+</body>
+</html>
