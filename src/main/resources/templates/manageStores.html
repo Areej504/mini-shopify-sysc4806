@@ -100,9 +100,58 @@
         .manage-button:hover {
             background-color: #144d16;
         }
+
+        /* Modal Background */
+        .modal-background {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Close Button */
+        .close-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #204a2c;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .close-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+
+<!-- Modal for shop creation confirmation -->
+<div id="modal" class="modal-background">
+    <div class="modal-content">
+        <p id="modalMessage">Your shop has been created 🎉🎉</p>
+        <button class="close-button" onclick="closeModal()">Close</button>
+    </div>
+</div>
 
 <!-- Black Mini-Shopify Banner -->
 <div class="mini-shopify-banner">
@@ -117,21 +166,34 @@
 <div class="store-list-container">
     <h3>List of Stores</h3>
     <ul class="store-list">
-        <!-- Example Store Item -->
-        <li>
-            <span class="store-name">Store 1</span>
-            <button class="manage-button">Manage</button>
+        <!-- Dynamically display stores assigned to the merchant -->
+        <li th:each="shop : ${shops}">
+            <span class="store-name" th:text="${shop.name}">Store Name</span>
+            <button class="manage-button" th:onclick="'window.location.href=\'/manage-store/' + ${store.id} + '\';'">Manage</button>
         </li>
-        <li>
-            <span class="store-name">Store 2</span>
-            <button class="manage-button">Manage</button>
-        </li>
-        <li>
-            <span class="store-name">Store 3</span>
-            <button class="manage-button">Manage</button>
-        </li>
-        <!-- Additional stores can be added here -->
     </ul>
+    <script>
+        // Function to display the modal pop-up with the creation message
+        function showCreationModal(shopName) {
+            document.getElementById("modalMessage").textContent = "Your shop " + shopName + " has been created 🎉🎉";
+            document.getElementById("modal").style.display = "flex"; // Show the modal
+        }
+
+        // Check URL parameters to trigger the pop-up
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const created = urlParams.get("created");
+            const shopName = urlParams.get("shopName");
+            if (created === "true" && shopName) {
+                showCreationModal(shopName);
+            }
+        };
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+    </script>
 </div>
 
 </body>
