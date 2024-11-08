@@ -3,70 +3,112 @@
 <head>
     <title>Shopify Main Screen</title>
     <style>
-        /* Basic styling for a cute look */
+        /* General Reset and Styling */
         body {
             font-family: Arial, sans-serif;
-            background-color: #dafbda;
+            background-color: #e9f5ec;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            padding-top: 50px; /* Added padding to avoid overlap with top banner */
+            color: #333;
         }
 
+        /* Top Banner */
+        .top-banner {
+            position: fixed;
+            top: 25px;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .top-banner .cart-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+        /* Main Banner */
         .banner {
-            background-color: #a2ffa4;
-            color: #1e9c20;
+            background-color: #2e7d32;
+            color: #ffffff;
             font-size: 2em;
-            padding: 1em;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            padding: 1em 2em;
+            border-radius: 10px;
+            margin: 20px 0 30px;
             text-align: center;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .prompt {
-            font-size: 1.5em;
-            margin: 15px 0;
-            color: #006330;
+            font-size: 1.25em;
+            margin: 20px 0;
+            color: #4b7d4b;
         }
 
+        /* Button Section */
         .buttons {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
 
         .button {
-            padding: 15px 25px;
+            padding: 12px 30px;
             font-size: 1em;
-            border-radius: 10px;
-            border: none;
+            border-radius: 8px;
+            border: 1px solid transparent;
             cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .merchant-btn {
-            background-color: #204a2c;
-            color: #dafbda;
+            background-color: #1b5e20;
+            color: #ffffff;
+        }
+
+        .merchant-btn:hover {
+            background-color: #144d16;
         }
 
         .shopper-btn {
-            background-color: #204a2c;
-            color: #fff;
+            background-color: #1b5e20;
+            color: #ffffff;
+        }
+
+        .shopper-btn:hover {
+            background-color: #144d16;
         }
 
         .or-text {
             font-size: 1em;
-            color: #355c7d;
+            color: #4b7d4b;
         }
     </style>
 </head>
 <body>
-<!-- Banner -->
+
+<!-- Top Banner with Cart Icon -->
+<div class="top-banner">
+    <span class="cart-icon">🛒</span>
+    <span>Mini-Shopify </span>
+</div>
+
+<!-- Main Banner -->
 <div class="banner">Welcome to Mini-Shopify!</div>
 
 <!-- Prompt Text -->
-<div class="prompt">Are you a</div>
+<div class="prompt">Are you a...</div>
 
 <!-- Buttons with 'or' separator -->
 <div class="buttons">
@@ -74,5 +116,6 @@
     <span class="or-text">or</span>
     <button class="button shopper-btn" th:onclick="|window.location.href='/shopper'|">Shopper</button>
 </div>
+
 </body>
 </html>
