@@ -1,94 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Screen</title>
     <style>
-        /* Remove default margin and padding from body */
+        /* General Reset and Styling */
         body {
             margin: 0;
             padding: 0;
             background-color: #fbfffb;
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
         }
 
-        /* Top Banner */
-        .top-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw; /* Full viewport width */
+        /* Black Mini-Shopify Banner */
+        .mini-shopify-banner {
             background-color: #000;
-            color: #fff;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 1em;
             display: flex;
             align-items: center;
-            padding: 10px 20px;
+            width: 100%;
             box-sizing: border-box;
-            z-index: 1000;
         }
 
-        .top-banner .cart-icon {
+        .mini-shopify-banner .cart-icon {
             margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Green Top Banner */
+        .top-banner {
+            background-color: #2e7d32;
+            color: #ffffff;
+            padding: 20px 30px;
+            text-align: left;
             font-size: 1.5em;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
         }
 
         /* Search Bar */
         .search-container {
-            margin-top: 80px; /* Offset for the fixed banner */
+            margin-top: t 0px;
             display: flex;
             justify-content: center;
             padding: 20px;
+            width: 100%;
+            max-width: 600px;
         }
 
         .search-container input[type="text"] {
             padding: 10px;
             font-size: 1em;
-            width: 75%;
+            width: 100%;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        /* Shops List */
+        /* Shops List as Grid */
         .shops-list {
             margin-top: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
             padding: 10px;
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
         }
 
         .shop-item {
-            width: 15%;
+            width: 200px; /* Adjusted width for grid layout */
             background-color: #f9f9f9;
             padding: 15px;
-            margin: 10px 0;
+            margin: 10px;
             border: 2px solid #204a2c;
             border-radius: 5px;
             text-align: center;
             font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
-<!-- Top Banner with Cart Icon -->
-<div class="top-banner">
+
+<!-- Black Mini-Shopify Banner -->
+<div class="mini-shopify-banner">
     <span class="cart-icon">🛒</span>
     <span>Mini-Shopify</span>
 </div>
+
+<!-- Green Top Banner for Search -->
+<div class="top-banner">Search</div>
 
 <!-- Search Bar -->
 <div class="search-container">
     <input type="text" placeholder="Looking for...">
 </div>
 
-<!-- Shops List -->
+<!-- Shops List as Grid -->
 <div class="shops-list">
-    <!-- Thymeleaf to display shops dynamically -->
+    <!-- Thymeleaf to display shops dynamically in a grid layout -->
     <div th:each="shop : ${shops}" class="shop-item">
         <span th:text="${shop.name}">Shop Name</span>
     </div>
 </div>
+
 </body>
 </html>
