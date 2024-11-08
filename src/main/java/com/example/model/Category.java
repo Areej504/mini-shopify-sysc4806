@@ -1,3 +1,5 @@
+package com.example.model;
+
 public enum Category {
     ELECTRONICS("Electronics"),
     CLOTHING("Clothing"),

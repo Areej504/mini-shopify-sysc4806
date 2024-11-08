@@ -119,8 +119,15 @@
 
         <!-- Category Block Field -->
         <div class="form-group">
-            <label for="categoryBlock">Category Block</label>
-            <input type="text" id="categoryBlock" name="categoryBlock" required>
+            <ul class="category-checklist" style="list-style: none; padding: 0;">
+                <!-- Loop through each category from the enum and display as a checkbox -->
+                <li th:each="category : ${categories}">
+                    <label>
+                        <input type="checkbox" name="categoryBlock" th:value="${category}"/>
+                        <span th:text="${category}">Category </span>
+                    </label>
+                </li>
+            </ul>
         </div>
 
         <!-- Submit Button -->

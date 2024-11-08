@@ -1,3 +1,5 @@
+package com.example.model;
+
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class Customer {
     private String address;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;
+    private List<OrderInfo> orderInfos;
 
     // Constructors
     public Customer() {}
@@ -56,18 +58,18 @@ public class Customer {
         this.address = address;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public List<OrderInfo> getOrders() {
+        return orderInfos;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setOrders(List<OrderInfo> orderInfos) {
+        this.orderInfos = orderInfos;
     }
 
     public int getCurrentOrders() {
-        return orders != null
-                ? (int) orders.stream()
-                .filter(order -> order.getStatus() == OrderStatus.PROCESSING || order.getStatus() == OrderStatus.SHIPPED)
+        return orderInfos != null
+                ? (int) orderInfos.stream()
+                .filter(orderInfo -> orderInfo.getStatus() == OrderStatus.PROCESSING || orderInfo.getStatus() == OrderStatus.SHIPPED)
                 .count()
                 : 0;
     }
