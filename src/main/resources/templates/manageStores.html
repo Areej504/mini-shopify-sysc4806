@@ -169,7 +169,10 @@
         <!-- Dynamically display stores assigned to the merchant -->
         <li th:each="shop : ${shops}">
             <span class="store-name" th:text="${shop.name}">Store Name</span>
-            <button class="manage-button" th:onclick="'window.location.href=\'/manage-store/' + ${shop.shopId} + '\';'">Manage</button>
+            <button class="manage-button"
+                    th:onclick="'window.location.href=\'/merchantShop/' + ${shop.shopId} + '\';'">
+                Manage
+            </button>
         </li>
     </ul>
     <script>

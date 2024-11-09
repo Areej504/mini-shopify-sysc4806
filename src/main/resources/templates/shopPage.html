@@ -13,35 +13,55 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        body {
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
             background-color: #f5f7fa;
             color: #333;
         }
 
-        /* Main container styling */
+        /* Full-width container to remove side margins */
         .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Full Width Banner for Shop Name and Description */
+        .shop-header {
+            width: 100vw; /* Full viewport width */
+            background-color: #003f4d; /* Dark muted color */
+            color: white;
+            text-align: center;
+            padding: 20px 0; /* Adequate padding for clarity */
+        }
+
+        .shop-header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .shop-description-banner {
+            width: 100vw; /* Full width */
+            background-color: #003f4d; /* Darker, muted color */
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 15px 0; /* Smaller padding */
+        }
+
+        /* Shop Actions Section (Checkout Button, etc.) */
+        .cart-container {
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            max-width: 1200px;
-            margin: 0 auto;
+            justify-content: flex-end;
             padding: 20px;
         }
 
-        /* Top Banner Styling */
-        .top-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .top-banner h1 {
-            font-size: 2em;
-            color: #333;
-        }
-
-        .top-banner .checkout-button {
+        .cart-button {
             background-color: #01a6cf;
             color: #fff;
             border: none;
@@ -52,21 +72,21 @@
             transition: background-color 0.3s ease;
         }
 
-        .top-banner .checkout-button:hover {
+        .cart-button:hover {
             background-color: #126b80;
         }
 
-        /* Search bar styling */
+        /* Search Bar Section */
         .search-container {
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin: 5px 0;
         }
 
         .search-container input[type="text"] {
             width: 100%;
             max-width: 600px;
-            padding: 12px;
+            padding: 10px;
             font-size: 1em;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -143,12 +163,19 @@
     </style>
 </head>
 <body>
-<!-- Main Container -->
+<!-- Full-width container -->
 <div class="container">
-    <!-- Top Banner with Shop Name and Checkout Button -->
-    <div class="top-banner">
+    <!-- Full-width Shop Header -->
+    <div class="shop-header">
         <h1 th:text="${shopName}">Shop Name</h1>
-        <button class="checkout-button" th:text="'Checkout (' + ${cartItemCount} + ' items)'">Go to Cart</button>
+    </div>
+
+    <!-- Full Width Description Banner -->
+    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
+
+    <!-- Checkout Button outside the white box -->
+    <div class="cart-container">
+        <button class="cart-button" th:text="'Cart (' + ${totalItemsInCart} + ' items)'" onclick="window.location.href='/cartView'">Go to Cart</button>
     </div>
 
     <!-- Search Bar -->
@@ -171,7 +198,7 @@
 <script>
     function addToCart(productId) {
         console.log("Adding product with ID:", productId);
-        // Implement add-to-cart functionality
+        // Implement add-to-cart functionality here
     }
 </script>
 </body>

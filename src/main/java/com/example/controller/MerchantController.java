@@ -6,7 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class MerchantController {
@@ -32,44 +35,59 @@ public class MerchantController {
     // Mapping for the merchant button to open merchantView1.html
     @RequestMapping("/merchant")
     public String openMerchantHomeScreen(@RequestParam Long merchantId, Model model) {
+        model.addAttribute("merchantId", merchantId);
         return "merchantView1";
     }
 
     @GetMapping("/create-shop")
-    public String showCreateShopForm(Model model) {
+    public String showCreateShopForm(@RequestParam Long merchantId, Model model) {
 
         // Add the merchant and shop to the model
         model.addAttribute("shop", new Shop());
         model.addAttribute("categories", Category.values());  // Assuming you have categories to show
-
+        model.addAttribute("merchantId", merchantId);
+        
         return "createShop";
     }
 
     @PostMapping("/create-shop")
-    public String createShop(@RequestParam String shopName, @ModelAttribute Shop shop, Model model) {
+    public String createShop(@RequestParam Long merchantId, @ModelAttribute Shop shop, Model model) {
         // Add the shop name to the model for use in the view
-        model.addAttribute("shopName", shopName);
+
+        Merchant merchant = merchantRepository.findById(merchantId).orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+        shop.setMerchant(merchant);
+
+        System.out.println(shop.getMerchant().getName());
+        System.out.println(shop.getName());
+        System.out.println(shop.getDescription());
+        System.out.println(shop.getCategories());
 
         // Save the shop object
         shopRepository.save(shop);
 
-        return "redirect:/manage-stores?created=true&shopName=" + shopName;
+        return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + URLEncoder.encode(shop.getName(), StandardCharsets.UTF_8);
+
     }
 
     @GetMapping("/manage-stores")
-    public String openManageStores(Model model){
-        //TODO: Figure out a way to pass the merchantId to these pages so its not hard-coded
-        Long merchantId = 1L;
+    public String openManageStores(@RequestParam Long merchantId, Model model){
         Merchant merchant = merchantRepository.findById(merchantId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid merchant Id:" + merchantId));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+        List<Shop> shops = shopRepository.findByMerchant(merchant);
 
-        // Get the list of shops for the merchant
-        List<Shop> shops = merchant.getShops();
-
-        // Add the list of shops to the model
+        // Add attributes to the model for the view
+        model.addAttribute("merchant", merchant);
         model.addAttribute("shops", shops);
 
         return "manageStores";
+    }
+
+    @GetMapping("/merchantShop/{shopId}")
+    public String viewShop(@PathVariable Long shopId, Model model) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
+        model.addAttribute("shop", shop); // Add shop details to the model
+        return "merchantShop"; // Return the Thymeleaf template for the shop details
     }
 
 
