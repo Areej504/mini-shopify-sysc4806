@@ -20,6 +20,7 @@ public class Shop {
     private Set<Category> categories;
 
     @ManyToOne
+    @JoinColumn(name = "merchant_id")  // Specifies the foreign key column
     private Merchant merchant;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)

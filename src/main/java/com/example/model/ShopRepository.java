@@ -7,5 +7,5 @@ import java.util.List;
 @Repository
 public interface ShopRepository extends CrudRepository<Shop, Long> {
     List<Shop> findByName(String name);
-    List<Shop> findByMerchant(Merchant merchant);
+    List<Shop> findByMerchant_MerchantId(Long merchantId);
 }
