@@ -3,150 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${shopName} + ' - Customer Screen'">Customer Screen</title>
+    <title th:text="${shopName} + ' - Shop'">Shop</title>
     <style>
-        /* Remove default margin and padding from body */
-        body {
+        /* Global Reset */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f0f4f8;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Top Banner */
-        .top-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            background-color: #1e3a8a; /* Dark blue */
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
             box-sizing: border-box;
-            z-index: 1000;
-            font-size: 1.5em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .top-banner .cart-icon {
-            font-size: 1.5em;
-            margin-right: 10px;
+        body {
+            background-color: #f5f7fa;
+            color: #333;
         }
 
-        .top-banner .shop-name {
-            font-weight: bold;
-        }
-
-        /* Checkout Button */
-        .checkout-button {
-            background-color: #3b82f6; /* Blue color */
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            font-size: 0.7em;
-            border-radius: 5px;
-            cursor: pointer;
-            position: absolute;
-            right: 20px;
-            top: 150px;
-        }
-
-        .checkout-button:hover {
-            background-color: #2563eb;
-        }
-
-        /* Search Bar */
-        .search-container {
-            margin-top: 75px;
+        /* Main container styling */
+        .container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
 
-        .search-container input[type="text"] {
-            padding: 10px;
-            font-size: 1em;
-            width: 75%;
-            box-sizing: border-box;
-            border: 1px solid #d1d5db; /* Gray border */
-            border-radius: 5px;
+        /* Top Banner Styling */
+        .top-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
         }
 
-        /* Product List */
-        .product-list {
+        .top-banner h1 {
+            font-size: 2em;
+            color: #333;
+        }
+
+        .top-banner .checkout-button {
+            background-color: #01a6cf;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-banner .checkout-button:hover {
+            background-color: #126b80;
+        }
+
+        /* Search bar styling */
+        .search-container {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            padding: 10px;
+            margin: 20px 0;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        /* Product Grid Styling */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
 
-        .product-item {
-            background-color: #ffffff;
-            padding: 15px;
-            margin: 10px;
-            border: 1px solid #d1d5db; /* Light gray */
-            border-radius: 10px;
-            width: 200px;
-            text-align: center;
+        /* Product Card Styling */
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .product-card h3 {
             font-size: 1.2em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            color: #333;
         }
 
-        .product-item span {
-            margin-bottom: 10px;
+        .product-card p {
+            font-size: 1em;
+            color: #555;
         }
 
-        /* Add Item Button */
-        .add-item-button {
-            background-color: #3b82f6; /* Blue */
-            color: white;
+        /* Price Styling */
+        .price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #01a6cf;
+            margin: 10px 0;
+        }
+
+        /* Add to Cart Button */
+        .add-to-cart-btn {
+            background-color: #205c67;
+            color: #fff;
             border: none;
-            padding: 8px 16px;
-            font-size: 0.9em;
+            padding: 10px;
+            font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
             margin-top: auto;
         }
 
-        .add-item-button:hover {
-            background-color: #2563eb;
+        .add-to-cart-btn:hover {
+            background-color: #126b80;
         }
     </style>
 </head>
 <body>
-<!-- Top Banner with Shop Name and Cart Icon -->
-<div class="top-banner">
-    <span class="cart-icon">🛍️</span>
-    <span class="shop-name" th:text="${shopName}">Shop Name</span>
-    <!-- Checkout Button aligned to the right -->
-    <button class="checkout-button" th:text="'Checkout (' + ${cartItemCount} + ' items)'">Go to Cart</button>
-</div>
+<!-- Main Container -->
+<div class="container">
+    <!-- Top Banner with Shop Name and Checkout Button -->
+    <div class="top-banner">
+        <h1 th:text="${shopName}">Shop Name</h1>
+        <button class="checkout-button" th:text="'Checkout (' + ${cartItemCount} + ' items)'">Go to Cart</button>
+    </div>
 
-<!-- Search Bar -->
-<div class="search-container">
-    <input type="text" placeholder="Looking for..." th:value="${searchQuery}">
-</div>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" placeholder="Search products..." th:value="${searchQuery}">
+    </div>
 
-<!-- Product List -->
-<div class="product-list">
-    <!-- Thymeleaf to display products dynamically -->
-    <div th:each="product : ${products}" class="product-item">
-        <span th:text="${product.name}">Product Name</span>
-        <span th:text="${product.price}">$0.00</span>
-        <button class="add-item-button" th:onclick="'addToCart(' + ${product.id} + ')'">Add Item</button>
+    <!-- Product Grid -->
+    <div class="product-grid">
+        <!-- Thymeleaf loop to display each product -->
+        <div th:each="product : ${products}" class="product-card">
+            <img th:src="${product.imageUrl}" alt="Product Image">
+            <h3 th:text="${product.name}">Product Name</h3>
+            <p class="price" th:text="'$' + ${product.price}">Price</p>
+            <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.id} + ')'">Add to Cart</button>
+        </div>
     </div>
 </div>
 
 <script>
     function addToCart(productId) {
-        // JavaScript function to handle adding item to cart
         console.log("Adding product with ID:", productId);
-        // Implement the add-to-cart functionality here
+        // Implement add-to-cart functionality
     }
 </script>
 </body>

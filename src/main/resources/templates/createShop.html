@@ -91,6 +91,30 @@
             background-color: #144d16;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        .category-checklist {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0;
+        }
+
+        .category-checklist li {
+            flex: 1 1 45%;
+            display: flex;
+            align-items: center; /* Aligns checkbox with text vertically */
+            list-style: none;
+        }
+
+        .category-checklist li label {
+            display: flex;
+            align-items: center; /* Ensures both checkbox and text are vertically centered */
+            gap: 5px; /* Adds spacing between checkbox and text */
+        }
+
+        .category-checklist li input[type="checkbox"] {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -111,20 +135,20 @@
             <input type="text" id="shopName" name="shopName" required>
         </div>
 
-        <!-- Store Description Field -->
+        <!-- Shop Description Field -->
         <div class="form-group">
-            <label for="storeDescription">Store Description</label>
-            <input type="text" id="storeDescription" name="storeDescription" required>
+            <label for="shopDescription">Shop Description</label>
+            <input type="text" id="shopDescription" name="shopDescription" required>
         </div>
 
         <!-- Category Block Field -->
         <div class="form-group">
-            <ul class="category-checklist" style="list-style: none; padding: 0;">
-                <!-- Loop through each category from the enum and display as a checkbox -->
+            <label>Category: </label> <!-- Title for the checklist -->
+            <ul class="category-checklist">
                 <li th:each="category : ${categories}">
                     <label>
                         <input type="checkbox" name="categoryBlock" th:value="${category}"/>
-                        <span th:text="${category}">Category </span>
+                        <span th:text="${category}">Category</span>
                     </label>
                 </li>
             </ul>
