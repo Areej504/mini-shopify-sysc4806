@@ -97,9 +97,12 @@
         /* Product Grid Styling */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Make grid items smaller rectangles */
+            gap: 15px; /* Space between items */
             margin-top: 20px;
+            max-height: 400px; /* Set max-height to make the grid scrollable */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding-right: 10px; /* Optional: Add space for scrollbar */
         }
 
         /* Product Card Styling */
@@ -112,36 +115,26 @@
             display: flex;
             flex-direction: column;
             text-align: center;
-            padding: 15px;
+            padding: 15px; /* Padding for content inside cards */
+            height: 250px; /* Fixed height to make the cards rectangular */
+            width: 100%; /* Ensure each card takes up its container's width */
         }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-card img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-
+        /* Optional: Adjust font size for smaller grid items */
         .product-card h3 {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 10px 0;
-            color: #333;
         }
 
         .product-card p {
-            font-size: 1em;
-            color: #555;
+            font-size: 0.9em;
         }
 
-        /* Price Styling */
+        /* Adjust price font size */
         .price {
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
             color: #01a6cf;
-            margin: 10px 0;
         }
 
         /* Add to Cart Button */
@@ -187,10 +180,10 @@
     <div class="product-grid">
         <!-- Thymeleaf loop to display each product -->
         <div th:each="product : ${products}" class="product-card">
-            <img th:src="${product.imageUrl}" alt="Product Image">
-            <h3 th:text="${product.name}">Product Name</h3>
-            <p class="price" th:text="'$' + ${product.price}">Price</p>
-            <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.id} + ')'">Add to Cart</button>
+            <h3 th:text="${product.productName}">Product Name</h3>
+            <p th:text="${product.description}"> Product Description</p>
+            <h4 class="price" th:text="'$' + ${product.price}">Price</h4>
+            <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.productId} + ')'">Add to Cart</button>
         </div>
     </div>
 </div>
