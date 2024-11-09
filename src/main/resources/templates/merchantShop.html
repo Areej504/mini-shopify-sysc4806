@@ -190,11 +190,15 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <h2>Product List</h2>
-        <div th:each="product : ${products}" class="product-card">
+        <div id="product-[[${product.id}]]" th:each="product : ${products}" class="product-card">
+            <p class="productId" th:text="${product.productId}">ProductId</p>
             <h3 th:text="${product.productName}">Product Name</h3>
             <p class="price" th:text="${'Price: $' + product.price}">Price</p>
             <p class="inventory" th:text="${product.inventory}">Inventory</p>
             <p class="description" th:text="${product.description}">Description</p>
+<!--            <button onclick="deleteProduct()" style="color: black; background: red; border: 1px solid #ccc; border-radius: 8px; cursor: pointer;">-->
+<!--                Remove-->
+<!--            </button>-->
         </div>
     </div>
 </div>
@@ -238,7 +242,15 @@
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
-        <p>Enter details to remove an existing product.</p>
+        <form th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" th:onsubmit="|deleteProduct(${product.productId})|">
+            <p>Enter product ID to remove an existing product.</p>
+            <!-- Product Id -->
+            <div class="form-group">
+                <input type="text" id="productId" th:field="*{productId} " required>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit">Remove Product</button>
+        </form>
         <button onclick="closeModal('removeProductModal')">Close</button>
     </div>
 </div>
@@ -289,6 +301,25 @@
                     loadProductList(); // Reload the product list
                 } else {
                     console.error('Error adding product');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    //function to remove a product from the shop
+    function deleteProduct(productId) {
+        if (!confirm("Are you sure you want to remove this product?")) return;
+
+        fetch(`/merchantShop/{shopId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById(`product-${productId}`).remove();
+                    closeModal('removeProductModal'); // Close the modal
+                    loadProductList(); // Reload the product list
+                } else {
+                    console.error('Error removing product');
                 }
             })
             .catch(error => console.error('Error:', error));

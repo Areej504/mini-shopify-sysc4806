@@ -2,12 +2,10 @@ package com.example.controller;
 
 import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ProductController {
@@ -28,13 +26,22 @@ public class ProductController {
     }
 
     @PostMapping("/merchantShop/{shopId}")
-    public String addProduct(@ModelAttribute Product product, @PathVariable Long shopId) {
+    public String addProduct(@ModelAttribute Product product, @PathVariable Long shopId,Model model) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
         product.setShop(shop); //link the product to the shop
         // save Product
         productRepository.save(product);
+        model.addAttribute("product", product);
         return "redirect:/merchantShop/" + shopId;
     }
-
+    @DeleteMapping("/merchantShop/{shopId}")
+    public String removeProduct(@PathVariable Long shopId, @PathVariable Long productId) {
+        if (productRepository.existsById(productId)) {
+            productRepository.deleteById(productId);
+            return "redirect:/merchantShop/"+ shopId;
+        } else {
+            return "redirect:/merchantShop/"+ shopId;
+        }
+    }
 }
