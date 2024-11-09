@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class MerchantController {
     @Autowired
@@ -47,9 +49,20 @@ public class MerchantController {
     }
 
     @GetMapping("/manage-stores")
-    public String openManageStores(){
+    public String openManageStores(@RequestParam Long merchantId, Model model){
+        Merchant merchant = merchantRepository.findById(merchantId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid merchant Id:" + merchantId));
+
+        // Get the list of shops for the merchant
+        List<Shop> shops = merchant.getShops();
+
+        // Add the list of shops to the model
+        model.addAttribute("shops", shops);
+
         return "manageStores";
     }
+
+
 
 
 }
