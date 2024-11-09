@@ -25,7 +25,7 @@ public class OrderInfo {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne(mappedBy = "orderInfo", cascade = CascadeType.ALL) // One-to-one relationship with Payment
+    @OneToOne // One-to-one relationship with Payment
     private Payment payment;  // Only one payment per order
 
     public OrderInfo() {}

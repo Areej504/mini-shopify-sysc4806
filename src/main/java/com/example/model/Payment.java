@@ -21,7 +21,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "payment")
     private OrderInfo orderInfo;
 
     @ManyToOne
