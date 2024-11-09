@@ -80,6 +80,32 @@
             padding: 20px;
         }
 
+        /* Product Card */
+        .product-card {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #1b5e20;
+        }
+
+        .product-card .price {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-card .description {
+            color: #555;
+            font-size: 0.9em;
+        }
+
         /* Modal Styling */
         .modal {
             display: none;
@@ -163,7 +189,13 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <!-- Placeholder for main content -->
+        <h2>Product List</h2>
+        <div th:each="product : ${products}" class="product-card">
+            <h3 th:text="${product.productName}">Product Name</h3>
+            <p class="price" th:text="${'Price: $' + product.price}">Price</p>
+            <p class="inventory" th:text="${product.inventory}">Inventory</p>
+            <p class="description" th:text="${product.description}">Description</p>
+        </div>
     </div>
 </div>
 
@@ -172,7 +204,7 @@
     <div class="modal-content">
         <h3>Add Product</h3>
         <!-- Form to add product details -->
-        <form th:action="@{/merchantShop/{shopId}}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
+        <form  th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
             <!-- Product Name -->
             <div class="form-group">
                 <label for="productName">Product Name:</label>
@@ -222,7 +254,7 @@
 <script>
     //SPA function to re-load the product list every time a change is made
     function loadProductList() {
-        fetch('/merchantShop/{shopId}') // Adjust this endpoint to match your controller
+        fetch('/merchantShop/{shopId}')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('productList').innerHTML = data;
@@ -230,7 +262,7 @@
             .catch(error => console.error('Error loading products:', error));
     }
 
-    // Call this function when the page loads
+    //  load product list when the page loads
     window.onload = loadProductList;
 
     // JavaScript functions to open and close modals

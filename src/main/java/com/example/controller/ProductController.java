@@ -20,18 +20,21 @@ public class ProductController {
     public String viewMerchantShop(@PathVariable Long shopId, Model model) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
-        model.addAttribute("shop", shop); // Add shop details to the model
 
+        model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("products", productRepository.findAll()); // Fetch all products
         return "merchantShop";
     }
 
     @PostMapping("/merchantShop/{shopId}")
-    public String addProduct(@ModelAttribute Product product) {
+    public String addProduct(@ModelAttribute Product product, @PathVariable Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
+        product.setShop(shop); //link the product to the shop
         // save Product
         productRepository.save(product);
-        return "merchantShop";
+        return "redirect:/merchantShop/" + shopId;
     }
 
 }
