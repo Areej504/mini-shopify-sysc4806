@@ -23,7 +23,7 @@ public class ProductController {
 
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
-        model.addAttribute("products", productRepository.findAll()); // Fetch all products
+        model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
         return "merchantShop";
     }
 
