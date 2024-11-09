@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopping Cart</title>
+    <style>
+        /* Basic styles for the cart page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            margin: 40px auto;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Cart items section */
+        .cart-items {
+            width: 70%;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+        }
+
+        /* Order summary section */
+        .order-summary {
+            width: 30%;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+
+        .order-summary h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .total-price {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .checkout-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #01a6cf;
+            color: white;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-button:hover {
+            background-color: #126b80;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Cart Items Section -->
+    <div class="cart-items">
+        <h2>Your Cart</h2>
+        <div th:each="item : ${cartItems}" class="cart-item">
+            <img th:src="${item.imageUrl}" alt="Product Image">
+            <div class="cart-item-details">
+                <p th:text="${item.name}">Product Name</p>
+                <p class="cart-item-price" th:text="'$' + ${item.price}">Price</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary Section -->
+    <div class="order-summary">
+        <h3>Order Summary</h3>
+        <p class="total-price">Total: $<span th:text="${totalPrice}">0.00</span></p>
+        <button class="checkout-button">Proceed to Checkout</button>
+    </div>
+</div>
+</body>
+</html>
