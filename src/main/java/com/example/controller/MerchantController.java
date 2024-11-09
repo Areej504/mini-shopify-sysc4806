@@ -18,14 +18,23 @@ public class MerchantController {
     @Autowired
     private ShopRepository shopRepository;
 
+    //create Merchant page
+    @GetMapping("/create-merchant")
+    public String showCreateMerchantForm(Model model) {
+        model.addAttribute("merchant", new Merchant()); // Empty merchant object for form binding
+        return "createMerchant";
+    }
+
+    //Merchant creation form submission
+    @PostMapping("/create-merchant")
+    public String createMerchant(@ModelAttribute Merchant merchant) {
+        merchantRepository.save(merchant);
+        return "redirect:/merchant?merchantId=" + merchant.getMerchantId(); // Redirect to merchant dashboard
+    }
+
     // Mapping for the merchant button to open merchantView1.html
     @GetMapping("/merchant")
     public String openMerchantHomeScreen() {
-        //TODO: Add a login screen so this isn't hard-coded!
-        Merchant merchant = new Merchant();
-        merchant.setName("Rama");
-        merchant.setEmail("rama@shopify.com");
-        merchantRepository.save(merchant);
         return "merchantView1";
     }
 
