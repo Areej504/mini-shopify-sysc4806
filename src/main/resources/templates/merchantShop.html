@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Personalized Store</title>
+    <title th:text="${shop.name}"> Personalized Store </title>
     <style>
         /* General Reset and Styling */
         body {
@@ -96,9 +96,9 @@
 
         .modal-content {
             background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
+            padding: 50px;
+            border-radius: 10px;
+            width: 50%;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
@@ -118,6 +118,28 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Input Fields */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 95%;
+        }
+
     </style>
 </head>
 <body>
@@ -149,7 +171,34 @@
 <div id="addProductModal" class="modal">
     <div class="modal-content">
         <h3>Add Product</h3>
-        <p>Enter details to add a new product.</p>
+        <!-- Form to add product details -->
+        <form th:action="@{/merchantShop/{shopId}}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" th:field="*{productName} " required>
+            </div>
+
+            <!-- Product Price -->
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" th:field="*{price}" min="0" step="0.01" required>
+            </div>
+            <!-- Product Inventory -->
+            <div class="form-group">
+                <label for="inventory">Inventory:</label>
+                <input type="number" id="inventory" name="inventory" th:field="*{inventory}" min="0" step="1" required>
+            </div>
+
+            <!-- Product Description -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" th:field="*{description}" rows="3" required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Add Product</button>
+        </form>
         <button onclick="closeModal('addProductModal')">Close</button>
     </div>
 </div>
@@ -171,6 +220,19 @@
 </div>
 
 <script>
+    //SPA function to re-load the product list every time a change is made
+    function loadProductList() {
+        fetch('/merchantShop/{shopId}') // Adjust this endpoint to match your controller
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('productList').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading products:', error));
+    }
+
+    // Call this function when the page loads
+    window.onload = loadProductList;
+
     // JavaScript functions to open and close modals
     function openModal(modalId) {
         document.getElementById(modalId).style.display = 'flex';
@@ -179,6 +241,27 @@
     function closeModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
     }
+
+    function submitAddProductForm(event) {
+        event.preventDefault(); // Prevent default form submission
+        const form = document.getElementById('addProductForm');
+        const formData = new FormData(form);
+
+        fetch('/merchantShop/{shopId}', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    closeModal('addProductModal'); // Close the modal
+                    loadProductList(); // Reload the product list
+                } else {
+                    console.error('Error adding product');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
 </script>
 
 </body>
