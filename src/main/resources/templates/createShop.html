@@ -128,26 +128,29 @@
 <!-- Form Container -->
 <div class="form-container">
     <h2>Create Shop</h2>
-    <form th:action="@{/create-shop}" method="post">
+    <form th:action="@{/create-shop}" th:object="${shop}" method="post">
+        <!-- Hidden field for merchantId, passed as a request parameter -->
+        <input type="hidden" th:name="merchantId" th:value="${merchantId}"/>
+
         <!-- Shop Name Field -->
         <div class="form-group">
-            <label for="shopName">Shop Name</label>
-            <input type="text" id="shopName" name="shopName" required>
+            <label for="name">Shop Name</label>
+            <input type="text" th:field="*{name}" id="name" required />
         </div>
 
         <!-- Shop Description Field -->
         <div class="form-group">
-            <label for="shopDescription">Shop Description</label>
-            <input type="text" id="shopDescription" name="shopDescription" required>
+            <label for="description">Shop Description</label>
+            <input type="text" th:field="*{description}" id="description" required />
         </div>
 
-        <!-- Category Block Field -->
+        <!-- Category Checklist -->
         <div class="form-group">
-            <label>Category: </label> <!-- Title for the checklist -->
+            <label>Categories:</label>
             <ul class="category-checklist">
                 <li th:each="category : ${categories}">
                     <label>
-                        <input type="checkbox" name="categoryBlock" th:value="${category}"/>
+                        <input type="checkbox" th:field="*{categories}" th:value="${category}" />
                         <span th:text="${category}">Category</span>
                     </label>
                 </li>
@@ -158,6 +161,7 @@
         <button type="submit" class="submit-button">OK</button>
     </form>
 </div>
+
 
 </body>
 </html>

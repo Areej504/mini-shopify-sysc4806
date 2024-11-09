@@ -3,16 +3,55 @@
 <head>
     <title>Shopping Cart</title>
     <style>
-        /* Basic styles for the cart page */
-        body {
-            font-family: Arial, sans-serif;
+        /* Global Reset */
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            background-color: #f9f9f9;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Full-width container to remove side margins */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Full Width Banner for Shop Name and Description */
+        .shop-header {
+            width: 100vw; /* Full viewport width */
+            background-color: #003f4d; /* Dark muted color */
+            color: white;
+            text-align: center;
+            padding: 20px 0; /* Adequate padding for clarity */
+        }
+
+        .shop-header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .shop-description-banner {
+            width: 100vw; /* Full width */
+            background-color: #003f4d; /* Darker, muted color */
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 15px 0; /* Smaller padding */
+        }
+
+        /* Basic styles for the cart page */
         .container {
             display: flex;
             width: 80%;
@@ -98,6 +137,14 @@
     </style>
 </head>
 <body>
+<!-- Full-width Shop Header with Name and Description -->
+<div class="shop-header">
+    <h1 th:text="${shopName}">Shop Name</h1>
+</div>
+
+<div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
+
+<!-- Cart Page Container -->
 <div class="container">
     <!-- Cart Items Section -->
     <div class="cart-items">
@@ -115,7 +162,7 @@
     <div class="order-summary">
         <h3>Order Summary</h3>
         <p class="total-price">Total: $<span th:text="${totalPrice}">0.00</span></p>
-        <button class="checkout-button">Proceed to Checkout</button>
+        <button class="checkout-button" onclick="window.location.href='/paymentView'">Proceed to Checkout</button>
     </div>
 </div>
 </body>

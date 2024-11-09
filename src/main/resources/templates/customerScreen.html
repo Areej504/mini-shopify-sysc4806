@@ -88,6 +88,43 @@
             font-size: 1.2em;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .shop-name {
+            font-weight: bold;
+            font-size: 1.4em;
+        }
+
+        .shop-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .shop-item:hover {
+            transform: scale(1.05);
+        }
+
+        .shop-categories {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .shop-category {
+            background-color: #204a2c;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-category:hover {
+            background-color: #144d16;
+        }
     </style>
 </head>
 <body>
@@ -109,8 +146,15 @@
 <!-- Shops List as Grid -->
 <div class="shops-list">
     <!-- Thymeleaf to display shops dynamically in a grid layout -->
-    <div th:each="shop : ${shops}" class="shop-item">
-        <span th:text="${shop.name}">Shop Name</span>
+    <div th:each="shop : ${shops}" class="shop-item" th:onclick="|window.location.href='@{/shopPage/{shopId}(shopId=${shop.shopId})}'|">
+        <!-- The shop block is clickable and redirects to the shop's details page -->
+        <span class="shop-name" th:text="${shop.name}">Shop Name</span>
+        <p class="shop-description" th:text="${shop.description}">Shop Description</p>
+
+        <!-- Categories -->
+        <div class="shop-categories">
+            <span th:each="category : ${shop.categories}" class="shop-category" th:text="${category.name}">Category</span>
+        </div>
     </div>
 </div>
 
