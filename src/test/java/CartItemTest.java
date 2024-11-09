@@ -58,7 +58,8 @@ public class CartItemTest {
         BigDecimal totalPrice = cartItem.getTotalPrice();
 
         // Assert
-        assertEquals(BigDecimal.ZERO, totalPrice, "Total price should be zero when quantity is zero.");
+        //assertEquals(BigDecimal.ZERO, totalPrice, "Total price should be zero when quantity is zero.");
+        assertEquals(0, cartItem.getTotalPrice().compareTo(BigDecimal.ZERO), "Total price should be zero when quantity is zero.");
     }
 
     @Test
@@ -96,7 +97,8 @@ public class CartItemTest {
 
         // Assert
         assertEquals(0, cartItem.getQuantity(), "Quantity should be zero when set to zero.");
-        assertEquals(BigDecimal.ZERO, cartItem.getTotalPrice(), "Total price should be zero when quantity is zero.");
+        //assertEquals(BigDecimal.ZERO, cartItem.getTotalPrice(), "Total price should be zero when quantity is zero.");
+        assertEquals(0, cartItem.getTotalPrice().compareTo(BigDecimal.ZERO), "Total price should be zero when quantity is zero.");
     }
 
     @Test
