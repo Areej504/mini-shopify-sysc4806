@@ -44,7 +44,7 @@ public class MerchantController {
 
         // Add the merchant and shop to the model
         model.addAttribute("shop", new Shop());
-        model.addAttribute("categories", Category.values());  // Assuming you have categories to show
+        model.addAttribute("categories", Category.values());
         model.addAttribute("merchantId", merchantId);
         
         return "createShop";
@@ -81,16 +81,6 @@ public class MerchantController {
 
         return "manageStores";
     }
-
-    @GetMapping("/merchantShop/{shopId}")
-    public String viewShop(@PathVariable Long shopId, Model model) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
-        model.addAttribute("shop", shop); // Add shop details to the model
-        return "merchantShop"; // Return the Thymeleaf template for the shop details
-    }
-
-
 
 
 }

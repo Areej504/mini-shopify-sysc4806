@@ -26,12 +26,12 @@ public class ShopController {
         Optional<Shop> shop = shopRepository.findById(shopId);
         if (shop.isPresent()) {
             Shop shopDetails = shop.get();
-            model.addAttribute("shopName", shopDetails.getName()); // Passing shop name
-            model.addAttribute("shopDescription", shopDetails.getDescription()); // Passing shop description
+            model.addAttribute("shopName", shopDetails.getName());
+            model.addAttribute("shopDescription", shopDetails.getDescription());
         }
 
         // Retrieve the cart contents and calculate the number of items
-        long totalItemsInCart = cartRepository.count(); // Assuming each cart entry represents one item
+        long totalItemsInCart = cartRepository.count(); //each cart entry represents one item
         model.addAttribute("totalItemsInCart", totalItemsInCart);
 
         return "shopPage"; // Render the shopPage template
@@ -40,15 +40,15 @@ public class ShopController {
     @GetMapping("/cartView")
     public String openCartView(Model model) {
         // Retrieve necessary data for the cart view (e.g., cart items, total price)
-        Iterable<Cart> cartItems = cartRepository.findAll();  // Example, replace with your actual logic
+        Iterable<Cart> cartItems = cartRepository.findAll();
         model.addAttribute("cartItems", cartItems);
 
-        return "cartView";  // The name of your Thymeleaf template for the cart view
+        return "cartView";
     }
 
     @GetMapping("/paymentView")
     public String openPaymentView(Model model){
-        return "paymentView";  // The name of your Thymeleaf template for the cart view
+        return "paymentView";
     }
 
 }
