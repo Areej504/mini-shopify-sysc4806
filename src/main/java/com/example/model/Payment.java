@@ -1,3 +1,5 @@
+package com.example.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,8 +21,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @OneToOne
-    private Order order;
+    @OneToOne(mappedBy = "payment")
+    private OrderInfo orderInfo;
 
     @ManyToOne
     private Customer customer;
@@ -28,12 +30,12 @@ public class Payment {
     // Constructors
     public Payment() {}
 
-    public Payment(Date paymentDate, BigDecimal amount, PaymentMethod paymentMethod, PaymentStatus status, Order order, Customer customer, String paymentDetails) {
+    public Payment(Date paymentDate, BigDecimal amount, PaymentMethod paymentMethod, PaymentStatus status, OrderInfo orderInfo, Customer customer, String paymentDetails) {
         this.paymentDate = paymentDate;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
         this.status = status;
-        this.order = order;
+        this.orderInfo = orderInfo;
         this.customer = customer;
     }
 
@@ -78,12 +80,12 @@ public class Payment {
         this.status = status;
     }
 
-    public Order getOrder() {
-        return order;
+    public OrderInfo getOrder() {
+        return orderInfo;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrder(OrderInfo orderInfo) {
+        this.orderInfo = orderInfo;
     }
 
     public Customer getCustomer() {
@@ -102,7 +104,7 @@ public class Payment {
                 ", amount=" + amount +
                 ", paymentMethod=" + paymentMethod +
                 ", status=" + status +
-                ", order=" + order +
+                ", order=" + orderInfo +
                 ", customer=" + customer +
                 '}';
     }
