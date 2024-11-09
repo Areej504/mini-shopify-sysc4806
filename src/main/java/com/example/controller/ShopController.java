@@ -28,6 +28,7 @@ public class ShopController {
             Shop shopDetails = shop.get();
             model.addAttribute("shopName", shopDetails.getName());
             model.addAttribute("shopDescription", shopDetails.getDescription());
+            model.addAttribute("products", shopDetails.getProducts());
         }
 
         // Retrieve the cart contents and calculate the number of items
