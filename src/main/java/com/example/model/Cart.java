@@ -1,3 +1,5 @@
+package com.example.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;

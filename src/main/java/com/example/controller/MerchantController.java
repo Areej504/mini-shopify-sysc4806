@@ -1,5 +1,6 @@
-package com.example.Controller;
+package com.example.controller;
 
+import com.example.model.Category;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,9 @@ public class MerchantController {
     }
 
     @GetMapping("/create-shop")
-    public String openCreateShop() {
+    public String openCreateShop(Model model) {
+        // Add Category enum values to the model
+        model.addAttribute("categories", Category.values());
         return "createShop";
     }
 

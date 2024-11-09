@@ -1,3 +1,5 @@
+package com.example.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -15,6 +17,12 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private PromotionType promotionType;
+
+    @ManyToOne
+    private OrderInfo orderInfo;
+
+    @ManyToOne
+    private Shop shop;
 
     // Constructors
     public Product() {}
@@ -82,6 +90,14 @@ public class Product {
     public void setPromotionType(PromotionType promotionType) {
         this.promotionType = promotionType;
     }
+
+    public OrderInfo getOrder(){return orderInfo;}
+
+    public void setOrder(OrderInfo orderInfo){this.orderInfo = orderInfo;}
+
+    public Shop getShop(){return shop;}
+
+    public void setShop(Shop shop){this.shop=shop;}
 
     //Methods
     public void setInventoryCount(){};

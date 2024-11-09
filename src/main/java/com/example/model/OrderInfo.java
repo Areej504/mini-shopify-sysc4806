@@ -1,10 +1,12 @@
+package com.example.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Order {
+public class OrderInfo {
     @Id
     @GeneratedValue
     private Long orderId;
@@ -17,18 +19,18 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.ALL)
     private List<Product> products;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL) // One-to-one relationship with Payment
+    @OneToOne // One-to-one relationship with Payment
     private Payment payment;  // Only one payment per order
 
-    public Order() {}
+    public OrderInfo() {}
 
-    public Order(Date orderDate, BigDecimal totalAmount, Customer customer, List<Product> products, OrderStatus status) {
+    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, List<Product> products, OrderStatus status) {
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;

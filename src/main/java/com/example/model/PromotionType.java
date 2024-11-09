@@ -1,3 +1,5 @@
+package com.example.model;
+
 public enum PromotionType {
     DISCOUNT_10_PERCENT("10% Off"),
     DISCOUNT_20_PERCENT("20% Off"),

@@ -1,3 +1,5 @@
+package com.example.model;
+
 public enum OrderStatus {
     PROCESSING("Order is being prepared"),
     SHIPPED("Order has been shipped"),
