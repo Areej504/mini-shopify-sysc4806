@@ -1,14 +1,10 @@
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+import com.example.model.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import com.example.model.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class CustomerTest {
@@ -21,8 +17,8 @@ public class CustomerTest {
     @BeforeEach
     public void setUp() {
         customer = new Customer("John Doe", "johndoe@example.com", "123 Street");
-        mockOrder1 = (OrderInfo) mock(Order.class);
-        mockOrder2 = (OrderInfo) mock(Order.class);
+        mockOrder1 = mock(OrderInfo.class);
+        mockOrder2 = mock(OrderInfo.class);
     }
 
     @Test
@@ -78,7 +74,7 @@ public class CustomerTest {
     @Test
     public void testGetCurrentOrders_WithNonProcessingOrders() {
         // Arrange
-        OrderInfo mockOrder3 = (OrderInfo) mock(Order.class);
+        OrderInfo mockOrder3 = mock(OrderInfo.class);
         when(mockOrder1.getStatus()).thenReturn(OrderStatus.COMPLETED);
         when(mockOrder2.getStatus()).thenReturn(OrderStatus.CANCELLED);
         when(mockOrder3.getStatus()).thenReturn(OrderStatus.DELIVERED);

@@ -1,11 +1,9 @@
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+import com.example.model.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import com.example.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
