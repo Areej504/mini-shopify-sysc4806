@@ -1,9 +1,6 @@
 package com.example.controller;
 
-import com.example.model.Customer;
-import com.example.model.CustomerRepository;
-import com.example.model.Shop;
-import com.example.model.ShopRepository;
+import com.example.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -12,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
