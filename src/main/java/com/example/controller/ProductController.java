@@ -35,13 +35,13 @@ public class ProductController {
         model.addAttribute("product", product);
         return "redirect:/merchantShop/" + shopId;
     }
-    @DeleteMapping("/merchantShop/{shopId}")
-    public String removeProduct(@PathVariable Long shopId, @PathVariable Long productId) {
+    @DeleteMapping("/merchantShop/{shopId}/{productId}")
+    public ResponseEntity<Void> removeProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         if (productRepository.existsById(productId)) {
             productRepository.deleteById(productId);
-            return "redirect:/merchantShop/"+ shopId;
+            return ResponseEntity.ok().build(); // Return 200 OK status
         } else {
-            return "redirect:/merchantShop/"+ shopId;
+            return ResponseEntity.notFound().build(); // Return 404 Not Found if product doesn't exist
         }
     }
 }
