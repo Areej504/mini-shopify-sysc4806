@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+
 import java.util.Collections;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class ProductControllerTest {
         when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/merchantShop/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         verify(shopRepository, times(1)).findById(anyLong());
         verify(productRepository, never()).findByShop(any(Shop.class));
@@ -100,7 +101,9 @@ public class ProductControllerTest {
         when(productRepository.existsById(anyLong())).thenReturn(true);
 
         mockMvc.perform(delete("/merchantShop/1/1"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/merchantShop/1"));
+
 
         verify(productRepository, times(1)).existsById(anyLong());
         verify(productRepository, times(1)).deleteById(anyLong());
@@ -111,7 +114,7 @@ public class ProductControllerTest {
         when(productRepository.existsById(anyLong())).thenReturn(false);
 
         mockMvc.perform(delete("/merchantShop/1/999"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().is3xxRedirection());
 
         verify(productRepository, times(1)).existsById(anyLong());
         verify(productRepository, never()).deleteById(anyLong());

@@ -75,8 +75,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(post("/create-customer")
                         .flashAttr("Customer", customer))
-                .andExpect(status().is5xxServerError());  // Expecting a 500-series error
-
+                .andExpect(status().isInternalServerError());  // Expecting a 500-series error
 
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
@@ -116,6 +115,7 @@ public class CustomerControllerTest {
 
     @Test
     public void testOpenCustomerScreen_DatabaseError() throws Exception {
+        // Simulate a database error
         when(shopRepository.findAll()).thenThrow(new RuntimeException("Database Error"));
 
         mockMvc.perform(get("/shopper"))
