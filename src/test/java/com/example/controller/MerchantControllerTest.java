@@ -124,7 +124,7 @@ public class MerchantControllerTest {
         mockMvc.perform(post("/create-shop")
                         .param("merchantId", "999")
                         .flashAttr("shop", new Shop()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         verify(merchantRepository, times(1)).findById(anyLong());
         verify(shopRepository, never()).save(any(Shop.class));
@@ -133,18 +133,13 @@ public class MerchantControllerTest {
     @Test
     public void testCreateShop_SaveFails_ThrowsException() throws Exception {
         Merchant merchant = new Merchant();
-        merchant.setMerchantId(1L);
+        when(merchantRepository.save(any(Merchant.class))).thenThrow(new RuntimeException("Database Error"));
 
-        when(merchantRepository.findById(anyLong())).thenReturn(Optional.of(merchant));
-        when(shopRepository.save(any(Shop.class))).thenThrow(new RuntimeException("Database Error"));
+        mockMvc.perform(post("/create-merchant")
+                        .flashAttr("merchant", merchant))
+                .andExpect(status().is5xxServerError());
 
-        mockMvc.perform(post("/create-shop")
-                        .param("merchantId", "1")
-                        .flashAttr("shop", new Shop()))
-                .andExpect(status().isInternalServerError());
-
-        verify(merchantRepository, times(1)).findById(anyLong());
-        verify(shopRepository, times(1)).save(any(Shop.class));
+        verify(merchantRepository, times(1)).save(any(Merchant.class));
     }
 
     // Tests for GET /manage-stores

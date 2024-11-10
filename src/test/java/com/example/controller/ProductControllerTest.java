@@ -91,7 +91,7 @@ public class ProductControllerTest {
 
         mockMvc.perform(post("/merchantShop/999")
                         .flashAttr("product", product))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         verify(shopRepository, times(1)).findById(anyLong());
         verify(productRepository, never()).save(any(Product.class));
@@ -103,8 +103,7 @@ public class ProductControllerTest {
         when(productRepository.existsById(anyLong())).thenReturn(true);
 
         mockMvc.perform(delete("/merchantShop/1/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/merchantShop/1"));
+                .andExpect(status().isNoContent());
 
         verify(productRepository, times(1)).existsById(anyLong());
         verify(productRepository, times(1)).deleteById(anyLong());
@@ -115,8 +114,7 @@ public class ProductControllerTest {
         when(productRepository.existsById(anyLong())).thenReturn(false);
 
         mockMvc.perform(delete("/merchantShop/1/999"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/merchantShop/1"));
+                .andExpect(status().isNotFound());
 
         verify(productRepository, times(1)).existsById(anyLong());
         verify(productRepository, never()).deleteById(anyLong());

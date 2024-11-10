@@ -61,14 +61,13 @@ public class CustomerControllerTest {
 
     @Test
     public void testCreateShopper_MissingCustomerData_ReturnsError() throws Exception {
-        // Attempt to post with an empty Customer object
-        Customer incompleteCustomer = new Customer(); // Assuming it has required fields
+        Customer incompleteCustomer = new Customer();  // No required fields set
 
         mockMvc.perform(post("/create-customer")
                         .flashAttr("Customer", incompleteCustomer))
-                .andExpect(status().is3xxRedirection());  // Adjust if any validation exists, expecting error
+                .andExpect(status().isBadRequest());
 
-        verify(customerRepository, times(1)).save(incompleteCustomer);
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
@@ -121,7 +120,6 @@ public class CustomerControllerTest {
 
     @Test
     public void testOpenCustomerScreen_DatabaseError() throws Exception {
-        // Simulate a database error
         when(shopRepository.findAll()).thenThrow(new RuntimeException("Database Error"));
 
         mockMvc.perform(get("/shopper"))
