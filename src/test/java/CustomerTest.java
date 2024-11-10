@@ -1,23 +1,28 @@
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.example.model.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class CustomerTest {
 
     private Customer customer;
-    private Order mockOrder1;
-    private Order mockOrder2;
+    private OrderInfo mockOrder1;
+    private OrderInfo mockOrder2;
+
 
     @BeforeEach
     public void setUp() {
         customer = new Customer("John Doe", "johndoe@example.com", "123 Street");
-        mockOrder1 = mock(Order.class);
-        mockOrder2 = mock(Order.class);
+        mockOrder1 = (OrderInfo) mock(Order.class);
+        mockOrder2 = (OrderInfo) mock(Order.class);
     }
 
     @Test
@@ -73,7 +78,7 @@ public class CustomerTest {
     @Test
     public void testGetCurrentOrders_WithNonProcessingOrders() {
         // Arrange
-        Order mockOrder3 = mock(Order.class);
+        OrderInfo mockOrder3 = (OrderInfo) mock(Order.class);
         when(mockOrder1.getStatus()).thenReturn(OrderStatus.COMPLETED);
         when(mockOrder2.getStatus()).thenReturn(OrderStatus.CANCELLED);
         when(mockOrder3.getStatus()).thenReturn(OrderStatus.DELIVERED);
@@ -101,7 +106,7 @@ public class CustomerTest {
     @Test
     public void testSetOrders() {
         // Arrange
-        List<Order> orders = Arrays.asList(mockOrder1, mockOrder2);
+        List<OrderInfo> orders = Arrays.asList(mockOrder1, mockOrder2);
 
         // Act
         customer.setOrders(orders);

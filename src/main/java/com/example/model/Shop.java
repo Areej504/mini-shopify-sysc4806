@@ -1,6 +1,8 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +26,7 @@ public class Shop {
     private Merchant merchant;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Shop() {}
 
@@ -48,6 +50,9 @@ public class Shop {
     }
 
     public void setName(String name) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
         this.name = name;
     }
 
@@ -56,6 +61,9 @@ public class Shop {
     }
 
     public void setDescription(String description) {
+        if (description == null) {
+            throw new NullPointerException("Description cannot be null");
+        }
         this.description = description;
     }
 

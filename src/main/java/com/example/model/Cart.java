@@ -51,12 +51,16 @@ public class Cart {
     //Methods
     public void addProduct(Product product, int quantity) {
         CartItem existingItem = findCartItem(product);
+        if (quantity <= 0) {
+            return; // Ignore non-positive quantities
+        }
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
         } else {
             CartItem newItem = new CartItem(this, product, quantity);
             cartItems.add(newItem);
         }
+
     }
 
     public void removeProduct(Product product) {

@@ -65,6 +65,10 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
+//        this.price = price;
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
         this.price = price;
     }
     public Category getCategory() {
@@ -80,6 +84,10 @@ public class Product {
     }
 
     public void setInventory(int inventory) {
+//        this.inventory = inventory;
+        if (inventory < 0) {
+            throw new IllegalArgumentException("Inventory count cannot be negative");
+        }
         this.inventory = inventory;
     }
 
@@ -101,6 +109,7 @@ public class Product {
 
     //Methods
     public void setInventoryCount(){};
+
 
     @Override
     public String toString() {

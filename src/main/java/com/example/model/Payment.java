@@ -31,6 +31,9 @@ public class Payment {
     public Payment() {}
 
     public Payment(Date paymentDate, BigDecimal amount, PaymentMethod paymentMethod, PaymentStatus status, OrderInfo orderInfo, Customer customer, String paymentDetails) {
+        if (paymentDate == null || amount == null || paymentMethod == null || status == null || customer == null || paymentDetails == null) {
+            throw new NullPointerException("Payment fields cannot be null");
+        }
         this.paymentDate = paymentDate;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
@@ -53,6 +56,9 @@ public class Payment {
     }
 
     public void setPaymentDate(Date paymentDate) {
+        if (paymentDate == null) {
+            throw new NullPointerException("Payment Date cannot be null");
+        }
         this.paymentDate = paymentDate;
     }
 
@@ -61,6 +67,12 @@ public class Payment {
     }
 
     public void setAmount(BigDecimal amount) {
+        if (amount == null) {
+            throw new NullPointerException("Amount cannot be null");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
         this.amount = amount;
     }
 
@@ -69,7 +81,11 @@ public class Payment {
     }
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
+        if (paymentMethod == null) {
+            throw new NullPointerException("Payment Method cannot be null");
+        }
         this.paymentMethod = paymentMethod;
+
     }
 
     public PaymentStatus getStatus() {
@@ -77,6 +93,9 @@ public class Payment {
     }
 
     public void setStatus(PaymentStatus status) {
+        if (status == null) {
+            throw new NullPointerException("Payment Status cannot be null");
+        }
         this.status = status;
     }
 
@@ -93,6 +112,9 @@ public class Payment {
     }
 
     public void setCustomer(Customer customer) {
+        if (customer == null) {
+            throw new NullPointerException("Customer cannot be null");
+        }
         this.customer = customer;
     }
 
