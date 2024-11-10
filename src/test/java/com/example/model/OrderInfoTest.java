@@ -1,17 +1,18 @@
 //import static org.junit.jupiter.api.Assertions.*;
 //import static org.mockito.Mockito.*;
-//import com.example.model.*;
+//
 //import java.math.BigDecimal;
 //import java.util.Arrays;
 //import java.util.Date;
 //import java.util.List;
+//
+//import com.example.model.*;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
-//import org.mockito.Mockito;
 //
-//public class OrderTest {
+//public class OrderInfoTest {
 //
-//    private Order order;
+//    private OrderInfo order;
 //    private Customer mockCustomer;
 //    private Product mockProduct1;
 //    private Product mockProduct2;
@@ -24,13 +25,13 @@
 //        mockProduct2 = mock(Product.class);
 //        mockPayment = mock(Payment.class);
 //
-//        order = new Order(new Date(), BigDecimal.ZERO, mockCustomer, Arrays.asList(mockProduct1, mockProduct2), OrderStatus.PROCESSING);
+//        order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, Arrays.asList(mockProduct1, mockProduct2), OrderStatus.PROCESSING);
 //    }
 //
 //    @Test
 //    public void testConstructor_DefaultValues() {
 //        // Arrange & Act
-//        Order order = new Order();
+//        OrderInfo order = new OrderInfo();
 //
 //        // Assert
 //        assertNull(order.getOrderId(), "Order ID should be null by default.");
