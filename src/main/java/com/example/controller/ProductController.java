@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @Controller
 public class ProductController {
     @Autowired
@@ -18,13 +19,7 @@ public class ProductController {
 
     @GetMapping("/merchantShop/{shopId}")
     public String viewMerchantShop(@PathVariable Long shopId, Model model) {
-//        Shop shop = shopRepository.findById(shopId)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid shop Id"));
-//
-//        model.addAttribute("shop", shop); // Add shop details to the model
-//        model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
-//        model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
-//        return "merchantShop";
+
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
 
@@ -36,7 +31,6 @@ public class ProductController {
 
     @PostMapping("/merchantShop/{shopId}")
     public String addProduct(@ModelAttribute Product product, @PathVariable Long shopId,Model model) {
-
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         product.setShop(shop);
