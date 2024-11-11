@@ -17,6 +17,15 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    private String imageUrl;
     // Constructor
     public Cart() {}
 
@@ -51,12 +60,16 @@ public class Cart {
     //Methods
     public void addProduct(Product product, int quantity) {
         CartItem existingItem = findCartItem(product);
+        if (quantity <= 0) {
+            return; // Ignore non-positive quantities
+        }
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
         } else {
             CartItem newItem = new CartItem(this, product, quantity);
             cartItems.add(newItem);
         }
+
     }
 
     public void removeProduct(Product product) {
