@@ -150,11 +150,10 @@
     <div class="cart-items">
         <h2>Your Cart</h2>
         <div th:each="item : ${cartItems}" class="cart-item">
-<!--            <img th:src="${item.imageUrl}" alt="Product Image">-->
-            <img th:src="${item.product.imageUrl != null ? item.product.imageUrl : '/images/default-product.png'}" alt="Product Image">
+            <img th:src="${item.imageUrl}" alt="Product Image">
             <div class="cart-item-details">
-                <p th:text="${item.product.name}">Product Name</p>
-                <p class="cart-item-price" th:text="'$' + ${item.product.price}">Price</p>
+                <p th:text="${item.name}">Product Name</p>
+                <p class="cart-item-price" th:text="'$' + ${item.price}">Price</p>
             </div>
         </div>
     </div>
@@ -163,7 +162,6 @@
     <div class="order-summary">
         <h3>Order Summary</h3>
         <p class="total-price">Total: $<span th:text="${totalPrice}">0.00</span></p>
-        <button th:onclick="|window.location.href='/merchantShop/' + ${shop.shopId}|">Manage</button>
         <button class="checkout-button" onclick="window.location.href='/paymentView'">Proceed to Checkout</button>
     </div>
 </div>
