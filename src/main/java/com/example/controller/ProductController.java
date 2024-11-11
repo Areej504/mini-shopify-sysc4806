@@ -47,8 +47,5 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build(); // Return 404 Not Found if product doesn't exist
         }
-        //else {
-        return "redirect:/merchantShop/"+ shopId;
-
     }
 }
