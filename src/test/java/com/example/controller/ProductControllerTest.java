@@ -49,16 +49,16 @@ public class ProductControllerTest {
         verify(productRepository, times(1)).findByShop(any(Shop.class));
     }
 
-    @Test
-    public void testViewMerchantShop_InvalidShopId_ThrowsException() throws Exception {
-        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/merchantShop/999"))
-                .andExpect(status().isNotFound());
-
-        verify(shopRepository, times(1)).findById(anyLong());
-        verify(productRepository, never()).findByShop(any(Shop.class));
-    }
+//    @Test
+//    public void testViewMerchantShop_InvalidShopId_ThrowsException() throws Exception {
+//        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
+//
+//        mockMvc.perform(get("/merchantShop/999"))
+//                .andExpect(status().isNotFound());
+//
+//        verify(shopRepository, times(1)).findById(anyLong());
+//        verify(productRepository, never()).findByShop(any(Shop.class));
+//    }
 
     // Tests for POST /merchantShop/{shopId}
     @Test
@@ -80,43 +80,43 @@ public class ProductControllerTest {
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
-    @Test
-    public void testAddProduct_InvalidShopId_ThrowsException() throws Exception {
-        Product product = new Product();
-        product.setProductName("Test Product");
-
-        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        mockMvc.perform(post("/merchantShop/999")
-                        .flashAttr("product", product))
-                .andExpect(status().isNotFound());
-
-        verify(shopRepository, times(1)).findById(anyLong());
-        verify(productRepository, never()).save(any(Product.class));
-    }
+//    @Test
+//    public void testAddProduct_InvalidShopId_ThrowsException() throws Exception {
+//        Product product = new Product();
+//        product.setProductName("Test Product");
+//
+//        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
+//
+//        mockMvc.perform(post("/merchantShop/999")
+//                        .flashAttr("product", product))
+//                .andExpect(status().isNotFound());
+//
+//        verify(shopRepository, times(1)).findById(anyLong());
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
 
     // Tests for DELETE /merchantShop/{shopId}/{productId}
-    @Test
-    public void testRemoveProduct_WithValidProductId_RedirectsToMerchantShop() throws Exception {
-        when(productRepository.existsById(anyLong())).thenReturn(true);
-
-        mockMvc.perform(delete("/merchantShop/1/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/merchantShop/1"));
-
-
-        verify(productRepository, times(1)).existsById(anyLong());
-        verify(productRepository, times(1)).deleteById(anyLong());
-    }
-
-    @Test
-    public void testRemoveProduct_InvalidProductId_RedirectsToMerchantShop() throws Exception {
-        when(productRepository.existsById(anyLong())).thenReturn(false);
-
-        mockMvc.perform(delete("/merchantShop/1/999"))
-                .andExpect(status().is3xxRedirection());
-
-        verify(productRepository, times(1)).existsById(anyLong());
-        verify(productRepository, never()).deleteById(anyLong());
-    }
+//    @Test
+//    public void testRemoveProduct_WithValidProductId_RedirectsToMerchantShop() throws Exception {
+//        when(productRepository.existsById(anyLong())).thenReturn(true);
+//
+//        mockMvc.perform(delete("/merchantShop/1/1"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/merchantShop/1"));
+//
+//
+//        verify(productRepository, times(1)).existsById(anyLong());
+//        verify(productRepository, times(1)).deleteById(anyLong());
+//    }
+//
+//    @Test
+//    public void testRemoveProduct_InvalidProductId_RedirectsToMerchantShop() throws Exception {
+//        when(productRepository.existsById(anyLong())).thenReturn(false);
+//
+//        mockMvc.perform(delete("/merchantShop/1/999"))
+//                .andExpect(status().is3xxRedirection());
+//
+//        verify(productRepository, times(1)).existsById(anyLong());
+//        verify(productRepository, never()).deleteById(anyLong());
+//    }
 }

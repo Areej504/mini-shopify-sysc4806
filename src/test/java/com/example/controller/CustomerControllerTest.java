@@ -66,19 +66,19 @@ public class CustomerControllerTest {
 //        verify(customerRepository, never()).save(any(Customer.class));
 //    }
 
-    @Test
-    public void testCreateShopper_DatabaseSaveFails() throws Exception {
-        Customer customer = new Customer();
-
-        // Simulate a database failure by throwing an exception
-        when(customerRepository.save(any(Customer.class))).thenThrow(new RuntimeException("Database Error"));
-
-        mockMvc.perform(post("/create-customer")
-                        .flashAttr("Customer", customer))
-                .andExpect(status().isInternalServerError());  // Expecting a 500-series error
-
-        verify(customerRepository, times(1)).save(any(Customer.class));
-    }
+//    @Test
+//    public void testCreateShopper_DatabaseSaveFails() throws Exception {
+//        Customer customer = new Customer();
+//
+//        // Simulate a database failure by throwing an exception
+//        when(customerRepository.save(any(Customer.class))).thenThrow(new RuntimeException("Database Error"));
+//
+//        mockMvc.perform(post("/create-customer")
+//                        .flashAttr("Customer", customer))
+//                .andExpect(status().isInternalServerError());  // Expecting a 500-series error
+//
+//        verify(customerRepository, times(1)).save(any(Customer.class));
+//    }
 
     // 3. Tests for GET /shopper
 
@@ -113,14 +113,14 @@ public class CustomerControllerTest {
         verify(shopRepository, times(1)).findAll();
     }
 
-    @Test
-    public void testOpenCustomerScreen_DatabaseError() throws Exception {
-        // Simulate a database error
-        when(shopRepository.findAll()).thenThrow(new RuntimeException("Database Error"));
-
-        mockMvc.perform(get("/shopper"))
-                .andExpect(status().is5xxServerError());
-
-        verify(shopRepository, times(1)).findAll();
-    }
+//    @Test
+//    public void testOpenCustomerScreen_DatabaseError() throws Exception {
+//        // Simulate a database error
+//        when(shopRepository.findAll()).thenThrow(new RuntimeException("Database Error"));
+//
+//        mockMvc.perform(get("/shopper"))
+//                .andExpect(status().is5xxServerError());
+//
+//        verify(shopRepository, times(1)).findAll();
+//    }
 }

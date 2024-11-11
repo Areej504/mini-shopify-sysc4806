@@ -101,9 +101,30 @@
             color: #333;
         }
 
-        .product-card .description {
+        .product-card .productId,
+        .product-card .description,
+        .product-card .inventory {
             color: #555;
             font-size: 0.9em;
+        }
+
+        .product-card .category,
+        .product-card .promotionType {
+            color: #777; /* Slightly lighter color to differentiate */
+            font-size: 0.9em; /* Match description size */
+            margin-top: 8px; /* Add spacing for consistency */
+        }
+
+        .product-card .category::before {
+            content: "Category: ";
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-card .promotionType::before {
+            content: "Promotion: ";
+            font-weight: bold;
+            color: #333;
         }
 
         /* Modal Styling */
@@ -149,22 +170,56 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px; /* Space between fields in the same row */
         }
 
         .form-group label {
-            font-size: 1em;
-            margin-bottom: 5px;
+            font-size: 0.9em;
+            margin-bottom: 4px;
             color: #333;
         }
 
-        .form-group input {
-            padding: 10px;
-            font-size: 1em;
-            border-radius: 8px;
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 6px;
+            font-size: 0.9em;
+            border-radius: 5px;
             border: 1px solid #ccc;
-            width: 95%;
+            width: 100%;
+            box-sizing: border-box;
         }
+
+        .form-group.half-width {
+            flex: 1;
+        }
+
+        /* Button Row */
+        .button-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px; /* Space between the buttons */
+            margin-top: 20px; /* Space above the buttons */
+        }
+
+        .button-row button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #1b5e20;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-row button:hover {
+            background-color: #144d16;
+        }
+
 
     </style>
 </head>
@@ -190,16 +245,16 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <h2>Product List</h2>
-        <div id="product-[[${product.id}]]" th:each="product : ${products}" class="product-card">
-            <p class="productId" th:text="${product.productId}">ProductId</p>
+        <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
+            <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
             <h3 th:text="${product.productName}">Product Name</h3>
             <p class="price" th:text="${'Price: $' + product.price}">Price</p>
-            <p class="inventory" th:text="${product.inventory}">Inventory</p>
-            <p class="description" th:text="${product.description}">Description</p>
-<!--            <button onclick="deleteProduct()" style="color: black; background: red; border: 1px solid #ccc; border-radius: 8px; cursor: pointer;">-->
-<!--                Remove-->
-<!--            </button>-->
+            <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
+            <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
+            <p class="category" th:text="${product.category}">Category</p>
+            <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
         </div>
+
     </div>
 </div>
 
@@ -208,52 +263,58 @@
     <div class="modal-content">
         <h3>Add Product</h3>
         <!-- Form to add product details -->
-        <form  th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
-            <!-- Product Name -->
-            <div class="form-group">
-                <label for="productName">Product Name:</label>
-                <input type="text" id="productName" th:field="*{productName} " required>
+        <form id="addProductForm" th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
+            <!-- First Row: Product Name and Price -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" th:field="*{productName}" required>
+                </div>
+                <div class="form-group half-width">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" th:field="*{price}" min="0" step="0.01" required>
+                </div>
             </div>
 
-            <!-- Product Price -->
-            <div class="form-group">
-                <label for="price">Price:</label>
-                <input type="number" id="price" name="price" th:field="*{price}" min="0" step="0.01" required>
-            </div>
-            <!-- Product Inventory -->
-            <div class="form-group">
-                <label for="inventory">Inventory:</label>
-                <input type="number" id="inventory" name="inventory" th:field="*{inventory}" min="0" step="1" required>
-            </div>
-
-            <!-- Product Description -->
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" th:field="*{description}" rows="3" required></textarea>
+            <!-- Second Row: Inventory and Category -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="inventory">Inventory:</label>
+                    <input type="number" id="inventory" name="inventory" th:field="*{inventory}" min="0" step="1" required>
+                </div>
+                <div class="form-group half-width">
+                    <label for="category-select-[[${product.productId}]]">Category:</label>
+                    <select id="category-select-[[${product.productId}]]" name="category" th:field="*{category}">
+                        <option value="" disabled selected>Select a category</option>
+                        <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit">Add Product</button>
+            <!-- Third Row: Promotion and Description -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="promotion-select-[[${product.productId}]]">Promotion:</label>
+                    <select id="promotion-select-[[${product.productId}]]" name="promotionType" th:field="*{promotionType}">
+                        <option value="" disabled selected>Select a promotion</option>
+                        <option th:each="promotion : ${promotions}" th:value="${promotion}" th:text="${promotion}"></option>
+                    </select>
+                </div>
+                <div class="form-group half-width">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" th:field="*{description}" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <!-- Button Row: Add Product and Close Buttons -->
+            <div class="button-row">
+                <button type="submit">Add Product</button>
+                <button type="button" onclick="closeModal('addProductModal')">Close</button>
+            </div>
         </form>
-        <button onclick="closeModal('addProductModal')">Close</button>
     </div>
 </div>
 
-<div id="removeProductModal" class="modal">
-    <div class="modal-content">
-        <h3>Remove Product</h3>
-        <form th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" th:onsubmit="|deleteProduct(${product.productId})|">
-            <p>Enter product ID to remove an existing product.</p>
-            <!-- Product Id -->
-            <div class="form-group">
-                <input type="text" id="productId" th:field="*{productId} " required>
-            </div>
-            <!-- Submit Button -->
-            <button type="submit">Remove Product</button>
-        </form>
-        <button onclick="closeModal('removeProductModal')">Close</button>
-    </div>
-</div>
 
 <div id="setPromotionModal" class="modal">
     <div class="modal-content">
@@ -262,20 +323,39 @@
         <button onclick="closeModal('setPromotionModal')">Close</button>
     </div>
 </div>
+<div id="removeProductModal" class="modal">
+    <div class="modal-content">
+        <h3>Remove Product</h3>
+        <p>Enter the product ID to remove an existing product.</p>
 
-<script>
+        <!-- Input field to enter Product ID -->
+        <div class="form-group">
+            <input type="text" id="deleteProductId" placeholder="Product ID" required>
+        </div>
+
+        <!-- Button to confirm deletion -->
+        <button th:onclick="'confirmDeleteProduct(' + ${shop.shopId} + ')'" onclick="confirmDeleteProduct()">Remove Product</button>
+        <button onclick="closeModal('removeProductModal')">Close</button>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    // Embed the shopId from Thymeleaf
+    const shopId = /*[[${shop.shopId}]]*/ 0;
+
     //SPA function to re-load the product list every time a change is made
-    function loadProductList() {
-        fetch('/merchantShop/{shopId}')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('productList').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading products:', error));
-    }
+    // function loadProductList() {
+    //     fetch('/merchantShop/{shopId}')
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             document.getElementById('productList').innerHTML = data;
+    //         })
+    //         .catch(error => console.error('Error loading products:', error));
+    // }
 
     //  load product list when the page loads
-    window.onload = loadProductList;
+    // window.onload = loadProductList;
 
     // JavaScript functions to open and close modals
     function openModal(modalId) {
@@ -298,7 +378,7 @@
             .then(response => {
                 if (response.ok) {
                     closeModal('addProductModal'); // Close the modal
-                    loadProductList(); // Reload the product list
+                    // loadProductList(); // Reload the product list
                 } else {
                     console.error('Error adding product');
                 }
@@ -306,20 +386,57 @@
             .catch(error => console.error('Error:', error));
     }
 
-    //function to remove a product from the shop
-    function deleteProduct(productId) {
+    function confirmDeleteProduct(shopId) {
+        const productId = document.getElementById('deleteProductId').value;
+
+        if (!productId) {
+            alert("Please enter a product ID.");
+            return;
+        }
+
         if (!confirm("Are you sure you want to remove this product?")) return;
 
-        fetch(`/merchantShop/{shopId}`, {
+        // Log URL for debugging
+        const deleteUrl = `/merchantShop/${shopId}/${productId}`;
+        console.log(`Deleting product with URL: ${deleteUrl}`);
+
+        // Send delete request to backend
+        fetch(deleteUrl, {
             method: 'DELETE',
         })
             .then(response => {
                 if (response.ok) {
-                    document.getElementById(`product-${productId}`).remove();
+                    // Remove the product card from the DOM
+                    const productElement = document.getElementById(`product-${productId}`);
+                    if (productElement) {
+                        productElement.remove(); // Remove the product block
+                    }
                     closeModal('removeProductModal'); // Close the modal
-                    loadProductList(); // Reload the product list
+                    document.getElementById('deleteProductId').value = ''; // Clear input
+                } else {
+                    console.error(`Error removing product: ${response.statusText}`);
+                    alert("Failed to delete the product. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert("An error occurred while deleting the product.");
+            });
+    }
+
+    function deleteProduct(shopId, productId) {
+        if (!confirm("Are you sure you want to remove this product?")) return;
+
+        fetch(`/merchantShop/${shopId}/${productId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById(`product-${productId}`).remove(); // Remove the product card
+                    closeModal('removeProductModal'); // Close the modal
                 } else {
                     console.error('Error removing product');
+                    alert("Product not found or could not be removed.");
                 }
             })
             .catch(error => console.error('Error:', error));

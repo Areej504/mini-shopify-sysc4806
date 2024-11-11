@@ -1,114 +1,91 @@
 package com.example.controller;
+
 import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriUtils;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class MerchantController {
-
     @Autowired
     private MerchantRepository merchantRepository;
-
     @Autowired
     private ShopRepository shopRepository;
 
-    // Show the merchant creation form
+    //create Merchant page
     @GetMapping("/create-merchant")
     public String showCreateMerchantForm(Model model) {
-        model.addAttribute("merchant", new Merchant());
+        model.addAttribute("merchant", new Merchant()); // Empty merchant object for form binding
         return "createMerchant";
     }
 
-    // Create a new merchant
+    //Merchant creation form submission
     @PostMapping("/create-merchant")
-    public String createMerchant(@ModelAttribute Merchant merchant) {
-        try {
-            merchantRepository.save(merchant);
-            return "redirect:/merchant?merchantId=" + merchant.getMerchantId();
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
-        }
+    public String createMerchant(@ModelAttribute Merchant merchant, Model model) {
+        merchantRepository.save(merchant);
+        return "redirect:/merchant?merchantId=" + merchant.getMerchantId(); // Redirect to merchant dashboard
     }
 
-    // Open the merchant's dashboard
-    @GetMapping("/merchant")
-    public String openMerchantHomeScreen(@RequestParam("merchantId") Long merchantId, Model model) {
-        try {
-            model.addAttribute("merchantId", merchantId);
-            return "merchantView1";
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
-        }
+    // Mapping for the merchant button to open merchantView1.html
+    @RequestMapping("/merchant")
+    public String openMerchantHomeScreen(@RequestParam Long merchantId, Model model) {
+        model.addAttribute("merchantId", merchantId);
+        return "merchantView1";
     }
 
-    // Show the shop creation form for a given merchant
     @GetMapping("/create-shop")
-    public String showCreateShopForm(@RequestParam("merchantId") Long merchantId, Model model) {
-        try {
-            Optional<Merchant> merchant = merchantRepository.findById(merchantId);
-            if (merchant.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id");
-            }
-            model.addAttribute("shop", new Shop());
-            model.addAttribute("categories", List.of("Category1", "Category2"));
-            model.addAttribute("merchantId", merchantId);
-            return "createShop";
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
-        }
+    public String showCreateShopForm(@RequestParam Long merchantId, Model model) {
+
+        // Add the merchant and shop to the model
+        model.addAttribute("shop", new Shop());
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("merchantId", merchantId);
+
+        return "createShop";
     }
 
-    // Create a new shop for a given merchant
     @PostMapping("/create-shop")
-    public String createShop(@RequestParam("merchantId") Long merchantId, @ModelAttribute Shop shop) {
-        try {
-            Merchant merchant = merchantRepository.findById(merchantId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id"));
-            shop.setMerchant(merchant);
-            shopRepository.save(shop);
-            String encodedShopName = UriUtils.encode(shop.getName(), StandardCharsets.UTF_8);
-            return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + encodedShopName;
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
-        }
+    public String createShop(@RequestParam Long merchantId, @ModelAttribute Shop shop, Model model) {
+        // Add the shop name to the model for use in the view
+
+        Merchant merchant = merchantRepository.findById(merchantId).orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+        shop.setMerchant(merchant);
+
+        System.out.println(shop.getMerchant().getName());
+        System.out.println(shop.getName());
+        System.out.println(shop.getDescription());
+        System.out.println(shop.getCategories());
+
+        // Save the shop object
+        shopRepository.save(shop);
+
+        return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + URLEncoder.encode(shop.getName(), StandardCharsets.UTF_8);
+
     }
 
-    // Open the "Manage Stores" view for a merchant
     @GetMapping("/manage-stores")
-    public String openManageStores(@RequestParam("merchantId") Long merchantId, Model model) {
-        try {
-            Merchant merchant = merchantRepository.findById(merchantId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id"));
-            List<Shop> shops = shopRepository.findByMerchant(merchant);
-            model.addAttribute("merchant", merchant);
-            model.addAttribute("shops", shops);
-            return "manageStores";
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
-        }
+    public String openManageStores(@RequestParam Long merchantId, Model model){
+        Merchant merchant = merchantRepository.findById(merchantId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+        List<Shop> shops = shopRepository.findByMerchant(merchant);
+
+        // Add attributes to the model for the view
+        model.addAttribute("merchant", merchant);
+        model.addAttribute("shops", shops);
+
+        return "manageStores";
     }
+
+
 }
 
 //package com.example.controller;
-//
 //import com.example.model.*;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.HttpStatus;
@@ -119,7 +96,9 @@ public class MerchantController {
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.RequestParam;
 //import org.springframework.web.server.ResponseStatusException;
+//import org.springframework.web.util.UriUtils;
 //
+//import java.nio.charset.StandardCharsets;
 //import java.util.List;
 //import java.util.Optional;
 //
@@ -167,14 +146,14 @@ public class MerchantController {
 //        try {
 //            Optional<Merchant> merchant = merchantRepository.findById(merchantId);
 //            if (merchant.isEmpty()) {
-//                throw new IllegalArgumentException("Invalid Merchant Id");
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id");
 //            }
 //            model.addAttribute("shop", new Shop());
-//            model.addAttribute("categories", List.of("Category1", "Category2")); // Example categories
+//            model.addAttribute("categories", List.of("Category1", "Category2"));
 //            model.addAttribute("merchantId", merchantId);
 //            return "createShop";
-//        } catch (IllegalArgumentException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+//        } catch (ResponseStatusException e) {
+//            throw e;
 //        } catch (RuntimeException e) {
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
 //        }
@@ -185,12 +164,13 @@ public class MerchantController {
 //    public String createShop(@RequestParam("merchantId") Long merchantId, @ModelAttribute Shop shop) {
 //        try {
 //            Merchant merchant = merchantRepository.findById(merchantId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id"));
 //            shop.setMerchant(merchant);
 //            shopRepository.save(shop);
-//            return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + shop.getName();
-//        } catch (IllegalArgumentException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+//            String encodedShopName = UriUtils.encode(shop.getName(), StandardCharsets.UTF_8);
+//            return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + encodedShopName;
+//        } catch (ResponseStatusException e) {
+//            throw e;
 //        } catch (RuntimeException e) {
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
 //        }
@@ -201,15 +181,122 @@ public class MerchantController {
 //    public String openManageStores(@RequestParam("merchantId") Long merchantId, Model model) {
 //        try {
 //            Merchant merchant = merchantRepository.findById(merchantId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Merchant Id"));
 //            List<Shop> shops = shopRepository.findByMerchant(merchant);
 //            model.addAttribute("merchant", merchant);
 //            model.addAttribute("shops", shops);
 //            return "manageStores";
-//        } catch (IllegalArgumentException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+//        } catch (ResponseStatusException e) {
+//            throw e;
 //        } catch (RuntimeException e) {
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
 //        }
 //    }
 //}
+//
+////package com.example.controller;
+////
+////import com.example.model.*;
+////import org.springframework.beans.factory.annotation.Autowired;
+////import org.springframework.http.HttpStatus;
+////import org.springframework.stereotype.Controller;
+////import org.springframework.ui.Model;
+////import org.springframework.web.bind.annotation.GetMapping;
+////import org.springframework.web.bind.annotation.ModelAttribute;
+////import org.springframework.web.bind.annotation.PostMapping;
+////import org.springframework.web.bind.annotation.RequestParam;
+////import org.springframework.web.server.ResponseStatusException;
+////
+////import java.util.List;
+////import java.util.Optional;
+////
+////@Controller
+////public class MerchantController {
+////
+////    @Autowired
+////    private MerchantRepository merchantRepository;
+////
+////    @Autowired
+////    private ShopRepository shopRepository;
+////
+////    // Show the merchant creation form
+////    @GetMapping("/create-merchant")
+////    public String showCreateMerchantForm(Model model) {
+////        model.addAttribute("merchant", new Merchant());
+////        return "createMerchant";
+////    }
+////
+////    // Create a new merchant
+////    @PostMapping("/create-merchant")
+////    public String createMerchant(@ModelAttribute Merchant merchant) {
+////        try {
+////            merchantRepository.save(merchant);
+////            return "redirect:/merchant?merchantId=" + merchant.getMerchantId();
+////        } catch (RuntimeException e) {
+////            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
+////        }
+////    }
+////
+////    // Open the merchant's dashboard
+////    @GetMapping("/merchant")
+////    public String openMerchantHomeScreen(@RequestParam("merchantId") Long merchantId, Model model) {
+////        try {
+////            model.addAttribute("merchantId", merchantId);
+////            return "merchantView1";
+////        } catch (RuntimeException e) {
+////            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
+////        }
+////    }
+////
+////    // Show the shop creation form for a given merchant
+////    @GetMapping("/create-shop")
+////    public String showCreateShopForm(@RequestParam("merchantId") Long merchantId, Model model) {
+////        try {
+////            Optional<Merchant> merchant = merchantRepository.findById(merchantId);
+////            if (merchant.isEmpty()) {
+////                throw new IllegalArgumentException("Invalid Merchant Id");
+////            }
+////            model.addAttribute("shop", new Shop());
+////            model.addAttribute("categories", List.of("Category1", "Category2")); // Example categories
+////            model.addAttribute("merchantId", merchantId);
+////            return "createShop";
+////        } catch (IllegalArgumentException e) {
+////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+////        } catch (RuntimeException e) {
+////            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
+////        }
+////    }
+////
+////    // Create a new shop for a given merchant
+////    @PostMapping("/create-shop")
+////    public String createShop(@RequestParam("merchantId") Long merchantId, @ModelAttribute Shop shop) {
+////        try {
+////            Merchant merchant = merchantRepository.findById(merchantId)
+////                    .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+////            shop.setMerchant(merchant);
+////            shopRepository.save(shop);
+////            return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + shop.getName();
+////        } catch (IllegalArgumentException e) {
+////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+////        } catch (RuntimeException e) {
+////            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
+////        }
+////    }
+////
+////    // Open the "Manage Stores" view for a merchant
+////    @GetMapping("/manage-stores")
+////    public String openManageStores(@RequestParam("merchantId") Long merchantId, Model model) {
+////        try {
+////            Merchant merchant = merchantRepository.findById(merchantId)
+////                    .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
+////            List<Shop> shops = shopRepository.findByMerchant(merchant);
+////            model.addAttribute("merchant", merchant);
+////            model.addAttribute("shops", shops);
+////            return "manageStores";
+////        } catch (IllegalArgumentException e) {
+////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+////        } catch (RuntimeException e) {
+////            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database Error", e);
+////        }
+////    }
+////}
