@@ -22,11 +22,10 @@ public class ProductController {
 
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
-        model.addAttribute("shop", shop); // Add shop details to the model
-        model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
-        model.addAttribute("categories", Category.values());
-        model.addAttribute("promotions", PromotionType.values());
-        model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
+
+        model.addAttribute("shop", shop);
+        model.addAttribute("product", new Product());
+        model.addAttribute("products", productRepository.findByShop(shop));
         return "merchantShop";
     }
 
@@ -40,12 +39,10 @@ public class ProductController {
         return "redirect:/merchantShop/" + shopId;
     }
     @DeleteMapping("/merchantShop/{shopId}/{productId}")
-    public ResponseEntity<Void> removeProduct(@PathVariable Long shopId, @PathVariable Long productId) {
+    public String removeProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         if (productRepository.existsById(productId)) {
             productRepository.deleteById(productId);
-            return ResponseEntity.ok().build(); // Return 200 OK status
-        } else {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if product doesn't exist
+            //return "redirect:/merchantShop/"+ shopId;
         }
         //else {
         return "redirect:/merchantShop/"+ shopId;
