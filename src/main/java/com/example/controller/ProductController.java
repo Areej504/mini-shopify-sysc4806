@@ -35,7 +35,7 @@ public class ProductController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         product.setShop(shop);
         productRepository.save(product);
-        model.addAttribute("product", product)
+        model.addAttribute("product", product);
         return "redirect:/merchantShop/" + shopId;
     }
     @DeleteMapping("/merchantShop/{shopId}/{productId}")
