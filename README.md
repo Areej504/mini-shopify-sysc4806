@@ -2,7 +2,7 @@ SYSC4806 Fall 2024 Project - Mini-SHopify; Milestone 1; Version 1.0; 11/11/2024
 
 The project can be reached at:
 Website: www.brightspace.carleton.ca
-
+Email: wardasaleh@cmail.carleton.ca
 
 
 Authors:
@@ -46,8 +46,17 @@ Classes and their descriptions are listed below:
 - PromotionType: Enum or class that categorizes different types of promotions, such as discounts or buy-one-get-one offers.
 - Shop: Represents a shop entity that contains details about a store, such as name, description, and merchant association.
 - ShopRepository: Provides database interaction methods for managing Shop entities in the application.
-
-
+- cartView.html: Displays the contents of a shopping cart, including product items, quantities, and total cost.
+- createCustomer.html: Provides a form for creating a new customer profile with fields for personal details.
+- createMerchant.html: Contains a form for registering a new merchant with necessary identification details.
+- createShop.html: Allows merchants to create a new shop by entering relevant shop details.
+- customerScreen.html: Serves as the main customer interface to view products and manage their shopping experience.
+- index.html: Functions as the landing page or homepage for the application.
+- manageStores.html: Provides a management interface for merchants to oversee their stores and available products.
+- merchantShop.html: Displays a list of products specific to a merchant's shop, allowing for product management.
+- merchantView1.html: Acts as the main screen for merchants, offering options to create shops or manage existing stores.
+- paymentView.html: Presents a checkout form for customers to enter shipping and payment details before placing an order.
+- shopPage.html: Shows an individual shop's page with a list of products, search functionality, and options to add items to the cart.
 
 
 
