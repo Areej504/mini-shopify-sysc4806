@@ -24,7 +24,7 @@ public class ProductController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
 
         model.addAttribute("shop", shop);
-        model.addAttribute("product", new Product());
+        model.addAttribute("product", new Product()); 
         model.addAttribute("products", productRepository.findByShop(shop));
         return "merchantShop";
     }
