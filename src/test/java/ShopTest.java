@@ -85,15 +85,24 @@ public class ShopTest {
     public void testAddAndRemoveProduct() {
         Product product1 = new Product("Laptop", "High-end laptop", new BigDecimal("999.99"), 10, PromotionType.DISCOUNT_10_PERCENT);
         Product product2 = new Product("Headphones", "Noise-canceling headphones", new BigDecimal("199.99"), 50, PromotionType.CLEARANCE);
-        shop.setProducts(List.of(product1, product2));
+
+        // Add products using addProduct method
+        shop.addProduct(product1);
+        shop.addProduct(product2);
 
         assertEquals(2, shop.getProducts().size());
         assertTrue(shop.getProducts().contains(product1));
         assertTrue(shop.getProducts().contains(product2));
+        assertEquals(shop, product1.getShop());
+        assertEquals(shop, product2.getShop());
 
-        shop.getProducts().remove(product1);  // Remove product directly if possible
+        // Remove product using removeProduct method
+        shop.removeProduct(product1);
+
         assertEquals(1, shop.getProducts().size());
         assertFalse(shop.getProducts().contains(product1));
+        assertNull(product1.getShop());  // Verify product1 no longer references the shop
+
     }
 
     @Test

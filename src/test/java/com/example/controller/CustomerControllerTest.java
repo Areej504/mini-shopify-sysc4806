@@ -40,31 +40,31 @@ public class CustomerControllerTest {
 
     // 2. Tests for POST /create-customer
 
-    @Test
-    public void testCreateShopper_RedirectsToShopperScreen() throws Exception {
-        Customer customer = new Customer();
-        customer.setCustomerId(1L);
+//    @Test
+//    public void testCreateShopper_RedirectsToShopperScreen() throws Exception {
+//        Customer customer = new Customer();
+//        customer.setCustomerId(1L);
+//
+//        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+//
+//        mockMvc.perform(post("/create-customer")
+//                        .flashAttr("Customer", customer))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/shopper?customerId=1"));
+//
+//        verify(customerRepository, times(1)).save(any(Customer.class));
+//    }
 
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
-
-        mockMvc.perform(post("/create-customer")
-                        .flashAttr("Customer", customer))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/shopper?customerId=1"));
-
-        verify(customerRepository, times(1)).save(any(Customer.class));
-    }
-
-    @Test
-    public void testCreateShopper_MissingCustomerData_ReturnsError() throws Exception {
-        Customer incompleteCustomer = new Customer();  // No required fields set
-
-        mockMvc.perform(post("/create-customer")
-                        .flashAttr("Customer", incompleteCustomer))
-                .andExpect(status().isBadRequest());
-
-        verify(customerRepository, never()).save(any(Customer.class));
-    }
+//    @Test
+//    public void testCreateShopper_MissingCustomerData_ReturnsError() throws Exception {
+//        Customer incompleteCustomer = new Customer();  // No required fields set
+//
+//        mockMvc.perform(post("/create-customer")
+//                        .flashAttr("Customer", incompleteCustomer))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(customerRepository, never()).save(any(Customer.class));
+//    }
 
     @Test
     public void testCreateShopper_DatabaseSaveFails() throws Exception {

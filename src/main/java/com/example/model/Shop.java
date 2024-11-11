@@ -99,17 +99,42 @@ public class Shop {
         this.products = products;
     }
 
-    public void addProduct(){
+//    public void addProduct(){
+//    }
+//
+//    public void removeProduct(){
+//    }
+//
+//    public void addCategory(){}
+//
+//    public void removeCategory(){}
+//
+//    public void setPromotion(){}
+
+    public void addProduct(Product product) {
+        if (product != null && !products.contains(product)) {
+            products.add(product);
+            product.setShop(this);  // Set the product's shop to this shop
+        }
     }
 
-    public void removeProduct(){
+    public void removeProduct(Product product) {
+        if (products.contains(product)) {
+            products.remove(product);
+            product.setShop(null);  // Unlink the product from this shop
+        }
     }
 
-    public void addCategory(){}
+    public void addCategory(Category category) {
+        if (category != null) {
+            categories.add(category);
+        }
+    }
 
-    public void removeCategory(){}
+    public void removeCategory(Category category) {
+        categories.remove(category);
+    }
 
-    public void setPromotion(){}
 
     @Override
     public String toString() {
