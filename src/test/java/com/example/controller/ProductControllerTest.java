@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -63,19 +64,37 @@ public class ProductControllerTest {
     // Tests for POST /merchantShop/{shopId}
     @Test
     public void testAddProduct_WithValidShopId_RedirectsToMerchantShop() throws Exception {
+        // Arrange: Set up a mock file and mock repository behavior
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "productImage",
+                "test-image.jpg",
+                "image/jpeg",
+                "Sample Image Content".getBytes()
+        );
+
         Shop shop = new Shop();
         shop.setShopId(1L);
+
         Product product = new Product();
         product.setProductName("Test Product");
 
+        // Configure mocks before calling mockMvc.perform(...)
         when(shopRepository.findById(anyLong())).thenReturn(Optional.of(shop));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        mockMvc.perform(post("/merchantShop/1")
-                        .flashAttr("product", product))
+        // Act: Perform multipart request with parameters and mock file
+        mockMvc.perform(multipart("/merchantShop/{shopId}", 1L)
+                        .file(mockFile)
+                        .param("productName", "Test Product")
+                        .param("price", "10.99")
+                        .param("inventory", "100")
+                        .param("description", "Test Description")
+                        .param("category", Category.ELECTRONICS.name())
+                        .param("promotionType", PromotionType.CLEARANCE.name()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/merchantShop/1"));
 
+        // Assert: Verify interactions with mocks
         verify(shopRepository, times(1)).findById(anyLong());
         verify(productRepository, times(1)).save(any(Product.class));
     }
