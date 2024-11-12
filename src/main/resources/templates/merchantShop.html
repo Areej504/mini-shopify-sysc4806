@@ -80,52 +80,71 @@
             padding: 20px;
         }
 
-        /* Product Card */
+        /* Product Card Styling */
         .product-card {
-            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             margin-bottom: 15px;
-            background-color: #f9f9f9;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .product-card h3 {
+        /* Product Details on the Left */
+        .product-details {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .product-details h3 {
             margin: 0;
             font-size: 1.2em;
             color: #1b5e20;
         }
 
-        .product-card .price {
+        .product-details .price {
             font-weight: bold;
             color: #333;
         }
 
-        .product-card .productId,
-        .product-card .description,
-        .product-card .inventory {
+        .product-details .productId,
+        .product-details .description,
+        .product-details .inventory {
             color: #555;
             font-size: 0.9em;
         }
 
-        .product-card .category,
-        .product-card .promotionType {
-            color: #777; /* Slightly lighter color to differentiate */
-            font-size: 0.9em; /* Match description size */
-            margin-top: 8px; /* Add spacing for consistency */
+        .product-details .category,
+        .product-details .promotionType {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 8px;
         }
 
-        .product-card .category::before {
+        .product-details .category::before {
             content: "Category: ";
             font-weight: bold;
             color: #333;
         }
 
-        .product-card .promotionType::before {
+        .product-details .promotionType::before {
             content: "Promotion: ";
             font-weight: bold;
             color: #333;
         }
+
+        /* Product Image on the Right */
+        .product-image {
+            width: 120px;
+            height: auto;
+            max-height: 100px;
+            object-fit: contain;
+            margin-left: 15px;
+        }
+
 
         /* Modal Styling */
         .modal {
@@ -246,16 +265,21 @@
     <div class="main-content">
         <h2>Product List</h2>
         <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
-            <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
-            <h3 th:text="${product.productName}">Product Name</h3>
-            <p class="price" th:text="${'Price: $' + product.price}">Price</p>
-            <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
-            <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
-            <p class="category" th:text="${product.category}">Category</p>
-            <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+            <!-- Product Details on the Left -->
+            <div class="product-details">
+                <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
+                <h3 th:text="${product.productName}">Product Name</h3>
+                <p class="price" th:text="${'Price: $' + product.price}">Price</p>
+                <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
+                <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
+                <p class="category" th:text="${product.category}">Category</p>
+                <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+            </div>
+            <!-- Product Image on the Right -->
+            <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
         </div>
-
     </div>
+
 </div>
 
 <!-- Modals -->
@@ -263,7 +287,7 @@
     <div class="modal-content">
         <h3>Add Product</h3>
         <!-- Form to add product details -->
-        <form id="addProductForm" th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" onsubmit="submitProductForm(event)">
+        <form id="addProductForm" th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" enctype="multipart/form-data" onsubmit="submitProductForm(event)">
             <!-- First Row: Product Name and Price -->
             <div class="form-row">
                 <div class="form-group half-width">
@@ -306,6 +330,12 @@
                 </div>
             </div>
 
+            <!-- Image Upload Row -->
+            <div class="form-group">
+                <label for="productImage">Product Image:</label>
+                <input type="file" id="productImage" name="productImage" accept="image/*" required>
+            </div>
+
             <!-- Button Row: Add Product and Close Buttons -->
             <div class="button-row">
                 <button type="submit">Add Product</button>
@@ -343,19 +373,6 @@
 <script th:inline="javascript">
     // Embed the shopId from Thymeleaf
     const shopId = /*[[${shop.shopId}]]*/ 0;
-
-    //SPA function to re-load the product list every time a change is made
-    // function loadProductList() {
-    //     fetch('/merchantShop/{shopId}')
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             document.getElementById('productList').innerHTML = data;
-    //         })
-    //         .catch(error => console.error('Error loading products:', error));
-    // }
-
-    //  load product list when the page loads
-    // window.onload = loadProductList;
 
     // JavaScript functions to open and close modals
     function openModal(modalId) {

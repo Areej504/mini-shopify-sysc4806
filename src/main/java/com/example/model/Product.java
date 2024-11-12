@@ -14,6 +14,7 @@ public class Product {
     private BigDecimal price;
     private Category category;
     private int inventory;
+    private String imageURL;
 
     @Enumerated(EnumType.STRING)
     private PromotionType promotionType;
@@ -33,6 +34,7 @@ public class Product {
         this.price = price;
         this.inventory = inventory;
         this.promotionType = promotionType;
+        this.imageURL = getImageURL();
     }
 
     // Getters and Setters
@@ -43,6 +45,10 @@ public class Product {
     public void setProductId(Long productId) {
         this.productId = productId;
     }
+
+    public String getImageURL(){return imageURL;}
+
+    public void setImageURL(String imageURL){this.imageURL = imageURL;}
 
     public String getProductName() {
         return productName;
