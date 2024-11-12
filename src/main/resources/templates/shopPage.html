@@ -16,13 +16,11 @@
         body, html {
             width: 100%;
             height: 100%;
-            margin: 0;
-            padding: 0;
             background-color: #f5f7fa;
             color: #333;
         }
 
-        /* Full-width container to remove side margins */
+        /* Full-width container */
         .container {
             width: 100%;
             max-width: 100%;
@@ -32,11 +30,11 @@
 
         /* Full Width Banner for Shop Name and Description */
         .shop-header {
-            width: 100vw; /* Full viewport width */
-            background-color: #003f4d; /* Dark muted color */
+            width: 100vw;
+            background-color: #003f4d;
             color: white;
             text-align: center;
-            padding: 20px 0; /* Adequate padding for clarity */
+            padding: 20px 0;
         }
 
         .shop-header h1 {
@@ -45,12 +43,12 @@
         }
 
         .shop-description-banner {
-            width: 100vw; /* Full width */
-            background-color: #003f4d; /* Darker, muted color */
+            width: 100vw;
+            background-color: #003f4d;
             color: white;
             font-size: 1.1em;
             text-align: center;
-            padding: 15px 0; /* Smaller padding */
+            padding: 15px 0;
         }
 
         /* Shop Actions Section (Checkout Button, etc.) */
@@ -97,12 +95,12 @@
         /* Product Grid Styling */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Make grid items smaller rectangles */
-            gap: 15px; /* Space between items */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
             margin-top: 20px;
-            max-height: 400px; /* Set max-height to make the grid scrollable */
-            overflow-y: auto; /* Enable vertical scrolling */
-            padding-right: 10px; /* Optional: Add space for scrollbar */
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
         }
 
         /* Product Card Styling */
@@ -115,34 +113,43 @@
             display: flex;
             flex-direction: column;
             text-align: center;
-            padding: 15px; /* Padding for content inside cards */
-            height: 250px; /* Fixed height to make the cards rectangular */
-            width: 100%; /* Ensure each card takes up its container's width */
+            padding: 10px; /* Reduced padding */
+            height: 300px; /* Adjusted for tighter fit */
+            width: 100%;
         }
 
-        /* Optional: Adjust font size for smaller grid items */
+        /* Product Image Styling */
+        .product-image {
+            width: 100%;
+            height: auto;
+            max-height: 130px; /* Limit max height */
+            object-fit: contain; /* Scale image without cropping */
+            margin-bottom: 5px; /* Smaller spacing below image */
+        }
+
+        /* Compact text styling for name, description, and price */
         .product-card h3 {
-            font-size: 1.1em;
-            margin: 10px 0;
+            font-size: 1em;
+            margin: 3px 0; /* Minimal margin */
         }
 
         .product-card p {
             font-size: 0.9em;
+            margin: 3px 0; /* Minimal margin */
         }
 
-        /* Adjust price font size */
         .price {
             font-size: 1em;
             font-weight: bold;
             color: #01a6cf;
+            margin: 3px 0; /* Minimal margin */
         }
 
-        /* Add to Cart Button */
         .add-to-cart-btn {
             background-color: #205c67;
             color: #fff;
             border: none;
-            padding: 10px;
+            padding: 8px; /* Reduced padding for tighter fit */
             font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
@@ -180,8 +187,10 @@
     <div class="product-grid">
         <!-- Thymeleaf loop to display each product -->
         <div th:each="product : ${products}" class="product-card" th:data-name="${product.productName}">
+            <!-- Display product image -->
+            <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
             <h3 th:text="${product.productName}">Product Name</h3>
-            <p th:text="${product.description}"> Product Description</p>
+            <p th:text="${product.description}">Product Description</p>
             <h4 class="price" th:text="'$' + ${product.price}">Price</h4>
             <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.productId} + ')'">Add to Cart</button>
         </div>
@@ -197,15 +206,10 @@
     // JavaScript for real-time filtering
     document.getElementById('search-input').addEventListener('input', function() {
         const filterText = this.value.toLowerCase().trim();
-        console.log("Filter Text:", filterText);
-
         const products = document.querySelectorAll('.product-card');
 
         products.forEach(product => {
-            // Get the attributes and handle null values gracefully
             const prodName = product.getAttribute('data-name') ? product.getAttribute('data-name').toLowerCase() : '';
-
-            // Show or hide based on name or category match
             if (prodName.includes(filterText)) {
                 product.style.display = 'block';
             } else {
