@@ -173,13 +173,13 @@
 
     <!-- Search Bar -->
     <div class="search-container">
-        <input type="text" placeholder="Search products..." th:value="${searchQuery}">
+        <input type="text" id="search-input" placeholder="Search products..." th:value="${searchQuery}">
     </div>
 
     <!-- Product Grid -->
     <div class="product-grid">
         <!-- Thymeleaf loop to display each product -->
-        <div th:each="product : ${products}" class="product-card">
+        <div th:each="product : ${products}" class="product-card" th:data-name="${product.productName}">
             <h3 th:text="${product.productName}">Product Name</h3>
             <p th:text="${product.description}"> Product Description</p>
             <h4 class="price" th:text="'$' + ${product.price}">Price</h4>
@@ -193,6 +193,26 @@
         console.log("Adding product with ID:", productId);
         // Implement add-to-cart functionality here
     }
+
+    // JavaScript for real-time filtering
+    document.getElementById('search-input').addEventListener('input', function() {
+        const filterText = this.value.toLowerCase().trim();
+        console.log("Filter Text:", filterText);
+
+        const products = document.querySelectorAll('.product-card');
+
+        products.forEach(product => {
+            // Get the attributes and handle null values gracefully
+            const prodName = product.getAttribute('data-name') ? product.getAttribute('data-name').toLowerCase() : '';
+
+            // Show or hide based on name or category match
+            if (prodName.includes(filterText)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
 </script>
 </body>
 </html>
