@@ -12,6 +12,7 @@ public class Product {
     private String productName;
     private String description;
     private BigDecimal price;
+    private BigDecimal discountedPrice;
     private Category category;
     private int inventory;
     private String imageURL;
@@ -77,6 +78,14 @@ public class Product {
         }
         this.price = price;
     }
+
+    public BigDecimal getDiscountedPrice() {
+        return discountedPrice != null ? discountedPrice : price;
+    }
+    public void setDiscountedPrice(BigDecimal discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -114,8 +123,26 @@ public class Product {
     public void setShop(Shop shop){this.shop=shop;}
 
     //Methods
-    public void setInventoryCount(){};
+    public BigDecimal calculateDiscountedPrice() {
+        if (promotionType == null || promotionType == PromotionType.NONE) {
+            return price; // No discount
+        }
 
+        switch (promotionType) {
+            case DISCOUNT_10_PERCENT:
+                return price.multiply(BigDecimal.valueOf(0.90));
+            case DISCOUNT_20_PERCENT:
+                return price.multiply(BigDecimal.valueOf(0.80));
+            case DISCOUNT_5_DOLLARS:
+                return price.subtract(BigDecimal.valueOf(5)).max(BigDecimal.ZERO); // Ensures price doesn't go below zero
+            case CLEARANCE:
+                return price.multiply(BigDecimal.valueOf(0.50)); // 50% off for clearance
+            default:
+                return price;
+        }
+    }
+
+    public void setInventoryCount(){};
 
     @Override
     public String toString() {

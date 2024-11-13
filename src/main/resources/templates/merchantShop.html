@@ -105,9 +105,17 @@
             color: #1b5e20;
         }
 
+        .product-details .discounted-price {
+            color: red;
+            font-weight: bold;
+        }
+        .product-details .original-price {
+            text-decoration: line-through;
+            color: gray;
+            font-weight: normal;
+        }
         .product-details .price {
             font-weight: bold;
-            color: #333;
         }
 
         .product-details .productId,
@@ -269,7 +277,16 @@
             <div class="product-details">
                 <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
                 <h3 th:text="${product.productName}">Product Name</h3>
-                <p class="price" th:text="${'Price: $' + product.price}">Price</p>
+
+                <!-- Display discounted and original prices if there is a discount -->
+                <p th:if="${product.discountedPrice != product.price}">
+                    <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
+                    <br>
+                    <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
+                </p>
+                <!-- Display only the original price if there is no discount -->
+                <p th:if="${product.discountedPrice == product.price}" class="price" th:text="'Price: $' + ${product.price}"></p>
+
                 <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
                 <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
                 <p class="category" th:text="${product.category}">Category</p>

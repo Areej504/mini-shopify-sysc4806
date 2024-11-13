@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.model.*;
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Controller
@@ -31,10 +33,19 @@ public class ProductController {
 
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
+
+// Retrieve only specific promotion types
+        List<PromotionType> relevantPromotions = Arrays.asList(
+                PromotionType.DISCOUNT_10_PERCENT,
+                PromotionType.DISCOUNT_20_PERCENT,
+                PromotionType.DISCOUNT_5_DOLLARS,
+                PromotionType.CLEARANCE,
+                PromotionType.NONE
+        );
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("categories", shop.getCategories());
-        model.addAttribute("promotions", PromotionType.values());
+        model.addAttribute("promotions", relevantPromotions);
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
         return "merchantShop";
     }
@@ -44,6 +55,10 @@ public class ProductController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         product.setShop(shop);
+
+        // Calculate and set the discounted price
+        BigDecimal discountedPrice = product.calculateDiscountedPrice();
+        product.setDiscountedPrice(discountedPrice);
 
         // Save the uploaded image file using the original filename
         if (!file.isEmpty()) {
