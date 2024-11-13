@@ -33,7 +33,7 @@ public class ProductController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
-        model.addAttribute("categories", Category.values());
+        model.addAttribute("categories", shop.getCategories());
         model.addAttribute("promotions", PromotionType.values());
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
         return "merchantShop";
