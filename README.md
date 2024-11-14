@@ -1,8 +1,8 @@
 SYSC4806 Fall 2024 Project - Mini-SHopify; Milestone 1; Version 1.0; 11/11/2024
 
 The project can be reached at:
-Website: www.brightspace.carleton.ca
-Email: wardasaleh@cmail.carleton.ca
+Azure Deployment: https://mini-shopify-4806-fme9dbcfcmfjbuaw.canadaeast-01.azurewebsites.net/
+Email: areejmahmoud@cmail.carleton.ca, wardasaleh@cmail.carleton.ca
 
 
 Authors:
