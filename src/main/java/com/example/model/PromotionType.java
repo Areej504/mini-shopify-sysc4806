@@ -5,9 +5,8 @@ public enum PromotionType {
     DISCOUNT_20_PERCENT("20% Off"),
     DISCOUNT_5_DOLLARS("Save $5"),
     BUY_ONE_GET_ONE("Buy One Get One Free"),
-    CLEARANCE("Clearance"),
+    CLEARANCE("Clearance - 50% off"),
     FREE_SHIPPING("Free Shipping"),
-    LOYALTY_POINTS("Earn Loyalty Points"),
     SEASONAL_HOLIDAY("Holiday Sale - Up to 25% Off"),
     NONE("No Promotion");
 

@@ -113,8 +113,8 @@
             display: flex;
             flex-direction: column;
             text-align: center;
-            padding: 10px; /* Reduced padding */
-            height: 300px; /* Adjusted for tighter fit */
+            padding: 10px;
+            height: 300px;
             width: 100%;
         }
 
@@ -122,34 +122,43 @@
         .product-image {
             width: 100%;
             height: auto;
-            max-height: 130px; /* Limit max height */
-            object-fit: contain; /* Scale image without cropping */
-            margin-bottom: 5px; /* Smaller spacing below image */
+            max-height: 130px;
+            object-fit: contain;
+            margin-bottom: 5px;
         }
 
         /* Compact text styling for name, description, and price */
         .product-card h3 {
             font-size: 1em;
-            margin: 3px 0; /* Minimal margin */
+            margin: 3px 0;
         }
 
         .product-card p {
             font-size: 0.9em;
-            margin: 3px 0; /* Minimal margin */
+            margin: 3px 0;
+        }
+
+        /* Price styling */
+        .discounted-price {
+            color: red;
+            font-weight: bold;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: gray;
+            font-weight: normal;
         }
 
         .price {
-            font-size: 1em;
             font-weight: bold;
-            color: #01a6cf;
-            margin: 3px 0; /* Minimal margin */
         }
 
         .add-to-cart-btn {
             background-color: #205c67;
             color: #fff;
             border: none;
-            padding: 8px; /* Reduced padding for tighter fit */
+            padding: 8px;
             font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
@@ -163,7 +172,6 @@
     </style>
 </head>
 <body>
-<!-- Full-width container -->
 <div class="container">
     <!-- Full-width Shop Header -->
     <div class="shop-header">
@@ -187,11 +195,22 @@
     <div class="product-grid">
         <!-- Thymeleaf loop to display each product -->
         <div th:each="product : ${products}" class="product-card" th:data-name="${product.productName}">
-            <!-- Display product image -->
             <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
             <h3 th:text="${product.productName}">Product Name</h3>
             <p th:text="${product.description}">Product Description</p>
-            <h4 class="price" th:text="'$' + ${product.price}">Price</h4>
+
+            <!-- Display discounted and original prices if there is a discount -->
+            <div th:if="${product.discountedPrice != product.price}">
+                <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
+                <br>
+                <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
+            </div>
+
+            <!-- Display only the original price if there is no discount -->
+            <div th:if="${product.discountedPrice == product.price}">
+                <span class="price" th:text="'Price: $' + ${product.price}"></span>
+            </div>
+
             <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.productId} + ')'">Add to Cart</button>
         </div>
     </div>
@@ -200,10 +219,8 @@
 <script>
     function addToCart(productId) {
         console.log("Adding product with ID:", productId);
-        // Implement add-to-cart functionality here
     }
 
-    // JavaScript for real-time filtering
     document.getElementById('search-input').addEventListener('input', function() {
         const filterText = this.value.toLowerCase().trim();
         const products = document.querySelectorAll('.product-card');

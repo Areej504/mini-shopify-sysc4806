@@ -66,8 +66,8 @@ public class ShopTest {
         shop.setPromotion(PromotionType.CLEARANCE);
         assertEquals(PromotionType.CLEARANCE, shop.getPromotion());
 
-        shop.setPromotion(PromotionType.LOYALTY_POINTS);
-        assertEquals(PromotionType.LOYALTY_POINTS, shop.getPromotion());
+        shop.setPromotion(PromotionType.BUY_ONE_GET_ONE);
+        assertEquals(PromotionType.BUY_ONE_GET_ONE, shop.getPromotion());
     }
 
     @Test
