@@ -276,10 +276,10 @@
 <body>
 
 <!-- Black Mini-Shopify Banner -->
-<div class="mini-shopify-banner">
+<a href="http://localhost:8080" class="mini-shopify-banner" style="text-decoration: none; color: #ffffff;">
     <span class="cart-icon">🛒</span>
     <span>Mini-Shopify</span>
-</div>
+</a>
 
 <!-- Green Top Banner -->
 <div class="top-banner" th:text="${shop.name}">Personalized Store</div>
@@ -523,24 +523,6 @@
                 console.error('Fetch error:', error);
                 alert("An error occurred while deleting the product.");
             });
-    }
-
-    function deleteProduct(shopId, productId) {
-        if (!confirm("Are you sure you want to remove this product?")) return;
-
-        fetch(`/merchantShop/${shopId}/${productId}`, {
-            method: 'DELETE',
-        })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById(`product-${productId}`).remove(); // Remove the product card
-                    closeModal('removeProductModal'); // Close the modal
-                } else {
-                    console.error('Error removing product');
-                    alert("Product not found or could not be removed.");
-                }
-            })
-            .catch(error => console.error('Error:', error));
     }
 
 </script>
