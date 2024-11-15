@@ -33,7 +33,10 @@
             width: 100vw;
             background-color: #003f4d;
             color: white;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             padding: 20px 0;
         }
 
@@ -51,7 +54,27 @@
             padding: 15px 0;
         }
 
-        /* Shop Actions Section (Checkout Button, etc.) */
+        /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
+        .sign-in-button {
+            position: absolute;
+            right: 20px; /* Push the button to the right edge */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #01a6cf;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sign-in-button:hover {
+            background-color: #126b80;
+        }
+
         .cart-container {
             width: 100%;
             display: flex;
@@ -176,6 +199,8 @@
     <!-- Full-width Shop Header -->
     <div class="shop-header">
         <h1 th:text="${shopName}">Shop Name</h1>
+        <!-- Sign-in Button -->
+        <a href="/create-customer" class="sign-in-button">Sign In</a>
     </div>
 
     <!-- Full Width Description Banner -->
