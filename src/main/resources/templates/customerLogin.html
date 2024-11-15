@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
   <title>Customer Login</title>
   <style>
@@ -117,15 +117,18 @@
 
 <!-- Form Container -->
 <div class="form-container">
-  <h2>Customer Login</h2>
+  <h2>Login</h2>
+
+  <!--  error message if email not found-->
+  <div id="error-message" style="color: red; display: none; margin-bottom: 20px;"></div>
 
   <!-- Sign-Up Link -->
   <a href="/create-customer" class="signup-link">Don't have an account? Sign up here!</a>
 
-  <form th:action="@{/customer-login}" method="post">
+  <form th:action="@{/customer-login}" method="post" onsubmit="handleLogin(event)">
     <div class="form-group">
       <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Enter Customer Email" required />
+      <input type="email" id="email" name="email" placeholder="Enter your email" required />
     </div>
     <div>
       <!-- Submit Button -->
@@ -134,5 +137,48 @@
   </form>
 </div>
 
+<script>
+  function handleLogin(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const errorMessage = document.getElementById("error-message");
+
+    fetch("/customer-login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ email }).toString()
+    })
+            .then(response => {
+              if (response.ok) {
+                return response.text(); // Returns a Promise that resolves to the customer ID
+              } else if (response.status === 404) {
+                // Handle email not found
+                errorMessage.textContent = "Email not found. Please try again or sign up.";
+                errorMessage.style.display = "block";
+                throw new Error("Email not found"); // Exit the promise chain
+              } else {
+                // Handle other errors
+                errorMessage.textContent = "An unexpected error occurred. Please try again.";
+                errorMessage.style.display = "block";
+                throw new Error("Unexpected error"); // Exit the promise chain
+              }
+            })
+            .then(customerId => {
+              if (!customerId || customerId.trim() === "") {
+                // check in case the customerId is undefined or empty
+                errorMessage.textContent = "Customer Id undefined. Please try again.";
+                errorMessage.style.display = "block";
+                return;
+              }
+              // Redirect if customerId is valid
+              window.location.href = `/shopper?customerId=${encodeURIComponent(customerId)}`;
+            })
+            .catch(error => console.error("Error:", error)); // Log any caught errors
+  }
+
+</script>
 </body>
 </html>
