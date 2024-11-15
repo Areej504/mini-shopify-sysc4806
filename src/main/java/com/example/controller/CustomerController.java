@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -36,12 +37,27 @@ public class CustomerController {
         return "redirect:/shopper?customerId=" + customer.getCustomerId(); // Redirect to shopper
     }
 
-    // Mapping for the shopper button to open customerScreen.html
+    // Navigate to customer login page
+    @GetMapping("/customer-login")
+    public String showCustomerLoginForm(Model model) {
+        return "customerLogin";
+    }
+
+    @PostMapping("/customer-login")
+    public String loginCustomer(@RequestParam("email") String email, Model model) {
+        // Find the customer by email
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Customer email not found"));
+
+        return "redirect:/shopper?customerId=" + customer.getCustomerId(); //redirect to shopper
+    }
+
+    // Mapping for the shopper button to open searchShops.html
     @GetMapping("/shopper")
     public String openCustomerScreen(Model model) {
         List<Shop> shops = (List<Shop>) shopRepository.findAll(); // Fetch all shops from the database
         model.addAttribute("shops", shops); // Add the shops to the model
-        return "customerScreen"; // Return the Thymeleaf template for the customer screen;
+        return "searchShops"; // Return the Thymeleaf template for the customer screen;
     }
 }
 
@@ -86,7 +102,7 @@ public class CustomerController {
 //        }
 //    }
 //
-//    // Mapping for the shopper button to open customerScreen.html
+//    // Mapping for the shopper button to open searchShops.html
 //    @GetMapping("/shopper")
 //    public String openCustomerScreen(Model model) {
 //        try{
