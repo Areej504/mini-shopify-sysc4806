@@ -94,7 +94,7 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("shops"))
                 .andExpect(model().attribute("shops", shops))
-                .andExpect(view().name("customerScreen"));
+                .andExpect(view().name("searchShops"));
 
         verify(shopRepository, times(1)).findAll();
     }
@@ -108,7 +108,7 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("shops"))
                 .andExpect(model().attribute("shops", Collections.emptyList()))
-                .andExpect(view().name("customerScreen"));
+                .andExpect(view().name("searchShops"));
 
         verify(shopRepository, times(1)).findAll();
     }
