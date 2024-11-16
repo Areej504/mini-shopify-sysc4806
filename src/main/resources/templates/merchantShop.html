@@ -396,13 +396,55 @@
 </div>
 
 
+<!--<div id="setPromotionModal" class="modal">-->
+<!--    <div class="modal-content">-->
+<!--        <h3>Set Promotion</h3>-->
+<!--        <p>Enter details to set a promotion.</p>-->
+<!--        <button onclick="closeModal('setPromotionModal')">Close</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="top-banner">
+    <span th:if="${storePromotion}" th:text="${storePromotion.title}">Discount up to 25%</span>
+</div>
+
 <div id="setPromotionModal" class="modal">
     <div class="modal-content">
-        <h3>Set Promotion</h3>
-        <p>Enter details to set a promotion.</p>
-        <button onclick="closeModal('setPromotionModal')">Close</button>
+        <h3>Set Store-Wide Promotion</h3>
+        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">
+            <!-- Promotion Title -->
+            <div class="form-group">
+                <label for="promotionTitle">Promotion Title:</label>
+                <input type="text" id="promotionTitle" name="promotionTitle" placeholder="e.g., Discount up to 25%" required>
+            </div>
+
+            <!-- Promotion Description -->
+            <div class="form-group">
+                <label for="promotionDescription">Promotion Description:</label>
+                <textarea id="promotionDescription" name="promotionDescription" rows="3" placeholder="Provide details about the promotion" required></textarea>
+            </div>
+
+            <!-- Start and End Dates -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="promotionStartDate">Start Date:</label>
+                    <input type="date" id="promotionStartDate" name="promotionStartDate" required>
+                </div>
+                <div class="form-group half-width">
+                    <label for="promotionEndDate">End Date:</label>
+                    <input type="date" id="promotionEndDate" name="promotionEndDate" required>
+                </div>
+            </div>
+
+            <!-- Button Row -->
+            <div class="button-row">
+                <button type="submit">Set Promotion</button>
+                <button type="button" onclick="closeModal('setPromotionModal')">Close</button>
+            </div>
+        </form>
     </div>
 </div>
+
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
@@ -524,6 +566,31 @@
                 alert("An error occurred while deleting the product.");
             });
     }
+    function submitStorePromotion(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        const form = document.getElementById('storePromotionForm');
+        const formData = new FormData(form);
+
+        fetch('/merchantShop/storePromotion', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Store-wide promotion set successfully!');
+                    closeModal('setPromotionModal'); // Close the modal
+                    // Optionally update the store view to display the promotion
+                } else {
+                    alert('Failed to set promotion. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while setting the promotion.');
+            });
+    }
+
 
 </script>
 

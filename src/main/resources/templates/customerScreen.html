@@ -65,6 +65,21 @@
             border-radius: 5px;
         }
 
+        /* Promotion Banner */
+        .promotion-banner {
+            background-color: #ffcc00; /* Bright yellow to grab attention */
+            color: #333; /* Dark text for readability */
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+
         /* Shops List as Grid */
         .shops-list {
             margin-top: 20px;
@@ -141,6 +156,14 @@
 <!-- Search Bar -->
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Looking for...">
+</div>
+
+<!-- Green Top Banner for the Shop -->
+<div class="top-banner" th:text="${shop.name}">Shop Name</div>
+
+<!-- Store-Wide Promotion Banner -->
+<div class="promotion-banner" th:if="${shop.promotion}">
+    <p th:text="${shop.promotion.title}">Buy one, get one free</p>
 </div>
 
 <!-- Shops List as Grid -->
