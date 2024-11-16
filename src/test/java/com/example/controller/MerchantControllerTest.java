@@ -83,8 +83,68 @@ public class MerchantControllerTest {
     }
 
     // Tests for GET /merchant-login
+    @Test
+    public void testShowMerchantLoginForm() throws Exception {
+        mockMvc.perform(get("/merchant-login"))
+                .andExpect(status().isOk()) // Ensure the response is 200 OK
+                .andExpect(view().name("merchantLogin")); // Ensure the correct view is returned
+    }
 
     //Tests for POST /merchant-login
+    @Test
+    public void testLoginMerchant_Success() throws Exception {
+        String email = "test@example.com";
+        String password = "password123";
+        Merchant merchant = new Merchant();
+        merchant.setMerchantId(1L);
+        merchant.setEmail(email);
+        merchant.setPassword(password);
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.of(merchant));
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isOk()) // Ensure 200 OK status
+                .andExpect(content().string("1")); // Expect merchant ID as the response
+
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginMerchant_InvalidPassword() throws Exception {
+        String email = "test@example.com";
+        String password = "wrongPassword";
+        Merchant merchant = new Merchant();
+        merchant.setMerchantId(1L);
+        merchant.setEmail(email);
+        merchant.setPassword("password123");
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.of(merchant));
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isUnauthorized()) // Ensure 401 Unauthorized status
+                .andExpect(content().string("Invalid password")); // Expect error message in response
+
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginMerchant_EmailNotFound() throws Exception {
+        String email = "nonexistent@example.com";
+        String password = "password123";
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isNotFound()) // Ensure 404 Not Found status
+                .andExpect(content().string("Email not found")); // Expect error message in response
+
+        // Verify repository interactions
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
 
     // Tests for GET /merchant
     @Test
