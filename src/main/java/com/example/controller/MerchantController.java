@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -27,10 +30,46 @@ public class MerchantController {
 
     //Merchant creation form submission
     @PostMapping("/create-merchant")
-    public String createMerchant(@ModelAttribute Merchant merchant, Model model) {
-        merchantRepository.save(merchant);
-        return "redirect:/merchant?merchantId=" + merchant.getMerchantId(); // Redirect to merchant dashboard
+    public String createMerchant(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+        if (merchantRepository.findByEmail(email).isPresent()) {
+            model.addAttribute("errorMessage", "Email already exists");
+            return "createMerchant"; // show sign-up page with the error
+        }
+
+        Merchant newMerchant = new Merchant();
+        newMerchant.setEmail(email);
+        newMerchant.setPassword(password); //TODO: Hash the password with passwordEncoder.
+        merchantRepository.save(newMerchant);
+
+        return "redirect:/merchant-login";
     }
+
+    // Navigate to merchant login page
+    @GetMapping("/merchant-login")
+    public String showMerchantLoginForm(Model model) {
+        return "merchantLogin";
+    }
+
+    @PostMapping("/merchant-login")
+    public ResponseEntity<String> loginMerchant(@RequestParam("email") String email, @RequestParam("password") String password) {
+        Optional<Merchant> merchant = merchantRepository.findByEmail(email);
+
+        if (merchant.isPresent()) {
+            Merchant foundMerchant = merchant.get();
+            //TODO: Confirm the password hash with passwordEncoder
+            if (password.equals(foundMerchant.getPassword())) {
+                // Return merchant ID on successful login
+                return ResponseEntity.ok(foundMerchant.getMerchantId().toString());
+            } else {
+                // password doesn't match
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            }
+        } else {
+            // invalid email
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+        }
+    }
+
 
     // Mapping for the merchant button to open merchantView1.html
     @RequestMapping("/merchant")

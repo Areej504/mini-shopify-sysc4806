@@ -106,6 +106,11 @@
 <div class="form-container">
     <h2>New Merchant Sign-up!</h2>
 
+    <!-- Error message -->
+    <div th:if="${errorMessage}" style="color: red; margin-bottom: 20px;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <form th:action="@{/create-merchant}" th:object="${merchant}" method="post">
         <div class="form-group">
             <label for="name">Name:</label>
@@ -125,5 +130,6 @@
         </div>
     </form>
 </div>
+
 </body>
 </html>
