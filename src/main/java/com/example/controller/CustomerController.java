@@ -5,13 +5,17 @@ import com.example.model.CustomerRepository;
 import com.example.model.Shop;
 import com.example.model.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CustomerController {
@@ -36,7 +40,23 @@ public class CustomerController {
         return "redirect:/shopper?customerId=" + customer.getCustomerId(); // Redirect to shopper
     }
 
-    // Mapping for the shopper button to open customerScreen.html
+    // Navigate to customer login page
+    @GetMapping("/customer-login")
+    public String showCustomerLoginForm(Model model) {
+        return "customerLogin";
+    }
+
+    @PostMapping("/customer-login")
+    public ResponseEntity<String> loginCustomer(@RequestParam("email") String email) {
+        Optional<Customer> customer = customerRepository.findByEmail(email);
+        if (customer.isPresent()) {
+            return ResponseEntity.ok(customer.get().getCustomerId().toString());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+        }
+    }
+
+    // Mapping for the shopper button to open searchShops.html
     @GetMapping("/shopper")
     public String openCustomerScreen(Model model) {
         List<Shop> shops = (List<Shop>) shopRepository.findAll(); // Fetch all shops from the database
@@ -86,7 +106,7 @@ public class CustomerController {
 //        }
 //    }
 //
-//    // Mapping for the shopper button to open customerScreen.html
+//    // Mapping for the shopper button to open searchShops.html
 //    @GetMapping("/shopper")
 //    public String openCustomerScreen(Model model) {
 //        try{
