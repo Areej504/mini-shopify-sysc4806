@@ -1,9 +1,6 @@
 package com.example.controller;
 
-import com.example.model.Customer;
-import com.example.model.CustomerRepository;
-import com.example.model.Shop;
-import com.example.model.ShopRepository;
+import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +32,19 @@ public class CustomerController {
 
     // Handle Shopper creation form submission
     @PostMapping("/create-customer")
-    public String createShopper(@ModelAttribute Customer customer) {
-        customerRepository.save(customer);
-        return "redirect:/shopper?customerId=" + customer.getCustomerId(); // Redirect to shopper
+    public String createShopper(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+
+        if (customerRepository.findByEmail(email).isPresent()) {
+            model.addAttribute("errorMessage", "Email already exists");
+            return "createCustomer"; // show sign-up page with the error
+        }
+
+        Customer newCustomer = new Customer();
+        newCustomer.setEmail(email);
+        newCustomer.setPassword(password); //TODO: Hash the password with passwordEncoder.
+        customerRepository.save(newCustomer);
+
+        return "redirect:/customer-login";
     }
 
     // Navigate to customer login page
@@ -47,11 +54,20 @@ public class CustomerController {
     }
 
     @PostMapping("/customer-login")
-    public ResponseEntity<String> loginCustomer(@RequestParam("email") String email) {
+    public ResponseEntity<String> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password) {
         Optional<Customer> customer = customerRepository.findByEmail(email);
         if (customer.isPresent()) {
-            return ResponseEntity.ok(customer.get().getCustomerId().toString());
+            Customer foundCustomer = customer.get();
+            //TODO: Confirm the password hash with passwordEncoder
+            if (password.equals(foundCustomer.getPassword())) {
+                // Return merchant ID on successful login
+                return ResponseEntity.ok(foundCustomer.getCustomerId().toString());
+            } else {
+                // password doesn't match
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            }
         } else {
+            // invalid email
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
         }
     }

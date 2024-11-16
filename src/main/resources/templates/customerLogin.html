@@ -130,6 +130,10 @@
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" placeholder="Enter your email" required />
     </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required />
+    </div>
     <div>
       <!-- Submit Button -->
       <button type="submit" class="submit-button">Log In</button>
@@ -142,6 +146,7 @@
     event.preventDefault();
 
     const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
     const errorMessage = document.getElementById("error-message");
 
     fetch("/customer-login", {
@@ -149,7 +154,7 @@
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ email }).toString()
+      body: new URLSearchParams({ email, password }).toString()
     })
             .then(response => {
               if (response.ok) {
@@ -159,6 +164,11 @@
                 errorMessage.textContent = "Email not found. Please try again or sign up.";
                 errorMessage.style.display = "block";
                 throw new Error("Email not found");
+              } else if (response.status === 401) {
+                // Handle invalid password
+                errorMessage.textContent = "Invalid password. Please try again.";
+                errorMessage.style.display = "block";
+                throw new Error("Invalid password");
               } else {
                 // Handle other errors
                 errorMessage.textContent = "An unexpected error occurred. Please try again.";
