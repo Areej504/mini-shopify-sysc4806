@@ -41,7 +41,7 @@ public class CustomerController {
     public String openCustomerScreen(Model model) {
         List<Shop> shops = (List<Shop>) shopRepository.findAll(); // Fetch all shops from the database
         model.addAttribute("shops", shops); // Add the shops to the model
-        return "customerScreen"; // Return the Thymeleaf template for the customer screen;
+        return "searchShops"; // Return the Thymeleaf template for the customer screen;
     }
 }
 
