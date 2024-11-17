@@ -1,6 +1,7 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,17 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
+
+    public ShopPromotions getShopPromotions() {
+        return shopPromotions;
+    }
+
+    public void setShopPromotions(ShopPromotions shopPromotions) {
+        this.shopPromotions = shopPromotions;
+    }
+
+    @OneToOne
+    private ShopPromotions shopPromotions;
 
     public Shop() {}
 
