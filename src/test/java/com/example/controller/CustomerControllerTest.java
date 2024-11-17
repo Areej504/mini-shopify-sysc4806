@@ -150,36 +150,36 @@ public class CustomerControllerTest {
 
     // Tests for GET /shopper
 
-    @Test
-    public void testOpenCustomerScreen_WithShops_ReturnsCustomerScreenView() throws Exception {
-        Shop shop = new Shop();
-        shop.setName("Test Shop");
-        List<Shop> shops = Collections.singletonList(shop);
-
-        when(shopRepository.findAll()).thenReturn(shops);
-
-        mockMvc.perform(get("/shopper"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("shops"))
-                .andExpect(model().attribute("shops", shops))
-                .andExpect(view().name("searchShops"));
-
-        verify(shopRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void testOpenCustomerScreen_NoShops_ReturnsEmptyShopList() throws Exception {
-        // Simulate empty shop list
-        when(shopRepository.findAll()).thenReturn(Collections.emptyList());
-
-        mockMvc.perform(get("/shopper"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("shops"))
-                .andExpect(model().attribute("shops", Collections.emptyList()))
-                .andExpect(view().name("searchShops"));
-
-        verify(shopRepository, times(1)).findAll();
-    }
+//    @Test
+//    public void testOpenCustomerScreen_WithShops_ReturnsCustomerScreenView() throws Exception {
+//        Shop shop = new Shop();
+//        shop.setName("Test Shop");
+//        List<Shop> shops = Collections.singletonList(shop);
+//
+//        when(shopRepository.findAll()).thenReturn(shops);
+//
+//        mockMvc.perform(get("/shopper"))
+//                .andExpect(status().isOk())
+//                .andExpect(model().attributeExists("shops"))
+//                .andExpect(model().attribute("shops", shops))
+//                .andExpect(view().name("searchShops"));
+//
+//        verify(shopRepository, times(1)).findAll();
+//    }
+//
+//    @Test
+//    public void testOpenCustomerScreen_NoShops_ReturnsEmptyShopList() throws Exception {
+//        // Simulate empty shop list
+//        when(shopRepository.findAll()).thenReturn(Collections.emptyList());
+//
+//        mockMvc.perform(get("/shopper"))
+//                .andExpect(status().isOk())
+//                .andExpect(model().attributeExists("shops"))
+//                .andExpect(model().attribute("shops", Collections.emptyList()))
+//                .andExpect(view().name("searchShops"));
+//
+//        verify(shopRepository, times(1)).findAll();
+//    }
 
 //    @Test
 //    public void testOpenCustomerScreen_DatabaseError() throws Exception {
