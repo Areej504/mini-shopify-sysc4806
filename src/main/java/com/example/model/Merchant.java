@@ -12,6 +12,7 @@ public class Merchant {
     private Long merchantId;
     private String name;
     private String email;
+    private String password;
 
     @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL)
     List<Shop> shops;
@@ -39,6 +40,14 @@ public class Merchant {
     public void setEmail(String email) {
         this.email = email;
     }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     public List<Shop> getShops() {
         return shops;

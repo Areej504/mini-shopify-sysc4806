@@ -117,7 +117,7 @@
 
 <!-- Form Container -->
 <div class="form-container">
-  <h2>Login</h2>
+  <h2>Login With Your Customer Account</h2>
 
   <!--  error message if email not found-->
   <div id="error-message" style="color: red; display: none; margin-bottom: 20px;"></div>
@@ -129,6 +129,10 @@
     <div class="form-group">
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" placeholder="Enter your email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required />
     </div>
     <div>
       <!-- Submit Button -->
@@ -142,6 +146,7 @@
     event.preventDefault();
 
     const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
     const errorMessage = document.getElementById("error-message");
 
     fetch("/customer-login", {
@@ -149,21 +154,26 @@
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ email }).toString()
+      body: new URLSearchParams({ email, password }).toString()
     })
             .then(response => {
               if (response.ok) {
-                return response.text(); // Returns a Promise that resolves to the customer ID
+                return response.text(); // returns a promise that resolves to customer ID
               } else if (response.status === 404) {
                 // Handle email not found
                 errorMessage.textContent = "Email not found. Please try again or sign up.";
                 errorMessage.style.display = "block";
-                throw new Error("Email not found"); // Exit the promise chain
+                throw new Error("Email not found");
+              } else if (response.status === 401) {
+                // Handle invalid password
+                errorMessage.textContent = "Invalid password. Please try again.";
+                errorMessage.style.display = "block";
+                throw new Error("Invalid password");
               } else {
                 // Handle other errors
                 errorMessage.textContent = "An unexpected error occurred. Please try again.";
                 errorMessage.style.display = "block";
-                throw new Error("Unexpected error"); // Exit the promise chain
+                throw new Error("Unexpected error");
               }
             })
             .then(customerId => {

@@ -40,33 +40,111 @@ public class MerchantControllerTest {
 
     // Tests for POST /create-merchant
     @Test
-    public void testCreateMerchant_RedirectsToMerchantDashboard() throws Exception {
-        Merchant merchant = new Merchant();
-        merchant.setMerchantId(1L);
+    public void testCreateMerchant_Success() throws Exception {
+        // test case
+        String email = "test@example.com";
+        String password = "password123";
+        Merchant savedMerchant = new Merchant();
+        savedMerchant.setMerchantId(1L);
+        savedMerchant.setEmail(email);
+        savedMerchant.setPassword(password);
 
-        when(merchantRepository.save(any(Merchant.class))).thenReturn(merchant);
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(merchantRepository.save(any(Merchant.class))).thenReturn(savedMerchant);
 
         mockMvc.perform(post("/create-merchant")
-                        .flashAttr("merchant", merchant))
+                        .param("email", email)
+                        .param("password", password))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/merchant?merchantId=1"));
+                .andExpect(redirectedUrl("/merchant-login"));
 
-        verify(merchantRepository, times(1)).save(any(Merchant.class));
+        // Verify repository interactions
+        verify(merchantRepository, times(1)).findByEmail(email);
+        verify(merchantRepository, times(1)).save(argThat(merchant ->
+                merchant.getEmail().equals(email) && merchant.getPassword().equals(password)
+        ));
     }
 
-//    @Test
-//    public void testCreateMerchant_SaveFails_ThrowsException() throws Exception {
-//        Merchant merchant = new Merchant();
-//
-//        // Simulate save failure
-//        when(merchantRepository.save(any(Merchant.class))).thenThrow(new RuntimeException("Database Error"));
-//
-//        mockMvc.perform(post("/create-merchant")
-//                        .flashAttr("merchant", merchant))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(merchantRepository, times(1)).save(any(Merchant.class));
-//    }
+    @Test
+    public void testCreateMerchant_EmailAlreadyExists() throws Exception {
+        // test case
+        String email = "existing@example.com";
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.of(new Merchant()));
+
+        mockMvc.perform(post("/create-merchant")
+                        .param("email", email)
+                        .param("password", "password123"))
+                .andExpect(status().isOk()) // Renders the same form
+                .andExpect(view().name("createMerchant"))
+                .andExpect(model().attribute("errorMessage", "Email already exists"));
+
+        verify(merchantRepository, times(1)).findByEmail(email);
+        verify(merchantRepository, never()).save(any(Merchant.class)); // Ensure no save occurs
+    }
+
+    // Tests for GET /merchant-login
+    @Test
+    public void testShowMerchantLoginForm() throws Exception {
+        mockMvc.perform(get("/merchant-login"))
+                .andExpect(status().isOk()) // Ensure the response is 200 OK
+                .andExpect(view().name("merchantLogin")); // Ensure the correct view is returned
+    }
+
+    //Tests for POST /merchant-login
+    @Test
+    public void testLoginMerchant_Success() throws Exception {
+        String email = "test@example.com";
+        String password = "password123";
+        Merchant merchant = new Merchant();
+        merchant.setMerchantId(1L);
+        merchant.setEmail(email);
+        merchant.setPassword(password);
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.of(merchant));
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isOk()) // Ensure 200 OK status
+                .andExpect(content().string("1")); // Expect merchant ID as the response
+
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginMerchant_InvalidPassword() throws Exception {
+        String email = "test@example.com";
+        String password = "wrongPassword";
+        Merchant merchant = new Merchant();
+        merchant.setMerchantId(1L);
+        merchant.setEmail(email);
+        merchant.setPassword("password123");
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.of(merchant));
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isUnauthorized()) // Ensure 401 Unauthorized status
+                .andExpect(content().string("Invalid password")); // Expect error message in response
+
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginMerchant_EmailNotFound() throws Exception {
+        String email = "nonexistent@example.com";
+        String password = "password123";
+
+        when(merchantRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/merchant-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isNotFound()) // Ensure 404 Not Found status
+                .andExpect(content().string("Email not found")); // Expect error message in response
+
+        // Verify repository interactions
+        verify(merchantRepository, times(1)).findByEmail(email);
+    }
 
     // Tests for GET /merchant
     @Test
