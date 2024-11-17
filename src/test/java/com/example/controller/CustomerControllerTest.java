@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -28,7 +29,7 @@ public class CustomerControllerTest {
     @MockBean
     private ShopRepository shopRepository;
 
-    // 1. Tests for GET /create-customer
+    // Tests for GET /create-customer
 
     @Test
     public void testShowCreateCustomerForm_ReturnsCreateCustomerView() throws Exception {
@@ -38,49 +39,116 @@ public class CustomerControllerTest {
                 .andExpect(view().name("createCustomer"));
     }
 
-    // 2. Tests for POST /create-customer
+    // Tests for POST /create-customer
+    @Test
+    public void testCreateCustomer_Success() throws Exception {
+        // test case
+        String email = "test@example.com";
+        String password = "password123";
+        Customer savedCustomer = new Customer();
+        savedCustomer.setCustomerId(1L);
+        savedCustomer.setEmail(email);
+        savedCustomer.setPassword(password);
 
-//    @Test
-//    public void testCreateShopper_RedirectsToShopperScreen() throws Exception {
-//        Customer customer = new Customer();
-//        customer.setCustomerId(1L);
-//
-//        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
-//
-//        mockMvc.perform(post("/create-customer")
-//                        .flashAttr("Customer", customer))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/shopper?customerId=1"));
-//
-//        verify(customerRepository, times(1)).save(any(Customer.class));
-//    }
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
-//    @Test
-//    public void testCreateShopper_MissingCustomerData_ReturnsError() throws Exception {
-//        Customer incompleteCustomer = new Customer();  // No required fields set
-//
-//        mockMvc.perform(post("/create-customer")
-//                        .flashAttr("Customer", incompleteCustomer))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(customerRepository, never()).save(any(Customer.class));
-//    }
+        mockMvc.perform(post("/create-customer")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customer-login"));
 
-//    @Test
-//    public void testCreateShopper_DatabaseSaveFails() throws Exception {
-//        Customer customer = new Customer();
-//
-//        // Simulate a database failure by throwing an exception
-//        when(customerRepository.save(any(Customer.class))).thenThrow(new RuntimeException("Database Error"));
-//
-//        mockMvc.perform(post("/create-customer")
-//                        .flashAttr("Customer", customer))
-//                .andExpect(status().isInternalServerError());  // Expecting a 500-series error
-//
-//        verify(customerRepository, times(1)).save(any(Customer.class));
-//    }
+        // Verify repository interactions
+        verify(customerRepository, times(1)).findByEmail(email);
+        verify(customerRepository, times(1)).save(argThat(customer ->
+                customer.getEmail().equals(email) && customer.getPassword().equals(password)
+        ));
+    }
 
-    // 3. Tests for GET /shopper
+    @Test
+    public void testCreateCustomer_EmailAlreadyExists() throws Exception {
+        // test case
+        String email = "existing@example.com";
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.of(new Customer()));
+
+        mockMvc.perform(post("/create-customer")
+                        .param("email", email)
+                        .param("password", "password123"))
+                .andExpect(status().isOk()) // Renders the same form
+                .andExpect(view().name("createCustomer"))
+                .andExpect(model().attribute("errorMessage", "Email already exists"));
+
+        verify(customerRepository, times(1)).findByEmail(email);
+        verify(customerRepository, never()).save(any(Customer.class)); // Ensure no save occurs
+    }
+
+    // Tests for GET /customer-login
+    @Test
+    public void testShowCustomerLoginForm() throws Exception {
+        mockMvc.perform(get("/customer-login"))
+                .andExpect(status().isOk()) // Ensure the response is 200 OK
+                .andExpect(view().name("customerLogin")); // Ensure the correct view is returned
+    }
+
+    //Tests for POST /customer-login
+    @Test
+    public void testLoginCustomer_Success() throws Exception {
+        String email = "test@example.com";
+        String password = "password123";
+        Customer customer = new Customer();
+        customer.setCustomerId(1L);
+        customer.setEmail(email);
+        customer.setPassword(password);
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.of(customer));
+
+        mockMvc.perform(post("/customer-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isOk()) // Ensure 200 OK status
+                .andExpect(content().string("1")); // Expect customer ID as the response
+
+        verify(customerRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginCustomer_InvalidPassword() throws Exception {
+        String email = "test@example.com";
+        String password = "wrongPassword";
+        Customer customer = new Customer();
+        customer.setCustomerId(1L);
+        customer.setEmail(email);
+        customer.setPassword("password123");
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.of(customer));
+
+        mockMvc.perform(post("/customer-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isUnauthorized()) // Ensure 401 Unauthorized status
+                .andExpect(content().string("Invalid password")); // Expect error message in response
+
+        verify(customerRepository, times(1)).findByEmail(email);
+    }
+    @Test
+    public void testLoginCustomer_EmailNotFound() throws Exception {
+        String email = "nonexistent@example.com";
+        String password = "password123";
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/customer-login")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().isNotFound()) // Ensure 404 Not Found status
+                .andExpect(content().string("Email not found")); // Expect error message in response
+
+        // Verify repository interactions
+        verify(customerRepository, times(1)).findByEmail(email);
+    }
+
+
+    // Tests for GET /shopper
 
     @Test
     public void testOpenCustomerScreen_WithShops_ReturnsCustomerScreenView() throws Exception {
