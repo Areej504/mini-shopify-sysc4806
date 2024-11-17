@@ -54,16 +54,6 @@
             padding: 15px 0;
         }
 
-        .promotion-banner {
-            background-color: red;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
         /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
         .sign-in-button {
             position: absolute;
@@ -213,33 +203,13 @@
         <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
-    <!-- Green Top Banner for the Shop -->
-<!--    <div class="top-banner" th:text="${shop.name}">Shop Name</div>-->
-
-    <!-- Store-Wide Promotion Banner -->
-<!--    <div class="promotion-banner" th:if="${shop.promotion}">-->
-<!--        <p th:text="${shop.promotion.title}">Buy one, get one free</p>-->
-<!--    </div>-->
-<!--    <div class="promotion-banner" th:if="${shop.promotion}">-->
-<!--        <p th:text="${shop.promotion.promotionType}">Buy one, get one free</p>-->
-<!--    </div>-->
-
     <!-- Full Width Description Banner -->
     <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
 
     <!-- Checkout Button outside the white box -->
     <div class="cart-container">
-        <button id="cart-button" class="cart-button" onclick="window.location.href='/cartView'">
-            View Cart
-        </button>
+        <button class="cart-button" th:text="'Cart (' + ${totalItemsInCart} + ' items)'" onclick="window.location.href='/cartView'">Go to Cart</button>
     </div>
-
-    <!-- Promotion Banner -->
-    <div class="promotion-banner" th:if="${shop.shopPromotions}">
-        <p th:text="'Promotion: ' + ${shop.shopPromotions.promotionType.description}"></p>
-        <p th:text="'Valid: ' + ${shop.shopPromotions.startDate} + ' to ' + ${shop.shopPromotions.endDate}"></p>
-    </div>
-
 
     <!-- Search Bar -->
     <div class="search-container">
@@ -267,37 +237,15 @@
             </div>
 
             <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.productId} + ')'">Add to Cart</button>
-
-            <script>
-                async function addToCart(productId) {
-                    try {
-                        const response = await fetch('/addToCart', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ productId: productId }),
-                        });
-
-                        if (response.ok) {
-                            const result = await response.json();
-                            alert(result.message);
-                            location.reload(); // Reload the page to update cart item count
-                        } else {
-                            alert('Failed to add the product to the cart.');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
-                }
-
-            </script>
-
         </div>
     </div>
 </div>
 
 <script>
+    function addToCart(productId) {
+        console.log("Adding product with ID:", productId);
+    }
+
     document.getElementById('search-input').addEventListener('input', function() {
         const filterText = this.value.toLowerCase().trim();
         const products = document.querySelectorAll('.product-card');
