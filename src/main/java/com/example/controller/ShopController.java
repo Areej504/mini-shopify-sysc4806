@@ -103,12 +103,24 @@ public class ShopController {
 
             CartItem cartItem = optionalCartItem.get();
 
+            // Check inventory limit
+            Product product = cartItem.getProduct();
+            if (product == null) {
+                return ResponseEntity.status(400).body("Product associated with the CartItem is missing");
+            }
+
+            int currentQuantity = cartItem.getQuantity();
+            int inventoryCount = product.getInventory();
+
             // Update quantity based on action
             if ("increase".equals(action)) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                if (currentQuantity + 1 > inventoryCount) {
+                    return ResponseEntity.status(400).body("Cannot exceed available inventory");
+                }
+                cartItem.setQuantity(currentQuantity + 1);
             } else if ("decrease".equals(action)) {
-                if (cartItem.getQuantity() > 1) {
-                    cartItem.setQuantity(cartItem.getQuantity() - 1);
+                if (currentQuantity > 1) {
+                    cartItem.setQuantity(currentQuantity - 1);
                 } else {
                     return ResponseEntity.status(400).body("Quantity cannot be less than 1");
                 }
@@ -127,6 +139,7 @@ public class ShopController {
             return ResponseEntity.status(500).body("An error occurred while updating the quantity");
         }
     }
+
 
     @GetMapping("/paymentView")
     public String openPaymentView(Model model){
