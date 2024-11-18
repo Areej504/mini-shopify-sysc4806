@@ -404,46 +404,46 @@
 <!--    </div>-->
 <!--</div>-->
 
-<!--<div class="top-banner">-->
-<!--    <span th:if="${storePromotion}" th:text="${storePromotion.title}">Discount up to 25%</span>-->
-<!--</div>-->
+<div class="top-banner">
+    <span th:if="${storePromotion}" th:text="${storePromotion.title}">Discount up to 25%</span>
+</div>
 
-<!--<div id="setPromotionModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <h3>Set Store-Wide Promotion</h3>-->
-<!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
-<!--            &lt;!&ndash; Promotion Dropdown &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionType">Select Promotion Type:</label>-->
-<!--                <select id="promotionType" name="promotionType" required>-->
-<!--                    <option value="" disabled selected>Select a promotion</option>-->
-<!--                    <option th:each="promotion : ${PromotionType.values()}"-->
-<!--                            th:value="${promotion.name()}"-->
-<!--                            th:text="${promotion.description}"></option>-->
-<!--                </select>-->
-<!--            </div>-->
+<div id="setPromotionModal" class="modal">
+    <div class="modal-content">
+        <h3>Set Store-Wide Promotion</h3>
+        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">
+            <!-- Promotion Title -->
+            <div class="form-group">
+                <label for="promotionTitle">Promotion Title:</label>
+                <input type="text" id="promotionTitle" name="promotionTitle" placeholder="e.g., Discount up to 25%" required>
+            </div>
 
-<!--            &lt;!&ndash; Start Date &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionStartDate">Start Date:</label>-->
-<!--                <input type="date" id="promotionStartDate" name="startDate" required>-->
-<!--            </div>-->
+            <!-- Promotion Description -->
+            <div class="form-group">
+                <label for="promotionDescription">Promotion Description:</label>
+                <textarea id="promotionDescription" name="promotionDescription" rows="3" placeholder="Provide details about the promotion" required></textarea>
+            </div>
 
-<!--            &lt;!&ndash; End Date &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionEndDate">End Date:</label>-->
-<!--                <input type="date" id="promotionEndDate" name="endDate" required>-->
-<!--            </div>-->
+            <!-- Start and End Dates -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="promotionStartDate">Start Date:</label>
+                    <input type="date" id="promotionStartDate" name="promotionStartDate" required>
+                </div>
+                <div class="form-group half-width">
+                    <label for="promotionEndDate">End Date:</label>
+                    <input type="date" id="promotionEndDate" name="promotionEndDate" required>
+                </div>
+            </div>
 
-<!--            &lt;!&ndash; Button Row &ndash;&gt;-->
-<!--            <div class="button-row">-->
-<!--                <button type="submit">Set Promotion</button>-->
-<!--                <button type="button" onclick="closeModal('setPromotionModal')">Close</button>-->
-<!--            </div>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
+            <!-- Button Row -->
+            <div class="button-row">
+                <button type="submit">Set Promotion</button>
+                <button type="button" onclick="closeModal('setPromotionModal')">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
@@ -461,52 +461,6 @@
     </div>
 </div>
 
-<!-- Set Promotion Button -->
-<button onclick="openPromotionModal()">Set Promotion</button>
-
-<!-- Promotion Modal -->
-<div id="setPromotionModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h3>Set Store-Wide Promotion</h3>
-        <form id="storePromotionForm" action="/setShopPromotion" method="POST">
-            <!-- Hidden Fields -->
-            <input type="hidden" name="merchantId" value="12345"> <!-- Dynamically set merchant ID -->
-            <input type="hidden" id="shopId" name="shopId" value="1"> <!-- Dynamically set shop ID -->
-
-            <!-- Promotion Type Dropdown -->
-            <div>
-                <label for="promotionType">Promotion Type:</label>
-                <select id="promotionType" name="promotionType" required>
-                    <option value="" disabled selected>Select a promotion</option>
-                    <option th:each="promotion : ${PromotionType}"
-                            th:value="${promotion}"
-                            th:text="${promotion.description}">
-                    </option>
-                </select>
-            </div>
-
-            <!-- Start Date -->
-            <div>
-                <label for="startDate">Start Date:</label>
-                <input type="date" id="startDate" name="startDate" required>
-            </div>
-
-            <!-- End Date -->
-            <div>
-                <label for="endDate">End Date:</label>
-                <input type="date" id="endDate" name="endDate" required>
-            </div>
-
-            <!-- Submit Button -->
-            <div>
-                <button type="submit">Set Promotion</button>
-            </div>
-        </form>
-        <button onclick="closePromotionModal()">Close</button>
-    </div>
-</div>
-
-//a form that submits ajax,
 
 <script th:inline="javascript">
     // Embed the shopId from Thymeleaf
@@ -612,51 +566,30 @@
                 alert("An error occurred while deleting the product.");
             });
     }
+    function submitStorePromotion(event) {
+        event.preventDefault(); // Prevent default form submission behavior
 
-    function openPromotionModal(shopId) {
-        document.getElementById('shopId').value = shopId;
-        document.getElementById('setPromotionModal').style.display = 'block';
+        const form = document.getElementById('storePromotionForm');
+        const formData = new FormData(form);
+
+        fetch('/merchantShop/storePromotion', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Store-wide promotion set successfully!');
+                    closeModal('setPromotionModal'); // Close the modal
+                    // Optionally update the store view to display the promotion
+                } else {
+                    alert('Failed to set promotion. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while setting the promotion.');
+            });
     }
-
-    function closePromotionModal() {
-        document.getElementById('setPromotionModal').style.display = 'none';
-    }
-
-
-    // function submitStorePromotion(event) {
-    //     event.preventDefault(); // Prevent default form submission
-    //
-    //     const promotionType = document.getElementById('promotionType').value;
-    //     const startDate = document.getElementById('promotionStartDate').value;
-    //     const endDate = document.getElementById('promotionEndDate').value;
-    //
-    //     const promotionData = {
-    //         promotionType,
-    //         startDate,
-    //         endDate
-    //     };
-    //
-    //     fetch('/merchantShop/storePromotion', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(promotionData),
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 alert('Store-wide promotion set successfully!');
-    //                 closeModal('setPromotionModal'); // Close the modal
-    //             } else {
-    //                 alert('Failed to set promotion. Please try again.');
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error:', error);
-    //             alert('An error occurred while setting the promotion.');
-    //         });
-    // }
-
 
 
 </script>

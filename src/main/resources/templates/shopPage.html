@@ -54,16 +54,6 @@
             padding: 15px 0;
         }
 
-        .promotion-banner {
-            background-color: red;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
         /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
         .sign-in-button {
             position: absolute;
@@ -213,17 +203,6 @@
         <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
-    <!-- Green Top Banner for the Shop -->
-<!--    <div class="top-banner" th:text="${shop.name}">Shop Name</div>-->
-
-    <!-- Store-Wide Promotion Banner -->
-<!--    <div class="promotion-banner" th:if="${shop.promotion}">-->
-<!--        <p th:text="${shop.promotion.title}">Buy one, get one free</p>-->
-<!--    </div>-->
-<!--    <div class="promotion-banner" th:if="${shop.promotion}">-->
-<!--        <p th:text="${shop.promotion.promotionType}">Buy one, get one free</p>-->
-<!--    </div>-->
-
     <!-- Full Width Description Banner -->
     <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
 
@@ -231,13 +210,6 @@
     <div class="cart-container">
         <button class="cart-button" th:text="'Cart (' + ${totalItemsInCart} + ' items)'" onclick="window.location.href='/cartView'">Go to Cart</button>
     </div>
-
-    <!-- Promotion Banner -->
-    <div class="promotion-banner" th:if="${shop.shopPromotions}">
-        <p th:text="'Promotion: ' + ${shop.shopPromotions.promotionType.description}"></p>
-        <p th:text="'Valid: ' + ${shop.shopPromotions.startDate} + ' to ' + ${shop.shopPromotions.endDate}"></p>
-    </div>
-
 
     <!-- Search Bar -->
     <div class="search-container">
