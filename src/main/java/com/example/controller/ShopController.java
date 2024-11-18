@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class ShopController {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @GetMapping("/shopPage/{shopId}")
     public String getShopDetails(@PathVariable Long shopId, Model model) {
@@ -82,6 +86,46 @@ public class ShopController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Product added to cart successfully!");
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/cart/updateQuantity")
+    @ResponseBody
+    public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload) {
+        try {
+            // Ensure cartItemId is a number
+            Long cartItemId = Long.parseLong(payload.get("cartItemId").toString());
+            String action = payload.get("action").toString();
+
+            // Find CartItem
+            Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemId);
+            if (optionalCartItem.isEmpty()) {
+                return ResponseEntity.status(404).body("CartItem not found");
+            }
+
+            CartItem cartItem = optionalCartItem.get();
+
+            // Update quantity based on action
+            if ("increase".equals(action)) {
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+            } else if ("decrease".equals(action)) {
+                if (cartItem.getQuantity() > 1) {
+                    cartItem.setQuantity(cartItem.getQuantity() - 1);
+                } else {
+                    return ResponseEntity.status(400).body("Quantity cannot be less than 1");
+                }
+            } else {
+                return ResponseEntity.status(400).body("Invalid action");
+            }
+
+            // Save updated cart item
+            cartItemRepository.save(cartItem);
+            return ResponseEntity.ok("Quantity updated successfully");
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).body("Invalid cartItemId format");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred while updating the quantity");
+        }
     }
 
     @GetMapping("/paymentView")

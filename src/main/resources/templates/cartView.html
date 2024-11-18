@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+>
 <head>
     <title>Shopping Cart</title>
     <style>
@@ -14,74 +15,43 @@
         body, html {
             width: 100%;
             height: 100%;
-            margin: 0;
-            padding: 0;
             background-color: #f5f7fa;
             color: #333;
         }
 
-        /* Full-width container to remove side margins */
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Full Width Banner for Shop Name and Description */
         .shop-header {
-            width: 100vw; /* Full viewport width */
-            background-color: #003f4d; /* Dark muted color */
+            background-color: #003f4d;
             color: white;
             text-align: center;
-            padding: 20px 0; /* Adequate padding for clarity */
+            padding: 20px 0;
         }
 
         .shop-header h1 {
             font-size: 2em;
-            margin: 0;
         }
 
-        .shop-description-banner {
-            width: 100vw; /* Full width */
-            background-color: #003f4d; /* Darker, muted color */
-            color: white;
-            font-size: 1.1em;
-            text-align: center;
-            padding: 15px 0; /* Smaller padding */
-        }
-
-        /* Basic styles for the cart page */
         .container {
             display: flex;
-            width: 80%;
+            width: 90%;
             max-width: 1200px;
             margin: 40px auto;
             background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            overflow: hidden;
         }
 
-        /* Cart items section */
         .cart-items {
             width: 70%;
             padding: 20px;
-            max-height: 600px;
-            overflow-y: auto;
             border-right: 1px solid #e0e0e0;
         }
 
         .cart-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            justify-content: space-between;
+            padding: 15px 0;
             border-bottom: 1px solid #e0e0e0;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
         }
 
         .cart-item img {
@@ -96,11 +66,30 @@
             margin-left: 15px;
         }
 
-        .cart-item-price {
-            font-weight: bold;
+        .cart-item-details p {
+            margin: 5px 0;
         }
 
-        /* Order summary section */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-control button {
+            border: none;
+            background-color: #01a6cf;
+            color: white;
+            font-size: 18px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-control button:hover {
+            background-color: #126b80;
+        }
+
         .order-summary {
             width: 30%;
             padding: 20px;
@@ -135,28 +124,59 @@
             background-color: #126b80;
         }
     </style>
+    <script>
+        async function updateQuantity(cartItemId, action) {
+            console.log("Updating quantity for:", cartItemId, "Action:", action); // Debug log
+
+            try {
+                const response = await fetch('/cart/updateQuantity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cartItemId: cartItemId, action: action }),
+                });
+
+                if (response.ok) {
+                    location.reload(); // Reload the page to reflect updated cart
+                } else {
+                    const errorMessage = await response.text();
+                    alert(errorMessage); // Show server error message
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+            }
+        }
+
+    </script>
+
+
 </head>
 <body>
-<!-- Full-width Shop Header with Name and Description -->
 <div class="shop-header">
     <h1 th:text="${shopName}">Shop Name</h1>
 </div>
 
-<div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
-
-<!-- Cart Page Container -->
 <div class="container">
     <!-- Cart Items Section -->
     <div class="cart-items">
         <h2>Your Cart</h2>
         <div th:each="item : ${cartItems}" class="cart-item">
-<!--            <img th:src="${item.product.imageUrl}" alt="Product Image">-->
+            <img th:src="${item.product.imageURL}" alt="Product Image">
             <div class="cart-item-details">
                 <p th:text="${item.product.productName}">Product Name</p>
                 <p class="cart-item-price" th:text="'$' + ${item.product.price}">Price</p>
-                <p>Quantity: <span th:text="${item.quantity}">1</span></p>
+                <div class="quantity-control">
+                    <button class="decrease-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
+                    <span th:text="${item.quantity}">1</span>
+                    <button class="increase-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
+
+
+                </div>
+
             </div>
         </div>
+
     </div>
 
     <!-- Order Summary Section -->
