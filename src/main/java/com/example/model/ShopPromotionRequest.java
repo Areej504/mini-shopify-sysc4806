@@ -1,11 +1,11 @@
 package com.example.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 
-public class ShopPromotionDates {
+public class ShopPromotionRequest {
+
+
+    private Long shopId;
     private PromotionType promotionType; // Use enum here
     private LocalDate startDate;
     private LocalDate endDate;
@@ -17,6 +17,14 @@ public class ShopPromotionDates {
 
     public void setPromotionType(PromotionType promotionType) {
         this.promotionType = promotionType;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 
     public LocalDate getStartDate() {

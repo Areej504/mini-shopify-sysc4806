@@ -22,6 +22,9 @@ public class Shop {
     @Enumerated(EnumType.STRING)
     private Set<Category> categories;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ShopPromotions shopPromotions;
+
     @ManyToOne
     @JoinColumn(name = "merchant_id")  // Specifies the foreign key column
     private Merchant merchant;
@@ -37,8 +40,6 @@ public class Shop {
         this.shopPromotions = shopPromotions;
     }
 
-    @OneToOne
-    private ShopPromotions shopPromotions;
 
     public Shop() {}
 

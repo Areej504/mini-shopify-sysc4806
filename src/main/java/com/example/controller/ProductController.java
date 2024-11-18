@@ -27,6 +27,8 @@ public class ProductController {
     private ProductRepository productRepository;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @GetMapping("/merchantShop/{shopId}")
     public String viewMerchantShop(@PathVariable Long shopId, Model model) {
@@ -159,4 +161,27 @@ public class ProductController {
 
         return ResponseEntity.ok(product); // Return the product details as JSON
     }
+
+//    @GetMapping("/setShopPromotion")
+//    public String setPromotion(Model model) {
+//        model.addAttribute("PromotionType", PromotionType.values());
+//        return "merchantShop";
+//    }
+//
+////    @PostMapping("/shopPromotion")
+////    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionRequest request) {
+////        try {
+////            ShopPromotions promotion = new ShopPromotions();
+////            promotion.setPromotionType(request.getPromotionType());
+////            promotion.setStartDate(request.getStartDate());
+////            promotion.setEndDate(request.getEndDate());
+////
+////            // Save the promotion using the service
+////            promotionRepository.save(promotion);
+////
+////            return ResponseEntity.ok("Promotion set successfully!");
+////        } catch (Exception e) {
+////            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
+////        }
+////    }
 }
