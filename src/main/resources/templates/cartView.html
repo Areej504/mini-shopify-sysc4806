@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Shopping Cart</title>
     <style>
@@ -123,34 +122,60 @@
         .checkout-button:hover {
             background-color: #126b80;
         }
+        .remove-btn {
+            border: none;
+            background-color: transparent;
+            color: #d9534f;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .remove-btn:hover {
+            color: #c9302c;
+        }
     </style>
     <script>
         async function updateQuantity(cartItemId, action) {
-            console.log("Updating quantity for:", cartItemId, "Action:", action); // Debug log
-
             try {
                 const response = await fetch('/cart/updateQuantity', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cartItemId: cartItemId, action: action }),
+                    body: JSON.stringify({ cartItemId, action }),
                 });
 
                 if (response.ok) {
-                    location.reload(); // Reload the page to reflect updated cart
+                    location.reload(); // Refresh the page to reflect changes
                 } else {
                     const errorMessage = await response.text();
-                    alert(errorMessage); // Show server error message
+                    alert(errorMessage);
                 }
             } catch (error) {
                 console.error('Error updating quantity:', error);
             }
         }
 
+        async function removeFromCart(cartItemId) {
+            try {
+                const response = await fetch('/cart/removeItem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cartItemId }),
+                });
+
+                if (response.ok) {
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    const errorMessage = await response.text();
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error removing item from cart:', error);
+            }
+        }
     </script>
-
-
 </head>
 <body>
 <div class="shop-header">
@@ -170,13 +195,12 @@
                     <button class="decrease-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
                     <span th:text="${item.quantity}">1</span>
                     <button class="increase-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
-
-
                 </div>
-
             </div>
+            <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ')'">
+                🗑
+            </button>
         </div>
-
     </div>
 
     <!-- Order Summary Section -->
