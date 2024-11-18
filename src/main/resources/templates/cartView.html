@@ -150,10 +150,11 @@
     <div class="cart-items">
         <h2>Your Cart</h2>
         <div th:each="item : ${cartItems}" class="cart-item">
-            <img th:src="${item.imageUrl}" alt="Product Image">
+<!--            <img th:src="${item.product.imageUrl}" alt="Product Image">-->
             <div class="cart-item-details">
-                <p th:text="${item.name}">Product Name</p>
-                <p class="cart-item-price" th:text="'$' + ${item.price}">Price</p>
+                <p th:text="${item.product.productName}">Product Name</p>
+                <p class="cart-item-price" th:text="'$' + ${item.product.price}">Price</p>
+                <p>Quantity: <span th:text="${item.quantity}">1</span></p>
             </div>
         </div>
     </div>

@@ -208,7 +208,9 @@
 
     <!-- Checkout Button outside the white box -->
     <div class="cart-container">
-        <button class="cart-button" th:text="'Cart (' + ${totalItemsInCart} + ' items)'" onclick="window.location.href='/cartView'">Go to Cart</button>
+        <button id="cart-button" class="cart-button" onclick="window.location.href='/cartView'">
+            View Cart
+        </button>
     </div>
 
     <!-- Search Bar -->
@@ -237,15 +239,37 @@
             </div>
 
             <button class="add-to-cart-btn" th:onclick="'addToCart(' + ${product.productId} + ')'">Add to Cart</button>
+
+            <script>
+                async function addToCart(productId) {
+                    try {
+                        const response = await fetch('/addToCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ productId: productId }),
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            alert(result.message);
+                            location.reload(); // Reload the page to update cart item count
+                        } else {
+                            alert('Failed to add the product to the cart.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+            </script>
+
         </div>
     </div>
 </div>
 
 <script>
-    function addToCart(productId) {
-        console.log("Adding product with ID:", productId);
-    }
-
     document.getElementById('search-input').addEventListener('input', function() {
         const filterText = this.value.toLowerCase().trim();
         const products = document.querySelectorAll('.product-card');
