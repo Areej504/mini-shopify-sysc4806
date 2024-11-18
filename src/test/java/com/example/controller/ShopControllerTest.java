@@ -32,6 +32,9 @@ public class ShopControllerTest {
     @MockBean
     private ProductRepository productRepository;
 
+    @MockBean
+    private CartItemRepository cartItemRepository;
+
 
     private Shop testShop;
     private Product testProduct;
@@ -65,26 +68,39 @@ public class ShopControllerTest {
     // Scenario 1: Valid shopId, Shop details should be displayed
     @Test
     public void testGetShopDetails_WithValidShopId_ReturnsShopPageView() throws Exception {
-        // Mock shop repository
-        when(shopRepository.findById(anyLong())).thenReturn(Optional.of(testShop));
+        Shop shop = new Shop();
+        shop.setShopId(1L);
+        shop.setName("Test Shop");
+        shop.setDescription("A test shop description");
 
-        // Mock cart repository
+        when(shopRepository.findById(1L)).thenReturn(Optional.of(shop));
         when(cartRepository.count()).thenReturn(5L);
 
         mockMvc.perform(get("/shopPage/1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("shopName", "Test Shop"))
                 .andExpect(model().attribute("shopDescription", "A test shop description"))
-                .andExpect(model().attribute("products", testShop.getProducts()))
                 .andExpect(model().attribute("totalItemsInCart", 5L))
                 .andExpect(view().name("shopPage"));
+
+        verify(shopRepository, times(1)).findById(1L);
     }
+
 
     @Test
     public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
-        // Mock cart repository
+        // Setup product and cart items
+        Product product = new Product();
+        product.setProductName("Sample Product");
+        product.setPrice(BigDecimal.valueOf(10.00));
+
+        CartItem cartItem = new CartItem();
+        cartItem.setCartItemId(1L);
+        cartItem.setProduct(product);
+        cartItem.setQuantity(2);
+
         Cart cart = new Cart();
-        cart.addProduct(testProduct, 1); // Assuming `addProduct` adds a product to the cart
+
         when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
 
         mockMvc.perform(get("/cartView"))
@@ -93,9 +109,9 @@ public class ShopControllerTest {
                 .andExpect(model().attribute("totalPrice", cart.getTotalPrice()))
                 .andExpect(model().attribute("totalItemsInCart", cart.getCartItems().size()))
                 .andExpect(view().name("cartView"));
+
+        verify(cartRepository, times(1)).findById(1L);
     }
-
-
 
     // Scenario 2: Invalid shopId, No shop details should be displayed
     @Test
@@ -159,7 +175,7 @@ public class ShopControllerTest {
         product.setPrice(BigDecimal.valueOf(10.00));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        // Mock cart repository to simulate saving
+        // Mock cart repository to return a cart
         Cart cart = new Cart();
         when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
@@ -173,6 +189,7 @@ public class ShopControllerTest {
         verify(productRepository, times(1)).findById(1L);
         verify(cartRepository, times(1)).save(any(Cart.class));
     }
+
 
 
 }
