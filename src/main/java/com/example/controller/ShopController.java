@@ -140,6 +140,32 @@ public class ShopController {
         }
     }
 
+    @PostMapping("/cart/removeItem")
+    @ResponseBody
+    public ResponseEntity<String> removeFromCart(@RequestBody Map<String, Object> payload) {
+        try {
+            // Parse cartItemId
+            Long cartItemId = Long.parseLong(payload.get("cartItemId").toString());
+
+            // Find the CartItem
+            Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemId);
+            if (optionalCartItem.isEmpty()) {
+                return ResponseEntity.status(404).body("CartItem not found");
+            }
+
+            // Remove the CartItem
+            cartItemRepository.delete(optionalCartItem.get());
+
+            return ResponseEntity.ok("Item removed successfully");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).body("Invalid cartItemId format");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred while removing the item");
+        }
+    }
+
+
 
     @GetMapping("/paymentView")
     public String openPaymentView(Model model){
