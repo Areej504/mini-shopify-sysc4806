@@ -20,6 +20,8 @@ public class MerchantController {
     private MerchantRepository merchantRepository;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     //create Merchant page
     @GetMapping("/create-merchant")
@@ -131,5 +133,102 @@ public class MerchantController {
         return "manageStores";
     }
 
+    @GetMapping("/merchantShop/{shopId}")
+    public String getMerchantShop(@PathVariable Long shopId, Model model) {
+        // Code to fetch shop details and products
+        model.addAttribute("shopId", shopId);
+        return "merchantShop";
+    }
 
+    @GetMapping("/shopPromotion/{shopId}")
+    public String setPromotion(@PathVariable Long shopId, Model model) {
+//        model.addAttribute("PromotionType", PromotionType.values());
+//        return "merchantShop";
+        Optional<Shop> shop = shopRepository.findById(shopId);
+        if (shop.isPresent()) {
+            model.addAttribute("shop", shop.get());
+            model.addAttribute("PromotionType", PromotionType.values());
+            System.out.println(PromotionType.values());
+            // Add promotion types
+        } else {
+            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
+        }
+        return "merchantShop"; // Ensure this is the correct template
+    }
+
+    @PostMapping("/shopPromotion/{shopId}")
+    public String setShopPromotion(@RequestParam Long merchantId, @ModelAttribute ShopPromotionRequest request) {
+        Optional<Shop> shopOptional = shopRepository.findById(request.getShopId());
+        if (shopOptional.isPresent()) {
+            Shop shop = shopOptional.get();
+
+            // Create or update the promotion
+            ShopPromotions promotion = new ShopPromotions();
+            promotion.setPromotionType(request.getPromotionType());
+            promotion.setStartDate(request.getStartDate());
+            promotion.setEndDate(request.getEndDate());
+
+            shop.setShopPromotions(promotion);
+            shopRepository.save(shop);
+        }
+        return "merchantShop" + merchantId; // Use @RequestParam directly
+
+    }
+
+
+//    @PostMapping("/shopPromotion")
+//    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionRequest request) {
+//        try {
+//            ShopPromotions promotion = new ShopPromotions();
+//            promotion.setPromotionType(request.getPromotionType());
+//            promotion.setStartDate(request.getStartDate());
+//            promotion.setEndDate(request.getEndDate());
+//
+//            // Save the promotion using the service
+//            promotionRepository.save(promotion);
+//
+//            return ResponseEntity.ok("Promotion set successfully!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
+//        }
+//    }
 }
+
+//    @GetMapping("/merchantShop")
+//    public String getMerchantShopPage(@RequestParam Long shopId, Model model) {
+//        // Retrieve shop details if needed
+//        Optional<Shop> shopOptional = shopRepository.findById(shopId);
+//        if (shopOptional.isPresent()) {
+//            Shop shop = shopOptional.get();
+//            model.addAttribute("shop", shop);
+//        }
+//
+//        // Add PromotionType values to the model
+//        model.addAttribute("PromotionType", PromotionType.values());
+//
+//        return "merchantShop"; // Return the Thymeleaf template
+//    }
+
+
+//    public String setStorePromotion(@RequestParam Long shopId,
+//                                    @ModelAttribute ShopPromotionRequest request,
+//                                    Model model) {
+//        Optional<Shop> shopOptional = shopRepository.findById(shopId);
+//        if (shopOptional.isPresent()) {
+//            Shop shop = shopOptional.get();
+//
+//            ShopPromotions promotion = new ShopPromotions();
+//            promotion.setPromotionType(request.getPromotionType());
+//            promotion.setStartDate(request.getStartDate());
+//            promotion.setEndDate(request.getEndDate());
+//
+//            shop.setShopPromotions(promotion);
+//            shopRepository.save(shop);
+//
+//            model.addAttribute("message", "Promotion set successfully!");
+//        } else {
+//            model.addAttribute("errorMessage", "Shop not found.");
+//        }
+//        return "redirect:/manageStores?merchantId=" + shopId;
+//    }
+

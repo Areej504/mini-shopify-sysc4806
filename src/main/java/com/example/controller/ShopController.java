@@ -57,27 +57,27 @@ public class ShopController {
         return "paymentView";
     }
 
-    @GetMapping("/setPromotion")
-    public String setPromotion(Model model) {
-        model.addAttribute("PromotionType", PromotionType.values());
-        return "merchantShop";
-    }
-
-    @PostMapping("/storePromotion")
-    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionDates request) {
-        try {
-            ShopPromotions promotion = new ShopPromotions();
-            promotion.setPromotionType(request.getPromotionType());
-            promotion.setStartDate(request.getStartDate());
-            promotion.setEndDate(request.getEndDate());
-
-            // Save the promotion using the service
-            promotionRepository.save(promotion);
-
-            return ResponseEntity.ok("Promotion set successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
-        }
-    }
+//    @GetMapping("/setPromotion")
+//    public String setPromotion(Model model) {
+//        model.addAttribute("PromotionType", PromotionType.values());
+//        return "merchantShop";
+//    }
+//
+//    @PostMapping("/storePromotion")
+//    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionDates request) {
+//        try {
+//            ShopPromotions promotion = new ShopPromotions();
+//            promotion.setPromotionType(request.getPromotionType());
+//            promotion.setStartDate(request.getStartDate());
+//            promotion.setEndDate(request.getEndDate());
+//
+//            // Save the promotion using the service
+//            promotionRepository.save(promotion);
+//
+//            return ResponseEntity.ok("Promotion set successfully!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
+//        }
+//    }
 
 }
