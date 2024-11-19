@@ -396,35 +396,25 @@
 </div>
 
 
-<!--<div id="setPromotionModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <h3>Set Promotion</h3>-->
-<!--        <p>Enter details to set a promotion.</p>-->
-<!--        <button onclick="closeModal('setPromotionModal')">Close</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<div class="top-banner">
-    <span th:if="${storePromotion}" th:text="${storePromotion.title}">Discount up to 25%</span>
-</div>
-
 <div id="setPromotionModal" class="modal">
     <div class="modal-content">
         <h3>Set Store-Wide Promotion</h3>
-        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">
+        <form id="storePromotionForm" th:action="@{/submitPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
             <!-- Promotion Title -->
-            <div class="form-group">
+            <div class="form-group half-width">
                 <label for="promotionTitle">Promotion Title:</label>
-                <input type="text" id="promotionTitle" name="promotionTitle" placeholder="e.g., Discount up to 25%" required>
+                <select id="promotionTitle" name="promotion" required th:field="*{promotion}">
+                    <option value="" disabled selected>Select a promotion</option>
+                    <option th:each="promotion : ${storePromotions}" th:value="${promotion}" th:text="${promotion}"></option>
+                </select>
             </div>
 
             <!-- Promotion Description -->
             <div class="form-group">
-                <label for="promotionDescription">Promotion Description:</label>
-                <textarea id="promotionDescription" name="promotionDescription" rows="3" placeholder="Provide details about the promotion" required></textarea>
+                <label for="shopDescription">Shop Description:</label>
+                <textarea id="shopDescription" name="description" rows="3" placeholder="Provide details about the shop" required></textarea>
             </div>
 
-            <!-- Start and End Dates -->
             <div class="form-row">
                 <div class="form-group half-width">
                     <label for="promotionStartDate">Start Date:</label>
@@ -444,6 +434,8 @@
         </form>
     </div>
 </div>
+
+
 
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
