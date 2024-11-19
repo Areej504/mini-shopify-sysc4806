@@ -4,17 +4,25 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table (name="product", schema = "public")
 public class Product {
     @Id
     @GeneratedValue
     private Long productId;
 
+    @Column
     private String productName;
+    @Column
     private String description;
+    @Column
     private BigDecimal price;
+    @Column
     private BigDecimal discountedPrice;
+    @Column
     private Category category;
+    @Column
     private int inventory;
+    @Column
     private String imageURL;
 
     @Enumerated(EnumType.STRING)
@@ -39,13 +47,9 @@ public class Product {
     }
 
     // Getters and Setters
-    public Long getProductId() {
-        return productId;
-    }
+    public Long getProductId() { return productId; }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+    public void setProductId(Long productId) { this.productId = productId; }
 
     public String getImageURL(){return imageURL;}
 

@@ -3,6 +3,8 @@ package com.example.controller;
 import com.example.model.*;
 import java.math.BigDecimal;
 
+import com.example.repository.ProductRepository;
+import com.example.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

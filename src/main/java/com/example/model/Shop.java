@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name="shops", schema = "public")
 public class Shop {
     @Id
     @GeneratedValue

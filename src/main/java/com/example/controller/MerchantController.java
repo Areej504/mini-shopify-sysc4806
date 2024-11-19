@@ -1,6 +1,9 @@
 package com.example.controller;
 
 import com.example.model.*;
+import com.example.repository.MerchantRepository;
+import com.example.repository.ShopRepository;
+import com.example.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +15,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class MerchantController {
     @Autowired
     private MerchantRepository merchantRepository;
+    private MerchantService merchantService;
+
     @Autowired
     private ShopRepository shopRepository;
 

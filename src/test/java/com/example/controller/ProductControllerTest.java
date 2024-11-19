@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.model.*;
+import com.example.repository.ProductRepository;
+import com.example.repository.ShopRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

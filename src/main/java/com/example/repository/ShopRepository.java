@@ -1,5 +1,7 @@
-package com.example.model;
+package com.example.repository;
 
+import com.example.model.Merchant;
+import com.example.model.Shop;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

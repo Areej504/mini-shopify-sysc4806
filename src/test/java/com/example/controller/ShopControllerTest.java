@@ -1,6 +1,10 @@
 package com.example.controller;
 
 import com.example.model.*;
+import com.example.repository.CartItemRepository;
+import com.example.repository.CartRepository;
+import com.example.repository.ProductRepository;
+import com.example.repository.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
