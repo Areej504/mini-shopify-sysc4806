@@ -84,6 +84,7 @@ public class ProductController {
 
             // Calculate and set the discounted price
             BigDecimal discountedPrice = existingProduct.calculateDiscountedPrice();
+            System.out.println(discountedPrice);
             existingProduct.setDiscountedPrice(discountedPrice);
 
             // Handle the image update (if provided)
@@ -113,6 +114,7 @@ public class ProductController {
         } else {
             // Add new product
             BigDecimal discountedPrice = product.calculateDiscountedPrice();
+            System.out.println(discountedPrice);
             product.setDiscountedPrice(discountedPrice);
 
             if (!file.isEmpty()) {

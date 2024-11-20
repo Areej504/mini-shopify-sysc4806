@@ -102,6 +102,14 @@ public class Cart {
         return null;
     }
 
+    public int getTotalItems(){
+        int items = 0;
+        for (CartItem item : cartItems){
+            items += item.getQuantity();
+        }
+        return items;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +

@@ -70,10 +70,19 @@ public class ShopController {
 
         // Find product by ID
         Optional<Product> productOptional = productRepository.findById(productId);
+
         if (productOptional.isEmpty()) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Product not found!");
             return ResponseEntity.status(404).body(errorResponse);
+        }
+
+        Product product = productOptional.get();
+        // Check if the product is sold out
+        if (product.getInventory() <= 0) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Product sold out!");
+            return ResponseEntity.status(400).body(errorResponse);
         }
 
         // Assuming a single cart for simplicity (use current user's cart in a real application)
@@ -83,10 +92,26 @@ public class ShopController {
         // Save the updated cart
         cartRepository.save(cart);
 
+        // Calculate the total items in the cart
+        int totalItemsInCart = cart.getTotalItems();
+        System.out.println(totalItemsInCart);
+
         Map<String, String> response = new HashMap<>();
         response.put("message", "Product added to cart successfully!");
+        response.put("totalItemsInCart", String.valueOf(totalItemsInCart));
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/cart/count")
+    @ResponseBody
+    public ResponseEntity<Map<String, Integer>> getCartItemCount() {
+        // Assuming a single cart for simplicity (use the current user's cart in real applications)
+        Cart cart = cartRepository.findById(1L).orElse(new Cart()); // Replace 1L with dynamic cart retrieval
+        int totalItemsInCart = cart.getTotalItems();
+
+        return ResponseEntity.ok(Map.of("totalItemsInCart", totalItemsInCart));
+    }
+
     @PostMapping("/cart/updateQuantity")
     @ResponseBody
     public ResponseEntity<String> updateQuantity(@RequestBody Map<String, Object> payload) {

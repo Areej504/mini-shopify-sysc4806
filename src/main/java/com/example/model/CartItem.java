@@ -61,10 +61,15 @@ public class CartItem {
 
     // Calculate the total price for this CartItem (quantity * price)
     public BigDecimal getTotalPrice() {
-//        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
-        return (product != null && product.getPrice() != null)
-                ? product.getPrice().multiply(BigDecimal.valueOf(quantity))
-                : BigDecimal.ZERO;
+
+        if (product != null && product.getPrice() != null){
+            if (product.getDiscountedPrice()!=null){
+                return product.getDiscountedPrice().multiply(BigDecimal.valueOf(quantity));
+            } else {
+                return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+            }
+        }
+        else return BigDecimal.ZERO;
     }
 
     @Override
