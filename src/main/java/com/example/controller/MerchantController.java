@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -121,7 +123,12 @@ public class MerchantController {
         return "manageStores";
     }
 
-
+    @PostMapping("/submitPromotion/{shopId}")
+    public String submitPromotion(@ModelAttribute Shop shop, @PathVariable Long shopId) {
+        // Log the selected promotion for debugging
+        System.out.println("Shop Promotion: " + shop.getPromotion());
+        return "redirect:/merchantShop/" + shopId;
+    }
 }
 
 //package com.example.controller;
