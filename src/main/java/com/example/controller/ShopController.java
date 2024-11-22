@@ -50,13 +50,13 @@ public class ShopController {
 
         if (cartOptional.isPresent()) {
             Cart cart = cartOptional.get();
-            model.addAttribute("cartItems", cart.getCartItems());
-            model.addAttribute("totalPrice", cart.getTotalPrice());
-            model.addAttribute("totalItemsInCart", cart.getCartItems().size());
+
+            PromotionType promotion = cart.getCartItems().get(0).getProduct().getShop().getPromotion();
+            model.addAttribute("cart", cart);
+            model.addAttribute("storePromotion", promotion);
+            model.addAttribute("BUY_ONE_GET_ONE", PromotionType.BUY_ONE_GET_ONE);
         } else {
-            model.addAttribute("cartItems", new ArrayList<>());
-            model.addAttribute("totalPrice", 0);
-            model.addAttribute("totalItemsInCart", 0);
+            model.addAttribute("cart", new Cart()); // Empty cart object
         }
 
         return "cartView";
