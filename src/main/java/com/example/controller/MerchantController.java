@@ -125,8 +125,11 @@ public class MerchantController {
 
     @PostMapping("/submitPromotion/{shopId}")
     public String submitPromotion(@ModelAttribute Shop shop, @PathVariable Long shopId) {
-        // Log the selected promotion for debugging
-        System.out.println("Shop Promotion: " + shop.getPromotion());
+        // Fetch the existing shop from the database
+        Shop existingShop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid shop ID: " + shopId));
+        existingShop.setPromotion(shop.getPromotion());
+        shopRepository.save(existingShop);
         return "redirect:/merchantShop/" + shopId;
     }
 }
