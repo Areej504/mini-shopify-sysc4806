@@ -174,23 +174,4 @@ public class ProductController {
         return ResponseEntity.ok(product); // Return the product details as JSON
     }
 
-    @GetMapping("/shopPage/{shopId}/Promotion")
-    @ResponseBody
-    public String fetchPromotion(@PathVariable Long shopId) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
-        return shop.getPromotion() != null ? shop.getPromotion().toString() : "No Active Promotion";
-    }
-
-    @PostMapping("/productShop/{shopId}/setPromotion")
-    public ResponseEntity<String> setShopPromotion(@PathVariable Long shopId, @RequestParam("promotionType") PromotionType promotionType) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
-
-        // Update the shop's promotion
-        shop.setPromotion(promotionType);
-        shopRepository.save(shop); // Persist the updated shop entity
-
-        return ResponseEntity.ok("Promotion set successfully!");
-    }
 }

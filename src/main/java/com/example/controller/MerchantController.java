@@ -139,49 +139,6 @@ public class MerchantController {
         return "manageStores";
     }
 
-}
-    @PostMapping("/merchantShop/{shopId}/setPromotion")
-    public String setPromotion(@PathVariable Long shopId, @RequestParam("promotionType") PromotionType promotionType) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
-
-        shop.setPromotion(promotionType);
-        shopRepository.save(shop);
-
-        return "redirect:/merchantShop/" + shopId;
-    }
-
-
-//    @GetMapping("/merchantShop/{shopId}")
-//    public String getMerchantShop(@PathVariable Long shopId, Model model) {
-//        // Code to fetch shop details and products
-////        model.addAttribute("shopId", shopId);
-////        return "merchantShop";
-//        Optional<Shop> shop = shopRepository.findById(shopId);
-//        if (shop.isPresent()) {
-//            model.addAttribute("shop", shop.get());
-//            model.addAttribute("PromotionType", PromotionType.values()); // Add promotion types
-//        } else {
-//            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
-//        }
-//        return "merchantShop";
-//    }
-//
-//    @GetMapping("/setPromotion/{shopId}")
-//    public String setPromotion(@PathVariable Long shopId, Model model) {
-////        model.addAttribute("PromotionType", PromotionType.values());
-////        return "merchantShop";
-//        Optional<Shop> shop = shopRepository.findById(shopId);
-//        if (shop.isPresent()) {
-//            model.addAttribute("shop", shop.get());
-//            model.addAttribute("PromotionType", PromotionType.values());
-//            System.out.println(PromotionType.values());
-//            // Add promotion types
-//        } else {
-//            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
-//        }
-//        return "setPromotion"; // Ensure this is the correct template
-//    }
 
     @PostMapping("/setPromotion/{shopId}")
     public String setShopPromotion(@PathVariable Long shopId, @RequestParam("promotion") PromotionType promotionType) {
