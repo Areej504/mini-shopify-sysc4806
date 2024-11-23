@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${shop.name}"> Personalized Store </title>
+    <title th:text="${shop.name}">Personalized Store</title>
     <style>
-        /* General Reset and Styling */
+        /* General Reset */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,45 +14,40 @@
             color: #333;
         }
 
-        /* Black Top Mini-Shopify Banner */
+        /* Top Banners */
         .mini-shopify-banner {
             background-color: #000;
-            color: #ffffff;
+            color: #fff;
             padding: 10px 20px;
             font-size: 1em;
             display: flex;
             align-items: center;
-            box-sizing: border-box;
-            width: 100%;
         }
 
         .mini-shopify-banner .cart-icon {
             margin-right: 10px;
-            font-size: 1.2em;
         }
 
-        /* Green Top Banner */
         .top-banner {
-            background-color: #2e7d32; /* Match the green theme */
-            color: #ffffff;
+            background-color: #2e7d32;
+            color: #fff;
             padding: 15px;
-            text-align: left;
             font-size: 1.5em;
+            text-align: left;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Layout */
         .container {
             display: flex;
-            flex-grow: 1; /* Fill the available space */
+            flex-grow: 1;
         }
 
-        /* Left Panel */
         .left-panel {
             width: 200px;
             background-color: #fbfffb;
             padding: 20px;
-            box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -61,29 +56,27 @@
         .left-panel button {
             padding: 10px;
             font-size: 1em;
-            cursor: pointer;
-            background-color: #1b5e20; /* Darker green for buttons */
-            color: #ffffff;
+            background-color: #1b5e20;
+            color: #fff;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
             transition: background-color 0.3s;
         }
 
         .left-panel button:hover {
-            background-color: #144d16; /* Darker on hover */
+            background-color: #144d16;
         }
 
-        /* Main Content */
         .main-content {
-            flex-grow: 1; /* Fill the remaining space */
-            background-color: #f5f5f5; /* Light background for content */
+            flex-grow: 1;
+            background-color: #f5f5f5;
             padding: 20px;
         }
 
-        /* Product Card Styling */
+        /* Product Card */
         .product-card {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             padding: 15px;
             background-color: #f9f9f9;
@@ -91,10 +84,8 @@
             border-radius: 8px;
             margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
 
-        /* Product Details on the Left */
         .product-details {
             flex: 1;
             padding-right: 15px;
@@ -106,72 +97,18 @@
             color: #1b5e20;
         }
 
-        .product-details .discounted-price {
-            color: red;
-            font-weight: bold;
-        }
-        .product-details .original-price {
-            text-decoration: line-through;
-            color: gray;
-            font-weight: normal;
-        }
         .product-details .price {
             font-weight: bold;
         }
 
-        .product-details .productId,
-        .product-details .description,
-        .product-details .inventory {
-            color: #555;
-            font-size: 0.9em;
-        }
-
-        .product-details .category,
-        .product-details .promotionType {
-            color: #777;
-            font-size: 0.9em;
-            margin-top: 8px;
-        }
-
-        .product-details .category::before {
-            content: "Category: ";
-            font-weight: bold;
-            color: #333;
-        }
-
-        .product-details .promotionType::before {
-            content: "Promotion: ";
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* Product Image on the Right */
         .product-image {
             width: 120px;
             height: auto;
             max-height: 100px;
             object-fit: contain;
-            margin-left: 15px;
         }
 
-        .edit-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            font-size: 0.9em;
-            background-color: #1b5e20;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .edit-button:hover {
-            background-color: #144d16;
-        }
-
-
-        /* Modal Styling */
+        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -180,108 +117,38 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
             justify-content: center;
-            z-index: 1000;
+            align-items: center;
         }
 
         .modal-content {
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 10px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
             width: 50%;
-            text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            color: #333;
+            text-align: center;
         }
 
         .modal-content button {
-            padding: 10px 20px;
             margin-top: 20px;
-            font-size: 1em;
-            background-color: #1b5e20;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Input Fields */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 10px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px; /* Space between fields in the same row */
-        }
-
-        .form-group label {
-            font-size: 0.9em;
-            margin-bottom: 4px;
-            color: #333;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 6px;
-            font-size: 0.9em;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .form-group.half-width {
-            flex: 1;
-        }
-
-        .existing-image-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px; /* Add space below the image container */
-        }
-
-        /* Button Row */
-        .button-row {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px; /* Space between the buttons */
-            margin-top: 20px; /* Space above the buttons */
-        }
-
-        .button-row button {
             padding: 10px 20px;
-            font-size: 1em;
             background-color: #1b5e20;
-            color: #ffffff;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-
-        .button-row button:hover {
-            background-color: #144d16;
-        }
-
-
     </style>
 </head>
 <body>
 
-<!-- Black Mini-Shopify Banner -->
-<a href="/" class="mini-shopify-banner" style="text-decoration: none; color: #ffffff;">
+<!-- Top Banners -->
+<a href="/" class="mini-shopify-banner">
     <span class="cart-icon">🛒</span>
     <span>Mini-Shopify</span>
 </a>
 
-<!-- Green Top Banner -->
 <div class="top-banner" th:text="${shop.name}">Personalized Store</div>
 
 <div class="container">
@@ -292,105 +159,27 @@
         <button onclick="openModal('setPromotionModal')">Set Promotion</button>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <div class="main-content">
         <h2>Product List</h2>
-        <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
-
-            <button class="edit-button"
-                    th:data-url="@{/merchantShop/{shopId}/product/{productId}(shopId=${shop.shopId},productId=${product.productId})}"
-                    onclick="openEditModal(this.getAttribute('data-url'))">Edit</button>
-            <!-- Product Details on the Left -->
+        <div th:each="product : ${products}" class="product-card">
             <div class="product-details">
-                <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
                 <h3 th:text="${product.productName}">Product Name</h3>
-
-                <!-- Display discounted and original prices if there is a discount -->
-                <p th:if="${product.discountedPrice != product.price}">
-                    <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
-                    <br>
-                    <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
-                </p>
-                <!-- Display only the original price if there is no discount -->
-                <p th:if="${product.discountedPrice == product.price}" class="price" th:text="'Price: $' + ${product.price}"></p>
-
-                <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
-                <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
-                <p class="category" th:text="${product.category}">Category</p>
-                <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+                <p th:text="'Price: $' + ${product.price}">Price</p>
+                <img th:src="${product.imageURL}" class="product-image" alt="Product Image">
             </div>
-            <!-- Product Image on the Right -->
-            <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
         </div>
     </div>
-
 </div>
 
 <!-- Modals -->
 <div id="addProductModal" class="modal">
     <div class="modal-content">
-        <h3>Add / Edit Product</h3>
-        <form id="addProductForm" th:action="@{/merchantShop/{shopId}(shopId=${shop.shopId})}" th:object="${product}" method="post" enctype="multipart/form-data" onsubmit="submitProductForm(event)">
-            <input type="hidden" id="productId" name="productId" th:field="*{productId}">
-
-            <!-- Existing Image Preview -->
-            <div class="existing-image-container">
-                <img id="existingImage" src="" alt="Product Image" style="display: none; max-width: 100px; margin-bottom: 10px;">
-            </div>
-
-            <!-- First Row: Product Name and Price -->
-            <div class="form-row">
-                <div class="form-group half-width">
-                    <label for="productName">Product Name:</label>
-                    <input type="text" id="productName" th:field="*{productName}" required>
-                </div>
-                <div class="form-group half-width">
-                    <label for="price">Price:</label>
-                    <input type="number" id="price" name="price" th:field="*{price}" min="0" step="0.01" required>
-                </div>
-            </div>
-
-            <!-- Second Row: Inventory and Category -->
-            <div class="form-row">
-                <div class="form-group half-width">
-                    <label for="inventory">Inventory:</label>
-                    <input type="number" id="inventory" name="inventory" th:field="*{inventory}" min="0" step="1" required>
-                </div>
-                <div class="form-group half-width">
-                    <label for="category-select">Category:</label>
-                    <select id="category-select" name="category" th:field="*{category}">
-                        <option value="" disabled selected>Select a category</option>
-                        <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Third Row: Promotion and Description -->
-            <div class="form-row">
-                <div class="form-group half-width">
-                    <label for="promotion-select">Promotion:</label>
-                    <select id="promotion-select" name="promotionType" th:field="*{promotionType}">
-                        <option value="" disabled selected>Select a promotion</option>
-                        <option th:each="promotion : ${promotions}" th:value="${promotion}" th:text="${promotion}"></option>
-                    </select>
-                </div>
-                <div class="form-group half-width">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" th:field="*{description}" rows="3" required></textarea>
-                </div>
-            </div>
-
-            <!-- Image Upload Row -->
-            <div class="form-group">
-                <label for="productImage">Product Image:</label>
-                <input type="file" id="productImage" name="productImage" accept="image/*">
-            </div>
-
-            <!-- Button Row: Add Product and Close Buttons -->
-            <div class="button-row">
-                <button type="submit" id="modalSubmitButton">Add Product</button>
-                <button type="button" onclick="closeModal('addProductModal')">Close</button>
-            </div>
+        <h3>Add Product</h3>
+        <form th:action="@{/addProduct}" method="post">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" name="productName" required>
+            <button type="submit">Save</button>
         </form>
     </div>
 </div>
@@ -398,191 +187,34 @@
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
-        <p>Enter the product ID to remove an existing product.</p>
-
-        <!-- Input field to enter Product ID -->
-        <div class="form-group">
-            <input type="text" id="deleteProductId" placeholder="Product ID" required>
-        </div>
-
-        <!-- Button to confirm deletion -->
-        <button th:onclick="'confirmDeleteProduct(' + ${shop.shopId} + ')'" onclick="confirmDeleteProduct()">Remove Product</button>
-        <button onclick="closeModal('removeProductModal')">Close</button>
+        <p>Enter the product ID:</p>
+        <input type="text" id="productId" required>
+        <button>Remove</button>
     </div>
 </div>
-
 
 <div id="setPromotionModal" class="modal">
     <div class="modal-content">
-        <h3>Set Store-Wide Promotion</h3>
-<!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
-        <form id="storePromotionForm" th:action="@{/setPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
-            <!-- Promotion Dropdown -->
-            <div class="form-group half-width">
-                <label for="promotionType">Select Promotion Type:</label>
-                <select id="promotionType" name="promotion" required th:field="*{promotion}">
-                    <option value="" disabled selected>Select a promotion</option>
-                    <option th:each="promotion : ${shopPromotions}"
-                            th:value="${promotion}"
-                            th:text="${promotion}"></option>
-                </select>
-            </div>
-
-            <!-- Save Button -->
-            <div class="form-group">
-                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                    Save Promotion
-                </button>
-            </div>
-        </form>
-
-        <form id="promotionForm" th:action="@{/setPromotion/{shopId}/Form(shopId=${shop.shopId})}" method="post">
-
-            <label for="startDate">Start Date:</label>
-            <input type="date" id="startDate" name="startDate" required>
-
-            <label for="endDate">End Date:</label>
-            <input type="date" id="endDate" name="endDate" required>
-
-<!--            <button type="submit">Save dates</button>-->
+        <h3>Set Promotion</h3>
+        <form th:action="@{/setPromotion}" method="post">
+            <label for="promotionType">Promotion Type</label>
+            <select id="promotionType" name="promotionType" required>
+                <option value="" disabled selected>Select Promotion</option>
+                <option th:each="promo : ${promotions}" th:value="${promo}" th:text="${promo}"></option>
+            </select>
+            <button type="submit">Save</button>
         </form>
     </div>
 </div>
 
-<script th:inline="javascript">
-    // Embed the shopId from Thymeleaf
-    const shopId = /*[[${shop.shopId}]]*/ 0;
-
-    function openEditModal(url) {
-        openModal('addProductModal');
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Product not found");
-                }
-                return response.json();
-            })
-            .then(product => {
-                document.getElementById('productId').value = product.productId;
-                document.getElementById('productName').value = product.productName;
-                document.getElementById('price').value = product.price;
-                document.getElementById('inventory').value = product.inventory;
-                document.getElementById('description').value = product.description;
-
-                document.getElementById('category-select').value = product.category;
-                document.getElementById('promotion-select').value = product.promotionType;
-
-                // Display image if imageURL is available
-                const existingImage = document.getElementById('existingImage');
-                if (product.imageURL) {
-                    existingImage.src = product.imageURL;
-                    existingImage.style.display = 'block';
-                } else {
-                    existingImage.style.display = 'none';
-                }
-
-                document.getElementById('modalSubmitButton').innerText = "Update Product";
-            })
-            .catch(error => console.error('Error fetching product data:', error));
+<script>
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
     }
 
-    // JavaScript functions to open and close modals
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
     }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    function submitAddProductForm(event) {
-        event.preventDefault(); // Prevent default form submission
-        const form = document.getElementById('addProductForm');
-        const formData = new FormData(form);
-
-        fetch('/merchantShop/{shopId}', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    closeModal('addProductModal'); // Close the modal
-                    // loadProductList(); // Reload the product list
-                } else {
-                    console.error('Error adding product');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    function confirmDeleteProduct(shopId) {
-        const productId = document.getElementById('deleteProductId').value;
-
-        if (!productId) {
-            alert("Please enter a product ID.");
-            return;
-        }
-
-        if (!confirm("Are you sure you want to remove this product?")) return;
-
-        // Log URL for debugging
-        const deleteUrl = `/merchantShop/${shopId}/${productId}`;
-        console.log(`Deleting product with URL: ${deleteUrl}`);
-
-        // Send delete request to backend
-        fetch(deleteUrl, {
-            method: 'DELETE',
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Remove the product card from the DOM
-                    const productElement = document.getElementById(`product-${productId}`);
-                    if (productElement) {
-                        productElement.remove(); // Remove the product block
-                    }
-                    closeModal('removeProductModal'); // Close the modal
-                    document.getElementById('deleteProductId').value = ''; // Clear input
-                } else {
-                    console.error(`Error removing product: ${response.statusText}`);
-                    alert("Failed to delete the product. Please try again.");
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                alert("An error occurred while deleting the product.");
-            });
-    }
-
-
-
-
-    function submitStorePromotion(event) {
-        event.preventDefault(); // Prevent default form submission behavior
-
-        const form = document.getElementById('storePromotionForm');
-        const formData = new FormData(form);
-
-        fetch('/merchantShop/storePromotion', {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Store-wide promotion set successfully!');
-                    closeModal('setPromotionModal'); // Close the modal
-                    // Optionally update the store view to display the promotion
-                } else {
-                    alert('Failed to set promotion. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while setting the promotion.');
-            });
-    }
-
-
 </script>
 
 </body>
