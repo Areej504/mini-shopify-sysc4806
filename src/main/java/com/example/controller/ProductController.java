@@ -72,6 +72,7 @@ public class ProductController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         product.setShop(shop);
+        productRepository.save(product);
 
         if (productId != null) {
             // Update existing product
