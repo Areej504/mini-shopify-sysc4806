@@ -281,6 +281,14 @@
     <span>Mini-Shopify</span>
 </a>
 
+<!--&lt;!&ndash; Promotion Banner &ndash;&gt;-->
+<!--<div class="promotion-banner"-->
+<!--     th:if="${promotionDetails != null}"-->
+<!--     th:text="${promotionDetails}"-->
+<!--     style="background-color: red; color: white; text-align: center; padding: 10px; font-size: 1.2em;">-->
+<!--    Current promotion details will appear here-->
+<!--</div>-->
+
 <!-- Green Top Banner -->
 <div class="top-banner" th:text="${shop.name}">Personalized Store</div>
 
@@ -396,55 +404,6 @@
 </div>
 
 
-<!--<div id="setPromotionModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <h3>Set Promotion</h3>-->
-<!--        <p>Enter details to set a promotion.</p>-->
-<!--        <button onclick="closeModal('setPromotionModal')">Close</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<div class="top-banner">-->
-<!--    <span th:if="${storePromotion}" th:text="${storePromotion.title}">Discount up to 25%</span>-->
-<!--</div>-->
-
-<!--<div id="setPromotionModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <h3>Set Store-Wide Promotion</h3>-->
-<!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
-<!--            &lt;!&ndash; Promotion Dropdown &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionType">Select Promotion Type:</label>-->
-<!--                <select id="promotionType" name="promotionType" required>-->
-<!--                    <option value="" disabled selected>Select a promotion</option>-->
-<!--                    <option th:each="promotion : ${PromotionType.values()}"-->
-<!--                            th:value="${promotion.name()}"-->
-<!--                            th:text="${promotion.description}"></option>-->
-<!--                </select>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; Start Date &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionStartDate">Start Date:</label>-->
-<!--                <input type="date" id="promotionStartDate" name="startDate" required>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; End Date &ndash;&gt;-->
-<!--            <div class="form-group">-->
-<!--                <label for="promotionEndDate">End Date:</label>-->
-<!--                <input type="date" id="promotionEndDate" name="endDate" required>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; Button Row &ndash;&gt;-->
-<!--            <div class="button-row">-->
-<!--                <button type="submit">Set Promotion</button>-->
-<!--                <button type="button" onclick="closeModal('setPromotionModal')">Close</button>-->
-<!--            </div>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
@@ -461,52 +420,44 @@
     </div>
 </div>
 
-<!-- Set Promotion Button -->
-<button onclick="openPromotionModal()">Set Promotion</button>
 
-<!-- Promotion Modal -->
-<div id="setPromotionModal" class="modal" style="display: none;">
+<div id="setPromotionModal" class="modal">
     <div class="modal-content">
         <h3>Set Store-Wide Promotion</h3>
-        <form id="storePromotionForm" action="/merchantShop/1/setPromotion" method="POST">
-            <!-- Hidden Fields -->
-            <input type="hidden" name="merchantId" value="12345"> <!-- Dynamically set merchant ID -->
-            <input type="hidden" id="shopId" name="shopId" value="1"> <!-- Dynamically set shop ID -->
-
-            <!-- Promotion Type Dropdown -->
-            <div>
-                <label for="promotionType">Promotion Type:</label>
-                <select id="promotionType" name="promotionType" required>
+<!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
+        <form id="storePromotionForm" th:action="@{/setPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
+            <!-- Promotion Dropdown -->
+            <div class="form-group half-width">
+                <label for="promotionType">Select Promotion Type:</label>
+                <select id="promotionType" name="promotion" required th:field="*{promotion}">
                     <option value="" disabled selected>Select a promotion</option>
-                    <option th:each="promotion : ${PromotionType}"
+                    <option th:each="promotion : ${shopPromotions}"
                             th:value="${promotion}"
-                            th:text="${promotion.description}">
-                    </option>
+                            th:text="${promotion}"></option>
                 </select>
             </div>
 
-            <!-- Start Date -->
-            <div>
-                <label for="startDate">Start Date:</label>
-                <input type="date" id="startDate" name="startDate" required>
-            </div>
-
-            <!-- End Date -->
-            <div>
-                <label for="endDate">End Date:</label>
-                <input type="date" id="endDate" name="endDate" required>
-            </div>
-
-            <!-- Submit Button -->
-            <div>
-                <button type="submit">Set Promotion</button>
+            <!-- Save Button -->
+            <div class="form-group">
+                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                    Save Promotion
+                </button>
             </div>
         </form>
-        <button onclick="closePromotionModal()">Close</button>
+
+        <form id="promotionForm" th:action="@{/setPromotion/{shopId}/Form(shopId=${shop.shopId})}" method="post">
+
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+<!--            <button type="submit">Save dates</button>-->
+        </form>
     </div>
 </div>
 
-//a form that submits ajax,
 
 <script th:inline="javascript">
     // Embed the shopId from Thymeleaf
@@ -613,50 +564,42 @@
             });
     }
 
-    function openPromotionModal(shopId) {
-        document.getElementById('shopId').value = shopId;
-        document.getElementById('setPromotionModal').style.display = 'block';
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
     }
 
-    function closePromotionModal() {
-        document.getElementById('setPromotionModal').style.display = 'none';
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
     }
 
+    document.getElementById('promotionForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
 
-    // function submitStorePromotion(event) {
-    //     event.preventDefault(); // Prevent default form submission
-    //
-    //     const promotionType = document.getElementById('promotionType').value;
-    //     const startDate = document.getElementById('promotionStartDate').value;
-    //     const endDate = document.getElementById('promotionEndDate').value;
-    //
-    //     const promotionData = {
-    //         promotionType,
-    //         startDate,
-    //         endDate
-    //     };
-    //
-    //     fetch('/merchantShop/storePromotion', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(promotionData),
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 alert('Store-wide promotion set successfully!');
-    //                 closeModal('setPromotionModal'); // Close the modal
-    //             } else {
-    //                 alert('Failed to set promotion. Please try again.');
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error:', error);
-    //             alert('An error occurred while setting the promotion.');
-    //         });
-    // }
+        const shopId = /*[[${shop.shopId}]]*/ 0; // Dynamically set shop ID
+        const promotionType = document.getElementById('promotionType').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
 
+        fetch(`/setPromotion/${shopId}/Form`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                promotionType,
+                startDate,
+                endDate,
+            }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Promotion saved successfully!');
+                } else {
+                    alert('Failed to save promotion.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
 
 
 </script>

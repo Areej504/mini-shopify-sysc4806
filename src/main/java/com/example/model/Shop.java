@@ -23,6 +23,7 @@ public class Shop {
     private Set<Category> categories;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "promotion_id", referencedColumnName = "id")
     private ShopPromotions shopPromotions;
 
     @ManyToOne

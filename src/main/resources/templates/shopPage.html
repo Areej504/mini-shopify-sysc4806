@@ -40,6 +40,18 @@
             padding: 20px 0;
         }
 
+        .promotion-banner {
+            background-color: red;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+
         .shop-header h1 {
             font-size: 2em;
             margin: 0;
@@ -198,13 +210,24 @@
 <div class="container">
     <!-- Full-width Shop Header -->
     <div class="shop-header">
-        <h1 th:text="${shopName}">Shop Name</h1>
+<!--        <h1 th:text="${shopName}">Shop Name</h1>-->
+        <h1 th:text="${shop.shopId}">Shop Name</h1>
         <!-- Sign-in Button -->
         <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
+
+    <div class="promotion-banner"
+         th:if="${selectedPromotion != 'No Active Promotion'}"
+         style="background-color: red; color: white; padding: 10px; text-align: center; font-weight: bold;">
+        <span th:text="${selectedPromotion}"></span>
+        <br>
+        <span th:text="'Valid From: ' + ${promotionStartDate}"></span>
+        <span th:text="' to ' + ${promotionEndDate}"></span>
+    </div>
+
     <!-- Full Width Description Banner -->
-    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
+<!--    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>-->
 
     <!-- Checkout Button outside the white box -->
     <div class="cart-container">
@@ -241,24 +264,39 @@
     </div>
 </div>
 
-<script>
-    function addToCart(productId) {
-        console.log("Adding product with ID:", productId);
-    }
-
-    document.getElementById('search-input').addEventListener('input', function() {
-        const filterText = this.value.toLowerCase().trim();
-        const products = document.querySelectorAll('.product-card');
-
-        products.forEach(product => {
-            const prodName = product.getAttribute('data-name') ? product.getAttribute('data-name').toLowerCase() : '';
-            if (prodName.includes(filterText)) {
-                product.style.display = 'block';
-            } else {
-                product.style.display = 'none';
+<script th:inline="javascript">
+    const shopId = 0;//[[${shop.shopId}]]; // Dynamically set shop ID
+    fetch(`/shopPage/${shopId}/Promotion`)
+        .then(response => response.text())
+        .then(promotion => {
+            const banner = document.getElementById('promotionBanner');
+            if (promotion !== 'No Active Promotion') {
+                banner.innerText = promotion;
+                banner.style.display = 'block'; // Show banner if there’s an active promotion
             }
-        });
-    });
+        })
+        .catch(error => console.error('Error fetching promotion:', error));
+
+
+
+   function addToCart(productId) {
+       console.log("Adding product with ID:", productId);
+   }
+
+   document.getElementById('search-input').addEventListener('input', function() {
+       const filterText = this.value.toLowerCase().trim();
+       const products = document.querySelectorAll('.product-card');
+
+       products.forEach(product => {
+           const prodName = product.getAttribute('data-name') ? product.getAttribute('data-name').toLowerCase() : '';
+           if (prodName.includes(filterText)) {
+               product.style.display = 'block';
+           } else {
+               product.style.display = 'none';
+           }
+       });
+   });
+
 </script>
 </body>
 </html>

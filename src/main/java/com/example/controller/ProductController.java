@@ -44,10 +44,19 @@ public class ProductController {
                 PromotionType.CLEARANCE,
                 PromotionType.NONE
         );
+
+        List<PromotionType> shopPromotions = Arrays.asList(
+                PromotionType.FREE_SHIPPING,
+                PromotionType.SEASONAL_HOLIDAY,
+                PromotionType.BUY_ONE_GET_ONE,
+                PromotionType.CLEARANCE,
+                PromotionType.NONE
+        );
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("categories", shop.getCategories());
         model.addAttribute("promotions", relevantPromotions);
+        model.addAttribute("shopPromotions", shopPromotions);
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
         return "merchantShop";
     }
@@ -161,6 +170,51 @@ public class ProductController {
 
         return ResponseEntity.ok(product); // Return the product details as JSON
     }
+
+    @GetMapping("/shopPage/{shopId}/Promotion")
+    @ResponseBody
+    public String fetchPromotion(@PathVariable Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+        return shop.getPromotion() != null ? shop.getPromotion().toString() : "No Active Promotion";
+    }
+
+    @PostMapping("/productShop/{shopId}/setPromotion")
+    public ResponseEntity<String> setShopPromotion(@PathVariable Long shopId, @RequestParam("promotionType") PromotionType promotionType) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        // Update the shop's promotion
+        shop.setPromotion(promotionType);
+        shopRepository.save(shop); // Persist the updated shop entity
+
+        return ResponseEntity.ok("Promotion set successfully!");
+    }
+
+
+//    @PostMapping("/merchantShop/{shopId}/setPromotion")
+//    public String setPromotion(@PathVariable Long shopId, Model model) {
+//        // Fetch the shop using the repository
+//        Shop shop = shopRepository.findById(shopId)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
+//
+//        // Update the promotion field in the Shop entity
+//        List<PromotionType> shopPromotions = Arrays.asList(
+//                PromotionType.FREE_SHIPPING,
+//                PromotionType.SEASONAL_HOLIDAY,
+//                PromotionType.BUY_ONE_GET_ONE,
+//                PromotionType.CLEARANCE,
+//                PromotionType.NONE
+//        );
+//        model.addAttribute("shopPromotions", shopPromotions);
+//
+//        // Save the updated shop to the database
+//        shopRepository.save(shop);
+//
+//        // Redirect back to the merchant shop management page
+//        return "redirect:/merchantShop/" + shopId;
+//    }
+
 
 //    @GetMapping("/setShopPromotion")
 //    public String setPromotion(Model model) {

@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -10,6 +11,12 @@ public class ShopPromotions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
+
+    @OneToOne(mappedBy = "shopPromotions")
+    @JsonIgnore
+    private Shop shop;
 
     @Enumerated(EnumType.STRING) // Store as string in the database
     private PromotionType promotionType;
@@ -24,6 +31,14 @@ public class ShopPromotions {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public PromotionType getPromotionType() {

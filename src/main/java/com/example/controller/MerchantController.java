@@ -2,19 +2,23 @@ package com.example.controller;
 
 import com.example.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Controller
+//@RequestMapping("/merchantShop")
 public class MerchantController {
     @Autowired
     private MerchantRepository merchantRepository;
@@ -121,7 +125,7 @@ public class MerchantController {
     }
 
     @GetMapping("/manage-stores")
-    public String openManageStores(@RequestParam Long merchantId, Model model){
+    public String openManageStores(@RequestParam Long merchantId, Model model) {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
         List<Shop> shops = shopRepository.findByMerchant(merchant);
@@ -133,102 +137,90 @@ public class MerchantController {
         return "manageStores";
     }
 
-    @GetMapping("/merchantShop/{shopId}")
-    public String getMerchantShop(@PathVariable Long shopId, Model model) {
-        // Code to fetch shop details and products
-        model.addAttribute("shopId", shopId);
-        return "merchantShop";
-    }
+    @PostMapping("/merchantShop/{shopId}/setPromotion")
+    public String setPromotion(@PathVariable Long shopId, @RequestParam("promotionType") PromotionType promotionType) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
 
-    @GetMapping("/shopPromotion/{shopId}")
-    public String setPromotion(@PathVariable Long shopId, Model model) {
-//        model.addAttribute("PromotionType", PromotionType.values());
-//        return "merchantShop";
-        Optional<Shop> shop = shopRepository.findById(shopId);
-        if (shop.isPresent()) {
-            model.addAttribute("shop", shop.get());
-            model.addAttribute("PromotionType", PromotionType.values());
-            System.out.println(PromotionType.values());
-            // Add promotion types
-        } else {
-            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
-        }
-        return "merchantShop"; // Ensure this is the correct template
-    }
+        shop.setPromotion(promotionType);
+        shopRepository.save(shop);
 
-    @PostMapping("/shopPromotion/{shopId}")
-    public String setShopPromotion(@RequestParam Long merchantId, @ModelAttribute ShopPromotionRequest request) {
-        Optional<Shop> shopOptional = shopRepository.findById(request.getShopId());
-        if (shopOptional.isPresent()) {
-            Shop shop = shopOptional.get();
-
-            // Create or update the promotion
-            ShopPromotions promotion = new ShopPromotions();
-            promotion.setPromotionType(request.getPromotionType());
-            promotion.setStartDate(request.getStartDate());
-            promotion.setEndDate(request.getEndDate());
-
-            shop.setShopPromotions(promotion);
-            shopRepository.save(shop);
-        }
-        return "merchantShop" + merchantId; // Use @RequestParam directly
-
+        return "redirect:/merchantShop/" + shopId;
     }
 
 
-//    @PostMapping("/shopPromotion")
-//    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionRequest request) {
-//        try {
-//            ShopPromotions promotion = new ShopPromotions();
-//            promotion.setPromotionType(request.getPromotionType());
-//            promotion.setStartDate(request.getStartDate());
-//            promotion.setEndDate(request.getEndDate());
-//
-//            // Save the promotion using the service
-//            promotionRepository.save(promotion);
-//
-//            return ResponseEntity.ok("Promotion set successfully!");
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
-//        }
-//    }
-}
-
-//    @GetMapping("/merchantShop")
-//    public String getMerchantShopPage(@RequestParam Long shopId, Model model) {
-//        // Retrieve shop details if needed
-//        Optional<Shop> shopOptional = shopRepository.findById(shopId);
-//        if (shopOptional.isPresent()) {
-//            Shop shop = shopOptional.get();
-//            model.addAttribute("shop", shop);
-//        }
-//
-//        // Add PromotionType values to the model
-//        model.addAttribute("PromotionType", PromotionType.values());
-//
-//        return "merchantShop"; // Return the Thymeleaf template
-//    }
-
-
-//    public String setStorePromotion(@RequestParam Long shopId,
-//                                    @ModelAttribute ShopPromotionRequest request,
-//                                    Model model) {
-//        Optional<Shop> shopOptional = shopRepository.findById(shopId);
-//        if (shopOptional.isPresent()) {
-//            Shop shop = shopOptional.get();
-//
-//            ShopPromotions promotion = new ShopPromotions();
-//            promotion.setPromotionType(request.getPromotionType());
-//            promotion.setStartDate(request.getStartDate());
-//            promotion.setEndDate(request.getEndDate());
-//
-//            shop.setShopPromotions(promotion);
-//            shopRepository.save(shop);
-//
-//            model.addAttribute("message", "Promotion set successfully!");
+//    @GetMapping("/merchantShop/{shopId}")
+//    public String getMerchantShop(@PathVariable Long shopId, Model model) {
+//        // Code to fetch shop details and products
+////        model.addAttribute("shopId", shopId);
+////        return "merchantShop";
+//        Optional<Shop> shop = shopRepository.findById(shopId);
+//        if (shop.isPresent()) {
+//            model.addAttribute("shop", shop.get());
+//            model.addAttribute("PromotionType", PromotionType.values()); // Add promotion types
 //        } else {
-//            model.addAttribute("errorMessage", "Shop not found.");
+//            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
 //        }
-//        return "redirect:/manageStores?merchantId=" + shopId;
+//        return "merchantShop";
+//    }
+//
+//    @GetMapping("/setPromotion/{shopId}")
+//    public String setPromotion(@PathVariable Long shopId, Model model) {
+////        model.addAttribute("PromotionType", PromotionType.values());
+////        return "merchantShop";
+//        Optional<Shop> shop = shopRepository.findById(shopId);
+//        if (shop.isPresent()) {
+//            model.addAttribute("shop", shop.get());
+//            model.addAttribute("PromotionType", PromotionType.values());
+//            System.out.println(PromotionType.values());
+//            // Add promotion types
+//        } else {
+//            throw new IllegalArgumentException("Invalid Shop ID: " + shopId);
+//        }
+//        return "setPromotion"; // Ensure this is the correct template
 //    }
 
+    @PostMapping("/setPromotion/{shopId}")
+    public String setShopPromotion(@PathVariable Long shopId, @RequestParam("promotion") PromotionType promotionType) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        // Update the shop's promotion
+        shop.setPromotion(promotionType);
+        shopRepository.save(shop);
+
+        return "redirect:/merchantShop/" + shopId;
+    }
+
+    @PostMapping("/setPromotion/{shopId}/Form")
+    public String setPromotionDates(
+            @PathVariable Long shopId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam("promotion") PromotionType promotionType) {
+
+//        // Validate the dates
+//        if (startDate.isAfter(endDate)) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date.");
+//        }
+
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        ShopPromotions promotion = shop.getShopPromotions();
+        if (promotion == null) {
+            promotion = new ShopPromotions();
+            shop.setShopPromotions(promotion);
+        }
+
+        // Update promotion dates
+        promotion.setPromotionType(promotionType);
+        promotion.setStartDate(LocalDate.now());
+        promotion.setEndDate(LocalDate.now().plusMonths(1));
+
+        promotion.setShop(shop);
+        shopRepository.save(shop);
+
+        return "redirect:/merchantShop/" + shopId;
+    }
+}

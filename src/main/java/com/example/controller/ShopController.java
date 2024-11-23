@@ -1,14 +1,14 @@
 package com.example.controller;
 
 import com.example.model.*;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +28,25 @@ public class ShopController {
 
     @GetMapping("/shopPage/{shopId}")
     public String getShopDetails(@PathVariable Long shopId, Model model) {
-        Optional<Shop> shop = shopRepository.findById(shopId);
-        if (shop.isPresent()) {
-            Shop shopDetails = shop.get();
-            model.addAttribute("shopName", shopDetails.getName());
-            model.addAttribute("shopDescription", shopDetails.getDescription());
-            model.addAttribute("products", shopDetails.getProducts());
-        }
+        // Retrieve the shop by ID or throw an exception if not found
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
 
-        // Retrieve the cart contents and calculate the number of items
-        long totalItemsInCart = cartRepository.count(); //each cart entry represents one item
+        // Determine the promotion details
+        ShopPromotions promotion = shop.getShopPromotions();
+        String selectedPromotion = promotion != null ? promotion.getPromotionType().name(): "No Active Promotion";
+        LocalDate startDate = promotion != null ? promotion.getStartDate() : null;
+        LocalDate endDate = promotion != null ? promotion.getEndDate() : null;
+
+        // Add attributes to the model for the shop
+        model.addAttribute("shop", shop);
+        model.addAttribute("selectedPromotion", selectedPromotion);
+        model.addAttribute("shopName", shop.getName());
+        model.addAttribute("shopDescription", shop.getDescription());
+        model.addAttribute("products", shop.getProducts());
+
+        // Retrieve the total number of items in the cart
+        long totalItemsInCart = cartRepository.count(); // Each cart entry represents one item
         model.addAttribute("totalItemsInCart", totalItemsInCart);
 
         return "shopPage"; // Render the shopPage template
@@ -57,27 +66,5 @@ public class ShopController {
         return "paymentView";
     }
 
-//    @GetMapping("/setPromotion")
-//    public String setPromotion(Model model) {
-//        model.addAttribute("PromotionType", PromotionType.values());
-//        return "merchantShop";
-//    }
-//
-//    @PostMapping("/storePromotion")
-//    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionDates request) {
-//        try {
-//            ShopPromotions promotion = new ShopPromotions();
-//            promotion.setPromotionType(request.getPromotionType());
-//            promotion.setStartDate(request.getStartDate());
-//            promotion.setEndDate(request.getEndDate());
-//
-//            // Save the promotion using the service
-//            promotionRepository.save(promotion);
-//
-//            return ResponseEntity.ok("Promotion set successfully!");
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
-//        }
-//    }
 
 }
