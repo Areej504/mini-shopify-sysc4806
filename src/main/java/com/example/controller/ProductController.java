@@ -27,8 +27,6 @@ public class ProductController {
     private ProductRepository productRepository;
     @Autowired
     private ShopRepository shopRepository;
-    @Autowired
-    private PromotionRepository promotionRepository;
 
     @GetMapping("/merchantShop/{shopId}")
     public String viewMerchantShop(@PathVariable Long shopId, Model model) {

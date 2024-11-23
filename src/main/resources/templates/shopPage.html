@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${shopName} + ' - Shop'">Shop</title>
     <style>
-        /* Global Styles */
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
@@ -20,25 +20,24 @@
             color: #333;
         }
 
+        /* Full-width container */
         .container {
             width: 100%;
+            max-width: 100%;
             padding: 0;
             margin: 0;
         }
 
-        /* Header Styles */
+        /* Full Width Banner for Shop Name and Description */
         .shop-header {
-            width: 100%;
+            width: 100vw;
             background-color: #003f4d;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
             padding: 20px 0;
-        }
-
-        .shop-header h1 {
-            font-size: 2em;
         }
 
         .promotion-banner {
@@ -52,7 +51,44 @@
             border-radius: 5px;
         }
 
+
+        .shop-header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .shop-description-banner {
+            width: 100vw;
+            background-color: #003f4d;
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
+        .sign-in-button {
+            position: absolute;
+            right: 20px; /* Push the button to the right edge */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #01a6cf;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sign-in-button:hover {
+            background-color: #126b80;
+        }
+
         .cart-container {
+            width: 100%;
             display: flex;
             justify-content: flex-end;
             padding: 20px;
@@ -60,61 +96,84 @@
 
         .cart-button {
             background-color: #01a6cf;
-            color: white;
+            color: #fff;
             border: none;
             padding: 10px 20px;
             font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .cart-button:hover {
             background-color: #126b80;
         }
 
+        /* Search Bar Section */
         .search-container {
             display: flex;
             justify-content: center;
             margin: 5px 0;
         }
 
-        .search-container input {
+        .search-container input[type="text"] {
             width: 100%;
             max-width: 600px;
             padding: 10px;
             font-size: 1em;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            outline: none;
         }
 
-        /* Product Grid */
+        /* Product Grid Styling */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
             padding-right: 10px;
         }
 
+        /* Product Card Styling */
         .product-card {
             background-color: #fff;
             border-radius: 8px;
+            overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
             display: flex;
             flex-direction: column;
             text-align: center;
             padding: 10px;
             height: 300px;
+            width: 100%;
         }
 
+        /* Product Image Styling */
         .product-image {
             width: 100%;
             height: auto;
             max-height: 130px;
             object-fit: contain;
+            margin-bottom: 5px;
         }
 
+        /* Compact text styling for name, description, and price */
+        .product-card h3 {
+            font-size: 1em;
+            margin: 3px 0;
+        }
+
+        .product-card p {
+            font-size: 0.9em;
+            margin: 3px 0;
+        }
+
+        /* Price styling */
         .discounted-price {
             color: red;
             font-weight: bold;
@@ -123,6 +182,7 @@
         .original-price {
             text-decoration: line-through;
             color: gray;
+            font-weight: normal;
         }
 
         .price {
@@ -131,12 +191,13 @@
 
         .add-to-cart-btn {
             background-color: #205c67;
-            color: white;
+            color: #fff;
             border: none;
             padding: 8px;
+            font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
             margin-top: auto;
         }
 
@@ -153,26 +214,30 @@
 </head>
 <body>
 <div class="container">
-    <!-- Shop Header -->
+    <!-- Full-width Shop Header -->
     <div class="shop-header">
+        <!--        <h1 th:text="${shopName}">Shop Name</h1>-->
         <h1 th:text="${shop.shopId}">Shop Name</h1>
-        <a href="/customer-login" class="cart-button">Sign In</a>
+        <!-- Sign-in Button -->
+        <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
-    <!-- Promotion Banner -->
+
     <div class="promotion-banner"
-         th:if="${selectedPromotion != 'No Active Promotion'}">
+         th:if="${selectedPromotion != 'No Active Promotion'}"
+         style="background-color: red; color: white; padding: 10px; text-align: center; font-weight: bold;">
         <span th:text="${selectedPromotion}"></span>
         <br>
         <span th:text="'Valid From: ' + ${promotionStartDate}"></span>
         <span th:text="' to ' + ${promotionEndDate}"></span>
     </div>
 
-    <!-- Cart Button -->
+    <!-- Full Width Description Banner -->
+    <!--    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>-->
+
+    <!-- Checkout Button outside the white box -->
     <div class="cart-container">
-        <button id="cart-button" class="cart-button"
-                onclick="window.location.href='/cartView'"
-                th:text="'Go to Cart (' + ${totalItemsInCart} + ')'">
+        <button id="cart-button" class="cart-button" onclick="window.location.href='/cartView'" th:text="'Go to Cart (' + ${totalItemsInCart} + ')'">
             View Cart
         </button>
     </div>
@@ -184,17 +249,20 @@
 
     <!-- Product Grid -->
     <div class="product-grid">
+        <!-- Thymeleaf loop to display each product -->
         <div th:each="product : ${products}" class="product-card" th:data-name="${product.productName}">
             <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
             <h3 th:text="${product.productName}">Product Name</h3>
             <p th:text="${product.description}">Product Description</p>
 
+            <!-- Display discounted and original prices if there is a discount -->
             <div th:if="${product.discountedPrice != null}">
                 <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
                 <br>
                 <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
             </div>
 
+            <!-- Display only the original price if there is no discount -->
             <div th:if="${product.discountedPrice == null}">
                 <span class="price" th:text="'Price: $' + ${product.price}"></span>
             </div>
@@ -205,59 +273,90 @@
                     th:text="${product.inventory > 0 ? 'Add to Cart' : 'Sold Out'}">
                 Add to Cart
             </button>
+
+            <script>
+                async function addToCart(productId) {
+                    try {
+                        const response = await fetch('/addToCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ productId: productId }),
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            // Update the cart count on the frontend
+                            const cartCountElement = document.getElementById('cart-button'); // Assuming an element with this ID
+                            cartCountElement.textContent = "Go to Cart (" + result.totalItemsInCart + ")";
+                        } else {
+                            const result = await response.json();
+                            alert(result.message + 'Failed to add the product to the cart.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+            </script>
         </div>
     </div>
 </div>
 
 <script th:inline="javascript">
-    const shopId = /*[[${shop.shopId}]]*/ 0;
-
-    async function addToCart(productId) {
-        try {
-            const response = await fetch('/addToCart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId }),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                document.getElementById('cart-button').textContent = `Go to Cart (${result.totalItemsInCart})`;
-            } else {
-                console.error('Failed to add to cart.');
+    const shopId = 0;//[[${shop.shopId}]]; // Dynamically set shop ID
+    fetch(/shopPage/${shopId}/Promotion)
+        .then(response => response.text())
+        .then(promotion => {
+            const banner = document.getElementById('promotionBanner');
+            if (promotion !== 'No Active Promotion') {
+                banner.innerText = promotion;
+                banner.style.display = 'block'; // Show banner if there’s an active promotion
             }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    document.getElementById('search-input').addEventListener('input', function () {
-        const filterText = this.value.toLowerCase().trim();
-        const products = document.querySelectorAll('.product-card');
-
-        products.forEach(product => {
-            const prodName = product.getAttribute('data-name')?.toLowerCase() || '';
-            product.style.display = prodName.includes(filterText) ? 'block' : 'none';
-        });
-    });
+        })
+        .catch(error => console.error('Error fetching promotion:', error));
 
     document.addEventListener("DOMContentLoaded", async function () {
         try {
             const response = await fetch('/cart/count', {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
             if (response.ok) {
                 const result = await response.json();
-                document.getElementById('cart-button').textContent = `Go to Cart (${result.totalItemsInCart})`;
+                const cartCountElement = document.getElementById('cart-button'); // Assuming this element exists
+                cartCountElement.textContent = "Go to Cart (" + result.totalItemsInCart + ")";
             } else {
-                console.error('Failed to fetch cart count.');
+                console.error('Failed to fetch cart count');
             }
         } catch (error) {
             console.error('Error fetching cart count:', error);
         }
     });
+</script>
+
+document.getElementById('search-input').addEventListener('input', function() {
+const filterText = this.value.toLowerCase().trim();
+const products = document.querySelectorAll('.product-card');
+<script>
+    document.getElementById('search-input').addEventListener('input', function() {
+        const filterText = this.value.toLowerCase().trim();
+        const products = document.querySelectorAll('.product-card');
+
+        products.forEach(product => {
+            const prodName = product.getAttribute('data-name') ? product.getAttribute('data-name').toLowerCase() : '';
+            if (prodName.includes(filterText)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
+
 </script>
 </body>
 </html>

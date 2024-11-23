@@ -159,10 +159,10 @@ public class MerchantController {
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam("promotion") PromotionType promotionType) {
 
-//        // Validate the dates
-//        if (startDate.isAfter(endDate)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date.");
-//        }
+        // Validate the dates
+        if (startDate.isAfter(endDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date.");
+        }
 
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
@@ -170,16 +170,16 @@ public class MerchantController {
         ShopPromotions promotion = shop.getShopPromotions();
         if (promotion == null) {
             promotion = new ShopPromotions();
-            shop.setShopPromotions(promotion);
+            promotion.setShop(shop);
         }
 
-        // Update promotion dates
+        // Update promotion details
         promotion.setPromotionType(promotionType);
-        promotion.setStartDate(LocalDate.now());
-        promotion.setEndDate(LocalDate.now().plusMonths(1));
+        promotion.setStartDate(startDate);
+        promotion.setEndDate(endDate);
 
-        promotion.setShop(shop);
-        shopRepository.save(shop);
+        shop.setShopPromotions(promotion); // Link shop to promotion
+        shopRepository.save(shop); // Save shop with linked promotion
 
         return "redirect:/merchantShop/" + shopId;
     }

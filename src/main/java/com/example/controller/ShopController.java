@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
-
 @Controller
 public class ShopController {
 
@@ -36,25 +35,34 @@ public class ShopController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
 
-        // Determine the promotion details
+        // Fetch promotion details from ShopPromotions
         ShopPromotions promotion = shop.getShopPromotions();
-        String selectedPromotion = promotion != null ? promotion.getPromotionType().name(): "No Active Promotion";
-        LocalDate startDate = promotion != null ? promotion.getStartDate() : null;
-        LocalDate endDate = promotion != null ? promotion.getEndDate() : null;
 
-        // Add attributes to the model for the shop
+//        // If promotion exists, prepare promotion data; else set default values
+//        Optional<ShopPromotions> promotionOpt = promotionRepository.findByShopId(shopId);
+//        String selectedPromotion = promotionOpt.map(ShopPromotions::getPromotionType)
+//                .map(Enum::name)
+//                .orElse("No Active Promotion");
+//        //model.addAttribute("selectedPromotion", selectedPromotion);
+
+        String selectedPromotion = (promotion != null) ? promotion.getPromotionType().name() : "No Active Promotion";
+        LocalDate promotionStartDate = (promotion != null) ? promotion.getStartDate() : null;
+        LocalDate promotionEndDate = (promotion != null) ? promotion.getEndDate() : null;
+
+        // Add attributes to the model
         model.addAttribute("shop", shop);
         model.addAttribute("selectedPromotion", selectedPromotion);
-        model.addAttribute("shopName", shop.getName());
-        model.addAttribute("shopDescription", shop.getDescription());
+        model.addAttribute("promotionStartDate", promotionStartDate);
+        model.addAttribute("promotionEndDate", promotionEndDate);
         model.addAttribute("products", shop.getProducts());
 
-        // Retrieve the total number of items in the cart
-        long totalItemsInCart = cartRepository.count(); // Each cart entry represents one item
+        // Add cart information
+        long totalItemsInCart = cartRepository.count(); // Update logic for the current user if applicable
         model.addAttribute("totalItemsInCart", totalItemsInCart);
 
         return "shopPage"; // Render the shopPage template
     }
+
 
     @GetMapping("/cartView")
     public String openCartView(Model model) {
