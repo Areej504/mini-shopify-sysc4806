@@ -36,13 +36,20 @@ public class ProductController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
 
-// Retrieve only specific promotion types
-        List<PromotionType> relevantPromotions = Arrays.asList(
+    // Retrieve only specific promotion types
+        List<PromotionType> relevantProductPromotions = Arrays.asList(
                 PromotionType.DISCOUNT_10_PERCENT,
                 PromotionType.DISCOUNT_20_PERCENT,
                 PromotionType.DISCOUNT_5_DOLLARS,
                 PromotionType.CLEARANCE,
                 PromotionType.NONE
+        );
+
+        List<PromotionType> relevantStorePromotions = Arrays.asList(
+                PromotionType.BUY_ONE_GET_ONE,
+                PromotionType.FREE_SHIPPING,
+                PromotionType.NONE,
+                PromotionType.SEASONAL_HOLIDAY
         );
 
         List<PromotionType> shopPromotions = Arrays.asList(
@@ -55,6 +62,8 @@ public class ProductController {
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("categories", shop.getCategories());
+        model.addAttribute("promotions", relevantProductPromotions);
+        model.addAttribute("storePromotions", relevantStorePromotions);
         model.addAttribute("promotions", relevantPromotions);
         model.addAttribute("shopPromotions", shopPromotions);
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
@@ -87,6 +96,7 @@ public class ProductController {
 
             // Calculate and set the discounted price
             BigDecimal discountedPrice = existingProduct.calculateDiscountedPrice();
+            System.out.println(discountedPrice);
             existingProduct.setDiscountedPrice(discountedPrice);
 
             // Handle the image update (if provided)
@@ -116,6 +126,7 @@ public class ProductController {
         } else {
             // Add new product
             BigDecimal discountedPrice = product.calculateDiscountedPrice();
+            System.out.println(discountedPrice);
             product.setDiscountedPrice(discountedPrice);
 
             if (!file.isEmpty()) {
@@ -190,52 +201,4 @@ public class ProductController {
 
         return ResponseEntity.ok("Promotion set successfully!");
     }
-
-
-//    @PostMapping("/merchantShop/{shopId}/setPromotion")
-//    public String setPromotion(@PathVariable Long shopId, Model model) {
-//        // Fetch the shop using the repository
-//        Shop shop = shopRepository.findById(shopId)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
-//
-//        // Update the promotion field in the Shop entity
-//        List<PromotionType> shopPromotions = Arrays.asList(
-//                PromotionType.FREE_SHIPPING,
-//                PromotionType.SEASONAL_HOLIDAY,
-//                PromotionType.BUY_ONE_GET_ONE,
-//                PromotionType.CLEARANCE,
-//                PromotionType.NONE
-//        );
-//        model.addAttribute("shopPromotions", shopPromotions);
-//
-//        // Save the updated shop to the database
-//        shopRepository.save(shop);
-//
-//        // Redirect back to the merchant shop management page
-//        return "redirect:/merchantShop/" + shopId;
-//    }
-
-
-//    @GetMapping("/setShopPromotion")
-//    public String setPromotion(Model model) {
-//        model.addAttribute("PromotionType", PromotionType.values());
-//        return "merchantShop";
-//    }
-//
-////    @PostMapping("/shopPromotion")
-////    public ResponseEntity<?> setStorePromotion(@RequestBody ShopPromotionRequest request) {
-////        try {
-////            ShopPromotions promotion = new ShopPromotions();
-////            promotion.setPromotionType(request.getPromotionType());
-////            promotion.setStartDate(request.getStartDate());
-////            promotion.setEndDate(request.getEndDate());
-////
-////            // Save the promotion using the service
-////            promotionRepository.save(promotion);
-////
-////            return ResponseEntity.ok("Promotion set successfully!");
-////        } catch (Exception e) {
-////            return ResponseEntity.badRequest().body("Failed to set promotion: " + e.getMessage());
-////        }
-////    }
 }

@@ -281,14 +281,6 @@
     <span>Mini-Shopify</span>
 </a>
 
-<!--&lt;!&ndash; Promotion Banner &ndash;&gt;-->
-<!--<div class="promotion-banner"-->
-<!--     th:if="${promotionDetails != null}"-->
-<!--     th:text="${promotionDetails}"-->
-<!--     style="background-color: red; color: white; text-align: center; padding: 10px; font-size: 1.2em;">-->
-<!--    Current promotion details will appear here-->
-<!--</div>-->
-
 <!-- Green Top Banner -->
 <div class="top-banner" th:text="${shop.name}">Personalized Store</div>
 
@@ -403,7 +395,6 @@
     </div>
 </div>
 
-
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
@@ -457,7 +448,6 @@
         </form>
     </div>
 </div>
-
 
 <script th:inline="javascript">
     // Embed the shopId from Thymeleaf
@@ -564,42 +554,33 @@
             });
     }
 
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
-    }
 
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
 
-    document.getElementById('promotionForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
 
-        const shopId = /*[[${shop.shopId}]]*/ 0; // Dynamically set shop ID
-        const promotionType = document.getElementById('promotionType').value;
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
+    function submitStorePromotion(event) {
+        event.preventDefault(); // Prevent default form submission behavior
 
-        fetch(`/setPromotion/${shopId}/Form`, {
+        const form = document.getElementById('storePromotionForm');
+        const formData = new FormData(form);
+
+        fetch('/merchantShop/storePromotion', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                promotionType,
-                startDate,
-                endDate,
-            }),
+            body: formData,
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Promotion saved successfully!');
+                    alert('Store-wide promotion set successfully!');
+                    closeModal('setPromotionModal'); // Close the modal
+                    // Optionally update the store view to display the promotion
                 } else {
-                    alert('Failed to save promotion.');
+                    alert('Failed to set promotion. Please try again.');
                 }
             })
-            .catch(error => console.error('Error:', error));
-    });
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while setting the promotion.');
+            });
+    }
 
 
 </script>

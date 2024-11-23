@@ -90,21 +90,49 @@
         }
 
         .order-summary {
-            width: 30%;
+            max-width: 400px;
+            margin: 20px auto;
             padding: 20px;
-            background-color: #f7f7f7;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
 
         .order-summary h3 {
+            text-align: center;
             margin-bottom: 20px;
-            font-size: 1.5em;
+            font-size: 1.5rem;
+            color: #003f4d;
         }
 
-        .total-price {
-            font-size: 1.2em;
+        .order-summary p {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        .order-summary p span:first-child {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .order-summary .total {
+            font-size: 1.2rem;
             font-weight: bold;
-            margin: 20px 0;
-            color: #333;
+            color: #003f4d;
+            margin-top: 15px;
+        }
+
+        .order-summary .savings{
+            font-weight: bold;
+            color: red;
+        }
+
+        .cart-item .original-price{
+            font-weight: bold;
         }
 
         .checkout-button {
@@ -187,15 +215,10 @@
     <div class="cart-items">
         <h2>Your Cart</h2>
         <div th:each="item : ${cartItems}" class="cart-item">
-            <img th:src="${item.product.imageURL}" alt="Product Image">
+            <img th:src="${item.imageUrl}" alt="Product Image">
             <div class="cart-item-details">
-                <p th:text="${item.product.productName}">Product Name</p>
-                <p class="cart-item-price" th:text="'$' + ${item.product.price}">Price</p>
-                <div class="quantity-control">
-                    <button class="decrease-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
-                    <span th:text="${item.quantity}">1</span>
-                    <button class="increase-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
-                </div>
+                <p th:text="${item.name}">Product Name</p>
+                <p class="cart-item-price" th:text="'$' + ${item.price}">Price</p>
             </div>
             <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ')'">
                 🗑
@@ -204,11 +227,21 @@
     </div>
 
     <!-- Order Summary Section -->
+    <!-- Order Summary Section -->
     <div class="order-summary">
         <h3>Order Summary</h3>
-        <p class="total-price">Total: $<span th:text="${totalPrice}">0.00</span></p>
+        <p><span>Subtotal:</span> $<span th:text="${cart.totalPrice}">0.00</span></p>
+
+        <p th:if="${storePromotion == BUY_ONE_GET_ONE }">
+            <span class="savings"> Extra Savings:</span> -$<span th:text="${cart.getStoreDiscount()}">0.00</span>
+        </p>
+        <p><span>GST (13%):</span> $<span th:text="${cart.getGst()}">0.00</span></p>
+        <p><span>Shipping:</span> $<span th:text="${cart.getShippingCost()}">0.00</span></p>
+        <hr>
+        <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
         <button class="checkout-button" onclick="window.location.href='/paymentView'">Proceed to Checkout</button>
     </div>
+
 </div>
 </body>
 </html>

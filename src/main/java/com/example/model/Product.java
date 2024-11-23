@@ -12,7 +12,7 @@ public class Product {
     private String productName;
     private String description;
     private BigDecimal price;
-    private BigDecimal discountedPrice;
+    private BigDecimal discountedPrice = null;
     private Category category;
     private int inventory;
     private String imageURL;
@@ -81,7 +81,7 @@ public class Product {
     }
 
     public BigDecimal getDiscountedPrice() {
-        return discountedPrice != null ? discountedPrice : price;
+        return discountedPrice;
     }
     public void setDiscountedPrice(BigDecimal discountedPrice) {
         this.discountedPrice = discountedPrice;
@@ -126,20 +126,26 @@ public class Product {
     //Methods
     public BigDecimal calculateDiscountedPrice() {
         if (promotionType == null || promotionType == PromotionType.NONE) {
-            return price; // No discount
+            discountedPrice = null;
+            return null; // No discount
         }
 
         switch (promotionType) {
             case DISCOUNT_10_PERCENT:
-                return price.multiply(BigDecimal.valueOf(0.90));
+                discountedPrice = price.multiply(BigDecimal.valueOf(0.90));
+                return discountedPrice;
             case DISCOUNT_20_PERCENT:
-                return price.multiply(BigDecimal.valueOf(0.80));
+                discountedPrice = price.multiply(BigDecimal.valueOf(0.80));
+                return discountedPrice;
             case DISCOUNT_5_DOLLARS:
-                return price.subtract(BigDecimal.valueOf(5)).max(BigDecimal.ZERO); // Ensures price doesn't go below zero
+                discountedPrice = price.subtract(BigDecimal.valueOf(5)).max(BigDecimal.ZERO);
+                return discountedPrice; // Ensures price doesn't go below zero
             case CLEARANCE:
+                discountedPrice = price.multiply(BigDecimal.valueOf(0.50));
                 return price.multiply(BigDecimal.valueOf(0.50)); // 50% off for clearance
             default:
-                return price;
+                discountedPrice = null;
+                return null;
         }
     }
 

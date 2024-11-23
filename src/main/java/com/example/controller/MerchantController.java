@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -137,6 +139,7 @@ public class MerchantController {
         return "manageStores";
     }
 
+}
     @PostMapping("/merchantShop/{shopId}/setPromotion")
     public String setPromotion(@PathVariable Long shopId, @RequestParam("promotionType") PromotionType promotionType) {
         Shop shop = shopRepository.findById(shopId)
