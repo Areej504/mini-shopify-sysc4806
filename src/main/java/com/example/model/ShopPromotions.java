@@ -12,8 +12,6 @@ public class ShopPromotions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
     @OneToOne(mappedBy = "shopPromotions")
     @JsonIgnore
     private Shop shop;
