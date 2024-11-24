@@ -193,6 +193,40 @@
             background-color: #126b80;
         }
 
+        .promotion-banner {
+            width: 100%; /* Full width */
+            background-color: #e8f9ff; /* Light blue background */
+            color: #007b8f; /* Dark teal text */
+            font-size: 1em; /* Slightly larger font for readability */
+            height: 40px; /* Thin height */
+            line-height: 40px; /* Center text vertically */
+            overflow: hidden; /* Hide text overflow */
+            position: relative; /* Relative for child positioning */
+            border-top: 1px solid #bde4ef; /* Subtle border */
+            border-bottom: 1px solid #bde4ef;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: flex; /* Flexbox for alignment */
+            align-items: center; /* Center vertically */
+        }
+
+        .marquee-wrapper {
+            display: inline-block; /* Inline wrapper for animation */
+            white-space: nowrap; /* Prevent text wrapping */
+            animation: scroll-text 15s linear infinite; /* Smooth scrolling effect */
+        }
+
+        /* Keyframes for smooth scrolling */
+        @keyframes scroll-text {
+            0% {
+                transform: translateX(100%); /* Start fully off-screen to the right */
+            }
+            100% {
+                transform: translateX(-100%); /* Move fully off-screen to the left */
+            }
+        }
+
+
+
         .add-to-cart-btn:disabled {
             background-color: #ccc;
             color: #666;
@@ -212,12 +246,20 @@
     <!-- Full Width Description Banner -->
     <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
 
+    <!-- Promotion Banner -->
+    <div class="promotion-banner" th:if="${shopPromotion != null and shopPromotion!=NONE}">
+        <div class="marquee-wrapper" th:text="${shopPromotion.getDescription()}">
+            Special Promotion: Get 20% off on all items! Limited time offer.
+        </div>
+    </div>
+
     <!-- Checkout Button outside the white box -->
     <div class="cart-container">
         <button id="cart-button" class="cart-button" onclick="window.location.href='/cartView'" th:text="'Go to Cart (' + ${totalItemsInCart} + ')'">
             View Cart
         </button>
     </div>
+
 
     <!-- Search Bar -->
     <div class="search-container">
