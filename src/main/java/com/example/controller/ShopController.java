@@ -37,30 +37,36 @@ public class ShopController {
 
         // Fetch promotion details from ShopPromotions
         ShopPromotions promotion = shop.getShopPromotions();
+        PromotionType promotionType = (promotion != null) ? promotion.getPromotionType() : PromotionType.NONE;
 
-//        // If promotion exists, prepare promotion data; else set default values
-//        Optional<ShopPromotions> promotionOpt = promotionRepository.findByShopId(shopId);
-//        String selectedPromotion = promotionOpt.map(ShopPromotions::getPromotionType)
-//                .map(Enum::name)
-//                .orElse("No Active Promotion");
-//        //model.addAttribute("selectedPromotion", selectedPromotion);
+        List<PromotionType> validPromotions = ShopPromotions.getAvailablePromotions();
 
-        String selectedPromotion = (promotion != null) ? promotion.getPromotionType().name() : "No Active Promotion";
-        LocalDate promotionStartDate = (promotion != null) ? promotion.getStartDate() : null;
-        LocalDate promotionEndDate = (promotion != null) ? promotion.getEndDate() : null;
+        // Check if the promotionType is valid
+        String selectedPromotion = (promotion != null && validPromotions.contains(promotionType))
+                ? promotionType.getDescription()
+                : "No Active Promotion";
 
-        // Add attributes to the model
+        LocalDate promotionStartDate = (promotion != null && validPromotions.contains(promotionType))
+                ? promotion.getStartDate()
+                : null;
+
+        LocalDate promotionEndDate = (promotion != null && validPromotions.contains(promotionType))
+                ? promotion.getEndDate()
+                : null;
+
+        System.out.println("Fetched Promotion:");
+        System.out.println("Type: " + selectedPromotion);
+        System.out.println("Start Date: " + promotionStartDate);
+        System.out.println("End Date: " + promotionEndDate);
+
+        // Pass data to the model
         model.addAttribute("shop", shop);
         model.addAttribute("selectedPromotion", selectedPromotion);
         model.addAttribute("promotionStartDate", promotionStartDate);
         model.addAttribute("promotionEndDate", promotionEndDate);
         model.addAttribute("products", shop.getProducts());
 
-        // Add cart information
-        long totalItemsInCart = cartRepository.count(); // Update logic for the current user if applicable
-        model.addAttribute("totalItemsInCart", totalItemsInCart);
-
-        return "shopPage"; // Render the shopPage template
+        return "shopPage";
     }
 
 

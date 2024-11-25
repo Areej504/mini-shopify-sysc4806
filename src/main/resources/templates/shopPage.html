@@ -223,13 +223,9 @@
     </div>
 
 
-    <div class="promotion-banner"
-         th:if="${selectedPromotion != 'No Active Promotion'}"
-         style="background-color: red; color: white; padding: 10px; text-align: center; font-weight: bold;">
-        <span th:text="${selectedPromotion}"></span>
-        <br>
-        <span th:text="'Valid From: ' + ${promotionStartDate}"></span>
-        <span th:text="' to ' + ${promotionEndDate}"></span>
+    <!-- Promotion Banner -->
+    <div class="promotion-banner" th:if="${selectedPromotion != null and selectedPromotion!=NONE}">
+        <div class="marquee-wrapper" th:text="${selectedPromotion}"></div>
     </div>
 
     <!-- Full Width Description Banner -->

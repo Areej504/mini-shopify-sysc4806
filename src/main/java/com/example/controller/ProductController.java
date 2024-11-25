@@ -42,14 +42,17 @@ public class ProductController {
                 PromotionType.CLEARANCE,
                 PromotionType.NONE
         );
+        List<PromotionType> shopPromotions = ShopPromotions.getAvailablePromotions();
 
-        List<PromotionType> shopPromotions = Arrays.asList(
-                PromotionType.FREE_SHIPPING,
-                PromotionType.SEASONAL_HOLIDAY,
-                PromotionType.BUY_ONE_GET_ONE,
-                PromotionType.CLEARANCE,
-                PromotionType.NONE
-        );
+//        List<PromotionType> shopPromotions = Arrays.asList(
+//                PromotionType.FREE_SHIPPING,
+//                PromotionType.SEASONAL_HOLIDAY,
+//                PromotionType.BUY_ONE_GET_ONE,
+//                PromotionType.CLEARANCE,
+//                PromotionType.NONE
+        //);
+
+
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("categories", shop.getCategories());

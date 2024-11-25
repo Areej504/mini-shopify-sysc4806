@@ -159,13 +159,11 @@ public class MerchantController {
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam("promotion") PromotionType promotionType) {
 
-        // Validate the dates
-        if (startDate.isAfter(endDate)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date.");
-        }
-
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
+
+        // Ensure the ShopPromotions object is created or updated
+        //ShopPromotions promotion = Optional.ofNullable(shop.getShopPromotions()).orElse(new ShopPromotions());
 
         ShopPromotions promotion = shop.getShopPromotions();
         if (promotion == null) {
@@ -173,13 +171,19 @@ public class MerchantController {
             promotion.setShop(shop);
         }
 
-        // Update promotion details
         promotion.setPromotionType(promotionType);
         promotion.setStartDate(startDate);
         promotion.setEndDate(endDate);
+        //promotion.setShop(shop);
 
-        shop.setShopPromotions(promotion); // Link shop to promotion
-        shopRepository.save(shop); // Save shop with linked promotion
+        // Save the promotion and associate it with the shop
+        shop.setShopPromotions(promotion);
+        shopRepository.save(shop); // Cascade ensures promotion is saved
+
+        System.out.println("Promotion Saved:");
+        System.out.println("Type: " + promotionType);
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate);
 
         return "redirect:/merchantShop/" + shopId;
     }
