@@ -190,4 +190,104 @@ public class CartTest {
         assertEquals(1, cart.getCartItems().size(), "Negative price product should be added.");
         assertEquals(BigDecimal.valueOf(-10.0), cart.getTotalPrice(), "Total price should reflect negative price.");
     }
+
+    @Test
+    void testGetShippingCost_EmptyCart() {
+        // Act
+        double shippingCost = cart.getShippingCost();
+
+        // Assert
+        assertEquals(0, shippingCost, "Shipping cost should be 0 for an empty cart");
+    }
+
+    @Test
+    void testGetShippingCost_NoPromotion() {
+        CartItem cartItem = mock(CartItem.class);
+        Product product = mock(Product.class);
+        Shop shop = mock(Shop.class);
+
+        when(cartItem.getProduct()).thenReturn(product);
+        when(product.getShop()).thenReturn(shop);
+        when(shop.getPromotion()).thenReturn(null);
+
+        cart.getCartItems().add(cartItem);
+
+        double shippingCost = cart.getShippingCost();
+
+        assertEquals(7, shippingCost, "Shipping cost should be 7 when no promotion is applied");
+    }
+
+    @Test
+    void testGetShippingCost_FreeShipping() {
+        CartItem cartItem = mock(CartItem.class);
+        Product product = mock(Product.class);
+        Shop shop = mock(Shop.class);
+
+        when(cartItem.getProduct()).thenReturn(product);
+        when(product.getShop()).thenReturn(shop);
+        when(shop.getPromotion()).thenReturn(PromotionType.FREE_SHIPPING);
+
+        cart.getCartItems().add(cartItem);
+
+        double shippingCost = cart.getShippingCost();
+
+        assertEquals(0, shippingCost, "Shipping cost should be 0 when promotion is FREE_SHIPPING");
+    }
+
+    @Test
+    void testGetStoreDiscount_EmptyCart() {
+        BigDecimal discount = cart.getStoreDiscount();
+        assertEquals(BigDecimal.ZERO, discount, "Discount should be 0 for an empty cart");
+    }
+
+    @Test
+    void testGetStoreDiscount_NoPromotion() {
+        CartItem cartItem = mock(CartItem.class);
+        Product product = mock(Product.class);
+        Shop shop = mock(Shop.class);
+
+        when(cartItem.getProduct()).thenReturn(product);
+        when(product.getShop()).thenReturn(shop);
+        when(shop.getPromotion()).thenReturn(null);
+
+        cart.getCartItems().add(cartItem);
+
+        BigDecimal discount = cart.getStoreDiscount();
+
+        assertEquals(BigDecimal.ZERO, discount, "Discount should be 0 when no promotion is applied");
+    }
+
+    @Test
+    void testGetStoreDiscount_WhenBOGOPromotion() {
+        CartItem cartItem1 = mock(CartItem.class);
+        CartItem cartItem2 = mock(CartItem.class);
+        Product product1 = mock(Product.class);
+        Product product2 = mock(Product.class);
+        Shop shop = mock(Shop.class);
+
+        // Setup product 1
+        when(cartItem1.getProduct()).thenReturn(product1);
+        when(cartItem1.getQuantity()).thenReturn(2);
+        when(product1.getShop()).thenReturn(shop);
+        when(product1.getPrice()).thenReturn(new BigDecimal("20"));
+        when(product1.getDiscountedPrice()).thenReturn(null);
+
+        // Setup product 2
+        when(cartItem2.getProduct()).thenReturn(product2);
+        when(cartItem2.getQuantity()).thenReturn(1);
+        when(product2.getShop()).thenReturn(shop);
+        when(product2.getPrice()).thenReturn(new BigDecimal("10"));
+        when(product2.getDiscountedPrice()).thenReturn(null);
+
+        // Setup shop promotion
+        when(shop.getPromotion()).thenReturn(PromotionType.BUY_ONE_GET_ONE);
+
+        cart.getCartItems().add(cartItem1);
+        cart.getCartItems().add(cartItem2);
+
+        BigDecimal discount = cart.getStoreDiscount();
+
+        assertEquals(new BigDecimal("10"), discount, "Discount should equal the price of the cheapest item in a BOGO promotion");
+    }
+
 }
