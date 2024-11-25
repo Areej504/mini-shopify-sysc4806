@@ -412,41 +412,37 @@
 </div>
 
 
-<div id="setPromotionModal" class="modal">
-    <div class="modal-content">
-        <h3>Set Store-Wide Promotion</h3>
-        <!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
-        <form id="storePromotionForm" th:action="@{/setPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
-            <!-- Promotion Dropdown -->
-            <div class="form-group half-width">
-                <label for="promotionType">Select Promotion Type:</label>
-                <select id="promotionType" name="promotion" required th:field="*{promotion}">
-                    <option value="" disabled selected>Select a promotion</option>
-                    <option th:each="promotion : ${shopPromotions}"
-                            th:value="${promotion}"
-                            th:text="${promotion}"></option>
-                </select>
-            </div>
+div id="setPromotionModal" class="modal">
+<div class="modal-content">
+    <h3>Set Store-Wide Promotion</h3>
+    <!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
+    <form id="storePromotionForm" th:action="@{/setPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
+        <!-- Promotion Dropdown -->
+        <div class="form-group half-width">
+            <label for="promotionType">Select Promotion Type:</label>
+            <select id="promotionType" name="promotion" required th:field="*{promotion}">
+                <option value="" disabled selected>Select a promotion</option>
+                <option th:each="promotion : ${shopPromotions}"
+                        th:value="${promotion}"
+                        th:text="${promotion}"></option>
+            </select>
+        </div>
 
-            <!-- Save Button -->
-            <div class="form-group">
-                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                    Save Promotion
-                </button>
-            </div>
-        </form>
-
-        <form id="promotionForm" th:action="@{/setPromotion/{shopId}/Form(shopId=${shop.shopId})}" method="post">
-
+        <!-- Start Date -->
+        <div class="form-group">
             <label for="startDate">Start Date:</label>
             <input type="date" id="startDate" name="startDate" required>
+        </div>
 
+        <!-- End Date -->
+        <div class="form-group">
             <label for="endDate">End Date:</label>
             <input type="date" id="endDate" name="endDate" required>
+        </div>
 
-            <!--            <button type="submit">Save dates</button>-->
-        </form>
-    </div>
+        <!-- Save Button -->
+        <button type="submit" class="btn btn-primary">Save Promotion</button>
+    </form>
 </div>
 
 <script th:inline="javascript">
@@ -544,7 +540,7 @@
                     closeModal('removeProductModal'); // Close the modal
                     document.getElementById('deleteProductId').value = ''; // Clear input
                 } else {
-                    console.error(Error removing product: ${response.statusText});
+                    console.error(Error removing_product: ${response.statusText});
                     alert("Failed to delete the product. Please try again.");
                 }
             })
