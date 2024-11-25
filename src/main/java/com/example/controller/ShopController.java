@@ -66,6 +66,9 @@ public class ShopController {
         model.addAttribute("promotionEndDate", promotionEndDate);
         model.addAttribute("products", shop.getProducts());
 
+        long totalItemsInCart = cartRepository.count(); //each cart entry represents one item
+        model.addAttribute("totalItemsInCart", totalItemsInCart);
+
         return "shopPage";
     }
 
