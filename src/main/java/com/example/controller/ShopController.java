@@ -60,6 +60,8 @@ public class ShopController {
         System.out.println("End Date: " + promotionEndDate);
 
         // Pass data to the model
+        model.addAttribute("shopName", shop.getName());
+        model.addAttribute("shopDescription", shop.getDescription());
         model.addAttribute("shop", shop);
         model.addAttribute("selectedPromotion", selectedPromotion);
         model.addAttribute("promotionStartDate", promotionStartDate);
