@@ -35,6 +35,8 @@ public class ShopController {
             model.addAttribute("shopName", shopDetails.getName());
             model.addAttribute("shopDescription", shopDetails.getDescription());
             model.addAttribute("products", shopDetails.getProducts());
+            model.addAttribute("shopPromotion", shopDetails.getPromotion());
+            model.addAttribute("NONE", PromotionType.NONE);
         }
 
         // Retrieve the cart contents and calculate the number of items
@@ -188,13 +190,6 @@ public class ShopController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("An error occurred while removing the item");
         }
-    }
-
-
-
-    @GetMapping("/paymentView")
-    public String openPaymentView(Model model){
-        return "paymentView";
     }
 
 }

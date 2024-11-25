@@ -1,6 +1,8 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +18,9 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<OrderInfo> orderInfos;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Cart> carts = new ArrayList<>();
 
     // Constructors
     public Customer() {}
@@ -43,6 +48,18 @@ public class Customer {
         this.name = name;
     }
 
+    public List<Cart> getCarts() {
+        return carts;
+    }
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+    public List<OrderInfo> getOrderInfos() {
+        return orderInfos;
+    }
+    public void setOrderInfos(List<OrderInfo> orderInfos) {
+        this.orderInfos = orderInfos;
+    }
     public String getEmail() {
         return email;
     }
