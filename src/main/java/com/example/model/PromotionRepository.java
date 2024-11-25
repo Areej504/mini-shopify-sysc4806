@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PromotionRepository extends CrudRepository<ShopPromotions, Long> {
-    Object save(ShopPromotions promotion);
+    //Object save(ShopPromotions promotion);
 }
 
