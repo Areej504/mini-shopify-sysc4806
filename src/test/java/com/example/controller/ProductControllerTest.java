@@ -96,45 +96,8 @@ public class ProductControllerTest {
 
         // Assert: Verify interactions with mocks
         verify(shopRepository, times(1)).findById(anyLong());
-        verify(productRepository, times(2)).save(any(Product.class)); // Allow two saves
+        verify(productRepository, times(1)).save(any(Product.class));
     }
-}
-//    @Test
-//    public void testAddProduct_WithValidShopId_RedirectsToMerchantShop() throws Exception {
-//        // Arrange: Set up a mock file and mock repository behavior
-//        MockMultipartFile mockFile = new MockMultipartFile(
-//                "productImage",
-//                "test-image.jpg",
-//                "image/jpeg",
-//                "Sample Image Content".getBytes()
-//        );
-//
-//        Shop shop = new Shop();
-//        shop.setShopId(1L);
-//
-//        Product product = new Product();
-//        product.setProductName("Test Product");
-//
-//        // Configure mocks before calling mockMvc.perform(...)
-//        when(shopRepository.findById(anyLong())).thenReturn(Optional.of(shop));
-//        when(productRepository.save(any(Product.class))).thenReturn(product);
-//
-//        // Act: Perform multipart request with parameters and mock file
-//        mockMvc.perform(multipart("/merchantShop/{shopId}", 1L)
-//                        .file(mockFile)
-//                        .param("productName", "Test Product")
-//                        .param("price", "10.99")
-//                        .param("inventory", "100")
-//                        .param("description", "Test Description")
-//                        .param("category", Category.ELECTRONICS.name())
-//                        .param("promotionType", PromotionType.CLEARANCE.name()))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/merchantShop/1"));
-//
-//        // Assert: Verify interactions with mocks
-//        verify(shopRepository, times(1)).findById(anyLong());
-//        verify(productRepository, times(1)).save(any(Product.class));
-
 
 //    @Test
 //    public void testAddProduct_InvalidShopId_ThrowsException() throws Exception {
@@ -175,4 +138,4 @@ public class ProductControllerTest {
 //        verify(productRepository, times(1)).existsById(anyLong());
 //        verify(productRepository, never()).deleteById(anyLong());
 //    }
-
+}

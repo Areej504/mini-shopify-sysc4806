@@ -17,13 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
-    private ShopRepository shopRepository;
-
+    OrderInfoRepository orderInfoRepository;
     @MockBean
-    private ProductRepository productRepository;
+    ShopRepository shopRepository;
+    @MockBean
+    ProductRepository productRepository;
 
+    // Scenario 1: Accessing the payment view
     @Test
     public void testOpenPaymentView_ReturnsPaymentView() throws Exception {
         mockMvc.perform(get("/paymentView"))

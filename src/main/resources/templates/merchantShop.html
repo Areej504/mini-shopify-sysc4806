@@ -306,13 +306,13 @@
                 <h3 th:text="${product.productName}">Product Name</h3>
 
                 <!-- Display discounted and original prices if there is a discount -->
-                <p th:if="${product.discountedPrice != product.price}">
+                <p th:if="${product.discountedPrice != null}">
                     <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
                     <br>
                     <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
                 </p>
                 <!-- Display only the original price if there is no discount -->
-                <p th:if="${product.discountedPrice == product.price}" class="price" th:text="'Price: $' + ${product.price}"></p>
+                <p th:if="${product.discountedPrice == null}" class="price" th:text="'Price: $' + ${product.price}"></p>
 
                 <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
                 <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
@@ -395,6 +395,48 @@
     </div>
 </div>
 
+
+<div id="setPromotionModal" class="modal">
+    <div class="modal-content">
+        <h3>Set Store-Wide Promotion</h3>
+        <form id="storePromotionForm" th:action="@{/submitPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
+            <!-- Promotion Title -->
+            <div class="form-group half-width">
+                <label for="promotionTitle">Promotion Title:</label>
+                <select id="promotionTitle" name="promotion" required th:field="*{promotion}">
+                    <option value="" disabled selected>Select a promotion</option>
+                    <option th:each="promotion : ${storePromotions}" th:value="${promotion}" th:text="${promotion}"></option>
+                </select>
+            </div>
+
+            <!-- Promotion Description -->
+            <div class="form-group">
+                <label for="shopDescription">Shop Description:</label>
+                <textarea id="shopDescription" name="description" rows="3" placeholder="Provide details about the shop" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="promotionStartDate">Start Date:</label>
+                    <input type="date" id="promotionStartDate" name="promotionStartDate" required>
+                </div>
+                <div class="form-group half-width">
+                    <label for="promotionEndDate">End Date:</label>
+                    <input type="date" id="promotionEndDate" name="promotionEndDate" required>
+                </div>
+            </div>
+
+            <!-- Button Row -->
+            <div class="button-row">
+                <button type="submit">Set Promotion</button>
+                <button type="button" onclick="closeModal('setPromotionModal')">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
 <div id="removeProductModal" class="modal">
     <div class="modal-content">
         <h3>Remove Product</h3>
@@ -411,39 +453,6 @@
     </div>
 </div>
 
-
-<div id="setPromotionModal" class="modal">
-<div class="modal-content">
-    <h3>Set Store-Wide Promotion</h3>
-    <!--        <form id="storePromotionForm" onsubmit="submitStorePromotion(event)">-->
-    <form id="storePromotionForm" th:action="@{/setPromotion/{shopId}(shopId=${shop.shopId})}" th:object="${shop}" method="post" >
-        <!-- Promotion Dropdown -->
-        <div class="form-group half-width">
-            <label for="promotionType">Select Promotion Type:</label>
-            <select id="promotionType" name="promotion" required th:field="*{promotion}">
-                <option value="" disabled selected>Select a promotion</option>
-                <option th:each="promotion : ${shopPromotions}"
-                        th:value="${promotion}"
-                        th:text="${promotion}"></option>
-            </select>
-        </div>
-
-        <!-- Start Date -->
-        <div class="form-group">
-            <label for="startDate">Start Date:</label>
-            <input type="date" id="startDate" name="startDate" required>
-        </div>
-
-        <!-- End Date -->
-        <div class="form-group">
-            <label for="endDate">End Date:</label>
-            <input type="date" id="endDate" name="endDate" required>
-        </div>
-
-        <!-- Save Button -->
-        <button type="submit" class="btn btn-primary">Save Promotion</button>
-    </form>
-</div>
 
 <script th:inline="javascript">
     // Embed the shopId from Thymeleaf
