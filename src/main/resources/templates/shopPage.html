@@ -344,7 +344,7 @@
 
 <script th:inline="javascript">
     const shopId = 0;//[[${shop.shopId}]]; // Dynamically set shop ID
-    fetch(/shopPage/${shopId}/Promotion)
+    fetch(`/shopPage/${shopId}/Promotion`)
         .then(response => response.text())
         .then(promotion => {
             const banner = document.getElementById('promotionBanner');
