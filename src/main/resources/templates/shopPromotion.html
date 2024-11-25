@@ -1,0 +1,145 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Shop Promotion</title>-->
+<!--    <style>-->
+<!--        /* Add your modal styling here */-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background-color: rgba(0, 0, 0, 0.5);-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            z-index: 1000;-->
+<!--        }-->
+
+<!--        .modal-content {-->
+<!--            background-color: #ffffff;-->
+<!--            padding: 50px;-->
+<!--            border-radius: 10px;-->
+<!--            width: 50%;-->
+<!--            text-align: center;-->
+<!--            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);-->
+<!--        }-->
+
+<!--        .modal-content h3 {-->
+<!--            margin-top: 0;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        .modal-content button {-->
+<!--            padding: 10px 20px;-->
+<!--            margin-top: 20px;-->
+<!--            font-size: 1em;-->
+<!--            background-color: #1b5e20;-->
+<!--            color: #ffffff;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<button onclick="openPromotionModal()">Set Promotion</button>-->
+
+<!--&lt;!&ndash; Promotion Modal &ndash;&gt;-->
+<!--<div id="setPromotionModal" class="modal">-->
+<!--    <div class="modal-content">-->
+<!--        <h3>Set Store-Wide Promotion</h3>-->
+<!--        <form id="storePromotionForm" action="/shopPromotion/" method="POST">-->
+<!--            &lt;!&ndash; Hidden Fields &ndash;&gt;-->
+<!--            <input type="hidden" name="merchantId" value="12345"> &lt;!&ndash; Dynamically set merchant ID &ndash;&gt;-->
+<!--            <input type="hidden" id="shopId" name="shopId" value="1"> &lt;!&ndash; Dynamically set shop ID &ndash;&gt;-->
+
+<!--            &lt;!&ndash; Promotion Type Dropdown &ndash;&gt;-->
+<!--            <div>-->
+<!--                <label for="promotionType">Promotion Type:</label>-->
+<!--                <select id="promotionType" name="promotionType" required>-->
+<!--                    <option value="" disabled selected>Select a promotion</option>-->
+<!--                    <option th:each="promotion : ${PromotionType}"-->
+<!--                            th:value="${promotion}"-->
+<!--                            th:text="${promotion.description}">-->
+<!--                    </option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Start Date &ndash;&gt;-->
+<!--            <div>-->
+<!--                <label for="startDate">Start Date:</label>-->
+<!--                <input type="date" id="startDate" name="startDate" required>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; End Date &ndash;&gt;-->
+<!--            <div>-->
+<!--                <label for="endDate">End Date:</label>-->
+<!--                <input type="date" id="endDate" name="endDate" required>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--            <div>-->
+<!--                <button type="submit">Set Promotion</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--        <button onclick="closePromotionModal()">Close</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function openPromotionModal(shopId) {-->
+<!--        document.getElementById('shopId').value = shopId;-->
+<!--        document.getElementById('setPromotionModal').style.display = 'block';-->
+<!--    }-->
+
+<!--    function closePromotionModal() {-->
+<!--        document.getElementById('setPromotionModal').style.display = 'none';-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html xmlns:th="http://www.thymeleaf.org">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;  <title>Store Promotion</title>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+<!--&lt;!&ndash;<div class="container">&ndash;&gt;-->
+<!--&lt;!&ndash;  <h1>Set Store Promotion</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;  <form id="storePromotionForm" action="/shopPromotion/" method="POST">&ndash;&gt;-->
+<!--&lt;!&ndash;    &lt;!&ndash; Promotion Type Dropdown &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <label for="promotionType">Promotion Type:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;      <select id="promotionType" name="promotionType" required>&ndash;&gt;-->
+<!--&lt;!&ndash;        <option value="" disabled selected>Select a promotion</option>&ndash;&gt;-->
+<!--&lt;!&ndash;        <option th:each="promotion : ${PromotionType.values()}"&ndash;&gt;-->
+<!--&lt;!&ndash;                th:value="${promotion}"&ndash;&gt;-->
+<!--&lt;!&ndash;                th:text="${promotion.description}"></option>&ndash;&gt;-->
+<!--&lt;!&ndash;      </select>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Start Date &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <label for="startDate">Start Date:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;      <input type="date" id="startDate" name="startDate" required>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; End Date &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <label for="endDate">End Date:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;      <input type="date" id="endDate" name="endDate" required>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Submit Button &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <button type="submit">Set Promotion</button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  </form>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->

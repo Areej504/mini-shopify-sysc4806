@@ -1,16 +1,15 @@
 package com.example.controller;
 
 import com.example.model.*;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
-
 
 @Controller
 public class ShopController {
@@ -22,6 +21,9 @@ public class ShopController {
     CartRepository cartRepository;
 
     @Autowired
+      private PromotionRepository promotionRepository;
+
+    @Autowired
     ProductRepository productRepository;
     @Autowired
     private CartItemRepository cartItemRepository;
@@ -29,22 +31,49 @@ public class ShopController {
 
     @GetMapping("/shopPage/{shopId}")
     public String getShopDetails(@PathVariable Long shopId, Model model) {
-        Optional<Shop> shop = shopRepository.findById(shopId);
-        if (shop.isPresent()) {
-            Shop shopDetails = shop.get();
-            model.addAttribute("shopName", shopDetails.getName());
-            model.addAttribute("shopDescription", shopDetails.getDescription());
-            model.addAttribute("products", shopDetails.getProducts());
-            model.addAttribute("shopPromotion", shopDetails.getPromotion());
-            model.addAttribute("NONE", PromotionType.NONE);
-        }
+        // Retrieve the shop by ID or throw an exception if not found
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));
 
-        // Retrieve the cart contents and calculate the number of items
+        // Fetch promotion details from ShopPromotions
+        ShopPromotions promotion = shop.getShopPromotions();
+        PromotionType promotionType = (promotion != null) ? promotion.getPromotionType() : PromotionType.NONE;
+
+        List<PromotionType> validPromotions = ShopPromotions.getAvailablePromotions();
+
+        // Check if the promotionType is valid
+        String selectedPromotion = (promotion != null && validPromotions.contains(promotionType))
+                ? promotionType.getDescription()
+                : "No Active Promotion";
+
+        LocalDate promotionStartDate = (promotion != null && validPromotions.contains(promotionType))
+                ? promotion.getStartDate()
+                : null;
+
+        LocalDate promotionEndDate = (promotion != null && validPromotions.contains(promotionType))
+                ? promotion.getEndDate()
+                : null;
+
+        System.out.println("Fetched Promotion:");
+        System.out.println("Type: " + selectedPromotion);
+        System.out.println("Start Date: " + promotionStartDate);
+        System.out.println("End Date: " + promotionEndDate);
+
+        // Pass data to the model
+        model.addAttribute("shopName", shop.getName());
+        model.addAttribute("shopDescription", shop.getDescription());
+        model.addAttribute("shop", shop);
+        model.addAttribute("selectedPromotion", selectedPromotion);
+        model.addAttribute("promotionStartDate", promotionStartDate);
+        model.addAttribute("promotionEndDate", promotionEndDate);
+        model.addAttribute("products", shop.getProducts());
+
         long totalItemsInCart = cartRepository.count(); //each cart entry represents one item
         model.addAttribute("totalItemsInCart", totalItemsInCart);
 
-        return "shopPage"; // Render the shopPage template
+        return "shopPage";
     }
+
 
     @GetMapping("/cartView")
     public String openCartView(Model model) {
@@ -191,5 +220,14 @@ public class ShopController {
             return ResponseEntity.status(500).body("An error occurred while removing the item");
         }
     }
+
+
+
+
+//    @GetMapping("/paymentView")
+//    public String openPaymentView(Model model){
+//        return "paymentView";
+//    }
+
 
 }

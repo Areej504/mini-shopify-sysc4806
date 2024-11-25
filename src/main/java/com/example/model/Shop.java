@@ -1,6 +1,7 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,10 @@ public class Shop {
     @Enumerated(EnumType.STRING)
     private Set<Category> categories;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "promotion_id", referencedColumnName = "id")
+    private ShopPromotions shopPromotions;
+
     @ManyToOne
     @JoinColumn(name = "merchant_id")  // Specifies the foreign key column
     private Merchant merchant;
@@ -30,6 +35,15 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop")
     private List<Cart> carts = new ArrayList<>();
+
+    public ShopPromotions getShopPromotions() {
+        return shopPromotions;
+    }
+
+    public void setShopPromotions(ShopPromotions shopPromotions) {
+        this.shopPromotions = shopPromotions;
+    }
+
 
     public Shop() {}
 
