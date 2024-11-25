@@ -28,8 +28,6 @@ public class MerchantControllerTest {
 
     @MockBean
     private ShopRepository shopRepository;
-    @MockBean
-    private PromotionRepository promotionRepository;
 
     // Tests for GET /create-merchant
     @Test

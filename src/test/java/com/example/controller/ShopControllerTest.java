@@ -16,13 +16,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @WebMvcTest(ShopController.class)
 public class ShopControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private ShopRepository shopRepository;
 
@@ -35,9 +33,8 @@ public class ShopControllerTest {
     @MockBean
     private CartItemRepository cartItemRepository;
 
-    @MockBean
-    private PromotionRepository promotionRepository;
 
+    // Scenario 1: Valid shopId, Shop details should be displayed
     @Test
     public void testGetShopDetails_WithValidShopId_ReturnsShopPageView() throws Exception {
         Shop shop = new Shop();
@@ -57,172 +54,58 @@ public class ShopControllerTest {
         verify(shopRepository, times(1)).findById(1L);
     }
 
-//    @Test
-//    public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
-//        Product product = new Product();
-//        product.setProductName("Sample Product");
-//        product.setPrice(BigDecimal.valueOf(10.00));
-//
-//        CartItem cartItem = new CartItem();
-//        cartItem.setProduct(product);
-//        cartItem.setQuantity(1);
-//
-//        Cart cart = new Cart();
-//        cart.setCartItems(List.of(cartItem));
-//
-//        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
-//
-//        mockMvc.perform(get("/cartView"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("cart"))
-//                .andExpect(model().attributeExists("storePromotion"))
-//                .andExpect(view().name("cartView"));
-//    }
-//
-//    @Test
-//    public void testAddToCart_Success() throws Exception {
-//        Product product = new Product();
-//        product.setProductId(1L);
-//        product.setInventory(10);
-//
-//        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-//
-//        Cart cart = new Cart();
-//        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
-//
-//        mockMvc.perform(post("/addToCart")
-//                        .contentType("application/json")
-//                        .content("{\"productId\": 1, \"quantity\": 1}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.message").value("Product added to cart successfully!"));
-//    }
-//
-//    @Test
-//    public void testUpdateQuantity_ExceedsInventory() throws Exception {
-//        Product product = new Product();
-//        product.setInventory(1);
-//
-//        CartItem cartItem = new CartItem();
-//        cartItem.setProduct(product);
-//        cartItem.setQuantity(1);
-//
-//        when(cartItemRepository.findById(1L)).thenReturn(Optional.of(cartItem));
-//
-//        mockMvc.perform(post("/cart/updateQuantity")
-//                        .contentType("application/json")
-//                        .content("{\"cartItemId\": 1, \"action\": \"increase\"}"))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().string("Cannot exceed available inventory"));
-//    }
-//---------------------
-
     // Scenario 2: Invalid shopId, No shop details should be displayed
-//    @Test
-//    public void testGetShopDetails_WithInvalidShopId_ReturnsShopPageWithNoDetails() throws Exception {
-//        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
-//        when(cartRepository.count()).thenReturn(5L);
-//
-//        mockMvc.perform(get("/shopPage/999"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeDoesNotExist("shopName", "shopDescription", "products"))
-//                .andExpect(model().attribute("totalItemsInCart", 5L))
-//                .andExpect(model().attribute("products", Collections.emptyList()))
-//                .andExpect(view().name("shopPage"))
-//                .andExpect(status().isNotFound());
-//
-//    }
+    @Test
+    public void testGetShopDetails_WithInvalidShopId_ReturnsShopPageWithNoDetails() throws Exception {
+        when(shopRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(cartRepository.count()).thenReturn(5L);
+
+        mockMvc.perform(get("/shopPage/999"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("shopName", "shopDescription", "products"))
+                .andExpect(model().attribute("totalItemsInCart", 5L))
+                .andExpect(view().name("shopPage"));
+
+    }
 
     // Scenario 3: Accessing the cart view with no items
-//    @Test
-//    public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
-//        // Setup product and cart items
-//        Product product = new Product();
-//        product.setProductName("Sample Product");
-//        product.setPrice(BigDecimal.valueOf(10.00));
-//
-//        CartItem cartItem = new CartItem();
-//        cartItem.setCartItemId(1L);
-//        cartItem.setProduct(product);
-//        cartItem.setQuantity(2);
-//
-//        Cart cart = new Cart();
-//
-//        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
-//
-//        mockMvc.perform(get("/cartView"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("cartItems"))
-//                .andExpect(model().attribute("totalPrice", cart.getTotalPrice()))
-//                .andExpect(model().attribute("totalItemsInCart", cart.getCartItems().size()))
-//                .andExpect(view().name("cartView"));
-//
-//        verify(cartRepository, times(1)).findById(1L);
-//        verify(shopRepository, times(1)).findById(1L);
-//    }
-
     @Test
     public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
+        // Setup product, shop, promotion, and cart items
+        Shop shop = new Shop();
+        shop.setPromotion(PromotionType.BUY_ONE_GET_ONE);
+
         Product product = new Product();
         product.setProductName("Sample Product");
         product.setPrice(BigDecimal.valueOf(10.00));
-
-        Shop shop = new Shop();
-        shop.setPromotion(PromotionType.BUY_ONE_GET_ONE);
-        product.setShop(shop);
+        product.setShop(shop); // Associate the product with a shop
 
         CartItem cartItem = new CartItem();
+        cartItem.setCartItemId(1L);
         cartItem.setProduct(product);
-        cartItem.setQuantity(1);
+        cartItem.setQuantity(2);
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(cartItem); // Add the CartItem to a list
 
         Cart cart = new Cart();
-        cart.setCartItems(List.of(cartItem)); // Add at least one item
+        cart.setCartItems(cartItems); // Use setCartItems to populate the cart
 
+        // Mock the cart repository
         when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
 
+        // Perform the mock request
         mockMvc.perform(get("/cartView"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("cart"))
-                .andExpect(model().attribute("storePromotion", PromotionType.BUY_ONE_GET_ONE))
-                .andExpect(view().name("cartView"));
-    }
+                .andExpect(model().attributeExists("cart")) // Check that the cart attribute exists
+                .andExpect(model().attributeExists("storePromotion")) // Check for the store promotion attribute
+                .andExpect(model().attribute("storePromotion", PromotionType.BUY_ONE_GET_ONE)) // Verify the promotion type
+                .andExpect(model().attribute("BUY_ONE_GET_ONE", PromotionType.BUY_ONE_GET_ONE)) // Verify promotion constant
+                .andExpect(view().name("cartView")); // Verify the view name
 
-//    @Test
-//    public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
-//        // Setup product, shop, promotion, and cart items
-//        Shop shop = new Shop();
-//        shop.setPromotion(PromotionType.BUY_ONE_GET_ONE);
-//
-//        Product product = new Product();
-//        product.setProductName("Sample Product");
-//        product.setPrice(BigDecimal.valueOf(10.00));
-//        product.setShop(shop); // Associate the product with a shop
-//
-//        CartItem cartItem = new CartItem();
-//        cartItem.setCartItemId(1L);
-//        cartItem.setProduct(product);
-//        cartItem.setQuantity(2);
-//
-//        List<CartItem> cartItems = new ArrayList<>();
-//        cartItems.add(cartItem); // Add the CartItem to a list
-//
-//        Cart cart = new Cart();
-//        cart.setCartItems(cartItems); // Use setCartItems to populate the cart
-//
-//        // Mock the cart repository
-//        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
-//
-//        // Perform the mock request
-//        mockMvc.perform(get("/cartView"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("cart")) // Check that the cart attribute exists
-//                .andExpect(model().attributeExists("storePromotion")) // Check for the store promotion attribute
-//                .andExpect(model().attribute("storePromotion", PromotionType.BUY_ONE_GET_ONE)) // Verify the promotion type
-//                .andExpect(model().attribute("BUY_ONE_GET_ONE", PromotionType.BUY_ONE_GET_ONE)) // Verify promotion constant
-//                .andExpect(view().name("cartView")); // Verify the view name
-//
-//        // Verify repository interactions
-//        verify(cartRepository, times(1)).findById(1L);
-//    }
+        // Verify repository interactions
+        verify(cartRepository, times(1)).findById(1L);
+    }
 
 
     @Test
@@ -232,7 +115,7 @@ public class ShopControllerTest {
         product.setProductId(1L);
         product.setProductName("Sample Product");
         product.setPrice(BigDecimal.valueOf(10.00));
-        product.setInventory(10);
+        product.setInventory(10); // Ensure inventory is sufficient for the test
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
         // Mock cart repository to return a cart
@@ -240,46 +123,18 @@ public class ShopControllerTest {
         when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
 
+        // Perform the mock request
         mockMvc.perform(post("/addToCart")
                         .contentType("application/json")
                         .content("{\"productId\": 1, \"quantity\": 1}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Product added to cart successfully!"));
+                .andExpect(jsonPath("$.message").value("Product added to cart successfully!"))
+                .andExpect(jsonPath("$.totalItemsInCart").exists()); // Check for total items in cart field
 
+        // Verify repository interactions
         verify(productRepository, times(1)).findById(1L);
         verify(cartRepository, times(1)).save(any(Cart.class));
     }
-
-
-
-
-//    @Test
-//    public void testAddToCart_Success() throws Exception {
-//        // Mock product repository to return a product
-//        Product product = new Product();
-//        product.setProductId(1L);
-//        product.setProductName("Sample Product");
-//        product.setPrice(BigDecimal.valueOf(10.00));
-//        product.setInventory(10); // Ensure inventory is sufficient for the test
-//        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-//
-//        // Mock cart repository to return a cart
-//        Cart cart = new Cart();
-//        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
-//        when(cartRepository.save(any(Cart.class))).thenReturn(cart);
-//
-//        // Perform the mock request
-//        mockMvc.perform(post("/addToCart")
-//                        .contentType("application/json")
-//                        .content("{\"productId\": 1, \"quantity\": 1}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.message").value("Product added to cart successfully!"))
-//                .andExpect(jsonPath("$.totalItemsInCart").exists()); // Check for total items in cart field
-//
-//        // Verify repository interactions
-//        verify(productRepository, times(1)).findById(1L);
-//        verify(cartRepository, times(1)).save(any(Cart.class));
-//    }
 
 
     @Test

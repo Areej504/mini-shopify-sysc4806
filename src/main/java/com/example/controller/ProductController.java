@@ -34,30 +34,26 @@ public class ProductController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
 
-// Retrieve only specific promotion types
-        List<PromotionType> relevantPromotions = Arrays.asList(
+    // Retrieve only specific promotion types
+        List<PromotionType> relevantProductPromotions = Arrays.asList(
                 PromotionType.DISCOUNT_10_PERCENT,
                 PromotionType.DISCOUNT_20_PERCENT,
                 PromotionType.DISCOUNT_5_DOLLARS,
                 PromotionType.CLEARANCE,
                 PromotionType.NONE
         );
-        List<PromotionType> shopPromotions = ShopPromotions.getAvailablePromotions();
 
-//        List<PromotionType> shopPromotions = Arrays.asList(
-//                PromotionType.FREE_SHIPPING,
-//                PromotionType.SEASONAL_HOLIDAY,
-//                PromotionType.BUY_ONE_GET_ONE,
-//                PromotionType.CLEARANCE,
-//                PromotionType.NONE
-        //);
-
-
+        List<PromotionType> relevantStorePromotions = Arrays.asList(
+                PromotionType.BUY_ONE_GET_ONE,
+                PromotionType.FREE_SHIPPING,
+                PromotionType.NONE,
+                PromotionType.SEASONAL_HOLIDAY
+        );
         model.addAttribute("shop", shop); // Add shop details to the model
         model.addAttribute("product", new Product()); // Add Product model to Thymeleaf
         model.addAttribute("categories", shop.getCategories());
-        model.addAttribute("promotions", relevantPromotions);
-        model.addAttribute("shopPromotions", shopPromotions);
+        model.addAttribute("promotions", relevantProductPromotions);
+        model.addAttribute("storePromotions", relevantStorePromotions);
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
         return "merchantShop";
     }
@@ -73,7 +69,6 @@ public class ProductController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid shop Id"));
         product.setShop(shop);
-        productRepository.save(product);
 
         if (productId != null) {
             // Update existing product
@@ -159,7 +154,6 @@ public class ProductController {
             return ResponseEntity.notFound().build(); // Return 404 Not Found if product doesn't exist
         }
     }
-
     @GetMapping("/merchantShop/{shopId}/product/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         // Verify that the shop exists
@@ -175,5 +169,4 @@ public class ProductController {
 
         return ResponseEntity.ok(product); // Return the product details as JSON
     }
-
 }

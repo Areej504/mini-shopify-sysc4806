@@ -8,6 +8,4 @@ import java.util.List;
 public interface ProductRepository extends CrudRepository<Product, Long> {
     List<Product> findByCategory(Category category);
     List<Product> findByShop(Shop shop);
-
-
 }

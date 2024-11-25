@@ -40,18 +40,6 @@
             padding: 20px 0;
         }
 
-        .promotion-banner {
-            background-color: red;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-
         .shop-header h1 {
             font-size: 2em;
             margin: 0;
@@ -250,20 +238,13 @@
 <div class="container">
     <!-- Full-width Shop Header -->
     <div class="shop-header">
-        <!--        <h1 th:text="${shopName}">Shop Name</h1>-->
-        <h1 th:text="${shop.shopId}">Shop Name</h1>
+        <h1 th:text="${shopName}">Shop Name</h1>
         <!-- Sign-in Button -->
         <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
-
-    <!-- Promotion Banner -->
-    <div class="promotion-banner" th:if="${selectedPromotion != null and selectedPromotion!=NONE}">
-        <div class="marquee-wrapper" th:text="${selectedPromotion}"></div>
-    </div>
-
     <!-- Full Width Description Banner -->
-    <!--    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>-->
+    <div class="shop-description-banner" th:text="${shopDescription}">Shop Description</div>
 
     <!-- Promotion Banner -->
     <div class="promotion-banner" th:if="${shopPromotion != null and shopPromotion!=NONE}">
@@ -342,19 +323,7 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    const shopId = 0;//[[${shop.shopId}]]; // Dynamically set shop ID
-    fetch(`/shopPage/${shopId}/Promotion`)
-        .then(response => response.text())
-        .then(promotion => {
-            const banner = document.getElementById('promotionBanner');
-            if (promotion !== 'No Active Promotion') {
-                banner.innerText = promotion;
-                banner.style.display = 'block'; // Show banner if there’s an active promotion
-            }
-        })
-        .catch(error => console.error('Error fetching promotion:', error));
-
+<script>
     document.addEventListener("DOMContentLoaded", async function () {
         try {
             const response = await fetch('/cart/count', {
@@ -377,7 +346,6 @@
     });
 </script>
 
-
 <script>
     document.getElementById('search-input').addEventListener('input', function() {
         const filterText = this.value.toLowerCase().trim();
@@ -392,7 +360,6 @@
             }
         });
     });
-
 </script>
 </body>
 </html>
