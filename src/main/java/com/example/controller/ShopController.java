@@ -221,10 +221,11 @@ public class ShopController {
 
 
 
-//    @GetMapping("/paymentView")
-//    public String openPaymentView(Model model){
-//        return "paymentView";
-//    }
+
+    @GetMapping("/paymentView")
+    public String openPaymentView(Model model){
+        return "paymentView";
+    }
 
 
 }

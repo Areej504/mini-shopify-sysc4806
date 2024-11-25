@@ -20,14 +20,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-//@RequestMapping("/merchantShop")
 public class MerchantController {
     @Autowired
     private MerchantRepository merchantRepository;
     @Autowired
     private ShopRepository shopRepository;
-    @Autowired
-    private PromotionRepository promotionRepository;
 
     //create Merchant page
     @GetMapping("/create-merchant")
@@ -94,7 +91,6 @@ public class MerchantController {
         model.addAttribute("categories", Category.values());
         model.addAttribute("merchantId", merchantId);
 
-        model.addAttribute("promotionTypes", PromotionType.values());
         return "createShop";
     }
 
@@ -102,15 +98,7 @@ public class MerchantController {
     public String createShop(@RequestParam Long merchantId, @ModelAttribute Shop shop, Model model) {
         // Add the shop name to the model for use in the view
 
-//        Merchant merchant = merchantRepository.findById(merchantId).orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
-//        shop.setMerchant(merchant);
-        Optional<Merchant> merchantOpt = merchantRepository.findById(merchantId);
-        if (merchantOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Invalid Merchant ID");
-            return "errorPage"; // Redirect to a user-friendly error page
-        }
-
-        Merchant merchant = merchantOpt.get();
+        Merchant merchant = merchantRepository.findById(merchantId).orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
         shop.setMerchant(merchant);
 
         System.out.println(shop.getMerchant().getName());
@@ -121,13 +109,12 @@ public class MerchantController {
         // Save the shop object
         shopRepository.save(shop);
 
-        return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" +
-                URLEncoder.encode(shop.getName(), StandardCharsets.UTF_8);
+        return "redirect:/manage-stores?merchantId=" + merchantId + "&created=true&shopName=" + URLEncoder.encode(shop.getName(), StandardCharsets.UTF_8);
 
     }
 
     @GetMapping("/manage-stores")
-    public String openManageStores(@RequestParam Long merchantId, Model model) {
+    public String openManageStores(@RequestParam Long merchantId, Model model){
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
         List<Shop> shops = shopRepository.findByMerchant(merchant);
@@ -137,6 +124,16 @@ public class MerchantController {
         model.addAttribute("shops", shops);
 
         return "manageStores";
+    }
+
+    @PostMapping("/submitPromotion/{shopId}")
+    public String submitPromotion(@ModelAttribute Shop shop, @PathVariable Long shopId) {
+        // Fetch the existing shop from the database
+        Shop existingShop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid shop ID: " + shopId));
+        existingShop.setPromotion(shop.getPromotion());
+        shopRepository.save(existingShop);
+        return "redirect:/merchantShop/" + shopId;
     }
 
 
