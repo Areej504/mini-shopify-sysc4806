@@ -13,8 +13,11 @@ public class Cart {
     @GeneratedValue
     private Long cartId;
 
-    @OneToOne
-    private Customer customer;
+    @ManyToOne
+    private Shop shop;
+
+    @ManyToOne
+    private Customer customer;  // Link the cart to the customer
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
@@ -47,6 +50,14 @@ public class Cart {
 
     public void setCartId(Long cartId) {
         this.cartId = cartId;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public Customer getCustomer() {

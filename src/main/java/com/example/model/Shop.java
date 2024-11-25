@@ -28,6 +28,9 @@ public class Shop {
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
+    @OneToMany(mappedBy = "shop")
+    private List<Cart> carts = new ArrayList<>();
+
     public Shop() {}
 
     public Shop(String name, String description, Set<Category> categories, Merchant merchant) {
@@ -65,6 +68,14 @@ public class Shop {
             throw new NullPointerException("Description cannot be null");
         }
         this.description = description;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 
     public Set<Category> getCategories() {

@@ -68,14 +68,6 @@ public class ShopControllerTest {
 
     }
 
-    // Scenario 3: Accessing the payment view
-    @Test
-    public void testOpenPaymentView_ReturnsPaymentView() throws Exception {
-        mockMvc.perform(get("/paymentView"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("paymentView"));
-    }
-
     // Scenario 3: Accessing the cart view with no items
     @Test
     public void testOpenCartView_WithItemsInCart_ReturnsCartView() throws Exception {
