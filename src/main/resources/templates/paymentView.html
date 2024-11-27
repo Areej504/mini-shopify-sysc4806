@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Shipping and Payment</title>
+    <title>Email Checkout</title>
     <style>
-        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
@@ -19,10 +16,13 @@
         }
 
         /* Main container styling */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        .checkout-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #fff;
             padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Top Banner */
@@ -37,178 +37,99 @@
         .top-banner h1 {
             font-size: 2em;
             color: #333;
-            margin-bottom: 20px;
             text-align: center;
         }
 
-        /* Form Sections */
-        .form-section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .form-section h2 {
-            font-size: 1.5em;
-            color: #205c67;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
         .form-group {
-            display: flex;
-            flex-direction: column;
             margin-bottom: 15px;
         }
 
-        .form-group label {
-            font-weight: bold;
+        label {
+            display: block;
             margin-bottom: 5px;
-            color: #555;
+            font-weight: bold;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="tel"],
-        .form-group input[type="number"],
-        .form-group select {
+        input {
+            width: 100%;
             padding: 10px;
-            font-size: 1em;
-            border: 1px solid #ddd;
+            margin-top: 5px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            outline: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Payment card details styling */
-        .card-details {
-            display: flex;
-            gap: 20px;
-        }
-
-        .card-details .form-group {
-            flex: 1;
-        }
-
-        /* Submit Button */
-        .submit-button {
-            background-color: #01a6cf;
-            color: white;
-            border: none;
-            padding: 12px;
             font-size: 1em;
+        }
+
+        .form-actions {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .guest-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
+            font-size: 1.1em;
+            display: none;
         }
 
-        .submit-button:hover {
-            background-color: #126b80;
+        .guest-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 <!-- Top Banner with Shop Name Title -->
 <div class="top-banner">
-    <h1 th:text="${shopName} + ' - Checkout'">Shop Name </h1>
+    <h1 th:text="${shopName} + ' - Checkout'">Shop Name</h1>
 </div>
 
-<div class="container">
-    <!-- Shipping Details Section -->
-    <div class="form-section">
-        <h2>Shipping Details</h2>
+<div class="checkout-container">
+    <h2>Checkout</h2>
+    <form action="/verifyEmail" method="post" id="emailForm">
+        <!-- Email Input -->
         <div class="form-group">
-            <label for="full-name">Full Name</label>
-            <input type="text" id="full-name" name="fullName" placeholder="Enter your full name" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
         </div>
 
-        <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" id="address" name="address" placeholder="Street address, P.O. box, etc." required>
+        <!-- Password Input (hidden by default) -->
+        <div class="form-group" id="passwordGroup" style="display: none;">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
         </div>
 
-        <div class="form-group">
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="City" required>
+        <!-- Guest Checkout Button -->
+        <div class="form-actions">
+            <button type="button" id="guestCheckout" class="guest-btn">Checkout as a Guest</button>
         </div>
-
-        <div class="form-group">
-            <label for="state">State/Province</label>
-            <input type="text" id="state" name="state" placeholder="State or province" required>
-        </div>
-
-        <div class="form-group">
-            <label for="zip-code">ZIP/Postal Code</label>
-            <input type="text" id="zip-code" name="zipCode" placeholder="ZIP or postal code" required>
-        </div>
-
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
-        </div>
-    </div>
-
-    <!-- Payment Information Section -->
-    <div class="form-section">
-        <h2>Payment Information</h2>
-
-        <div class="form-group">
-            <label for="card-name">Name on Card</label>
-            <input type="text" id="card-name" name="cardName" placeholder="Name as it appears on the card" required>
-        </div>
-
-        <div class="form-group">
-            <label for="card-number">Card Number</label>
-            <input type="number" id="card-number" name="cardNumber" placeholder="Card number" required>
-        </div>
-
-        <div class="card-details">
-            <div class="form-group">
-                <label for="exp-month">Expiry Month</label>
-                <select id="exp-month" name="expMonth" required>
-                    <option value="" disabled selected>Select Month</option>
-                    <option value="01">01 - January</option>
-                    <option value="02">02 - February</option>
-                    <option value="03">03 - March</option>
-                    <option value="04">04 - April</option>
-                    <option value="05">05 - May</option>
-                    <option value="06">06 - June</option>
-                    <option value="07">07 - July</option>
-                    <option value="08">08 - August</option>
-                    <option value="09">09 - September</option>
-                    <option value="10">10 - October</option>
-                    <option value="11">11 - November</option>
-                    <option value="12">12 - December</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="exp-year">Expiry Year</label>
-                <select id="exp-year" name="expYear" required>
-                    <option value="" disabled selected>Select Year</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="cvv">CVV</label>
-                <input type="number" id="cvv" name="cvv" placeholder="CVV" required>
-            </div>
-        </div>
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="submit-button">Place Order</button>
+    </form>
 </div>
+
+<script>
+    const emailInput = document.getElementById('email');
+    const passwordGroup = document.getElementById('passwordGroup');
+    const guestCheckoutButton = document.getElementById('guestCheckout');
+
+    emailInput.addEventListener('blur', function () {
+        // Check if the email contains '@'
+        if (emailInput.value.includes('@')) {
+            // Show password and guest checkout button if valid
+            passwordGroup.style.display = 'block';
+            guestCheckoutButton.style.display = 'block';
+        } else {
+            // Hide elements if invalid
+            passwordGroup.style.display = 'none';
+            guestCheckoutButton.style.display = 'none';
+        }
+    });
+
+    guestCheckoutButton.addEventListener('click', function () {
+        // Redirect to guest checkout endpoint
+        window.location.href = '/guestCheckout';
+    });
+</script>
 </body>
 </html>

@@ -18,11 +18,8 @@ public class OrderController {
     @Autowired
     ProductRepository productRepository;
 
-
-
-    @GetMapping("/paymentView")
-    public String openPaymentView(Model model){
-//        model.addAttribute("shopName)
-        return "paymentView";
+    @GetMapping("/checkout")
+    public String openCheckoutView(Model model){
+        return "shopCheckout";
     }
 }

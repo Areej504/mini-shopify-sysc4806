@@ -59,8 +59,19 @@
 			<version>RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version> <!-- Use the version matching your application -->
+			<scope>provided</scope>
+		</dependency>
 
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
