@@ -162,14 +162,14 @@
         }
     </style>
     <script>
-        async function updateQuantity(cartItemId, action) {
+        async function updateQuantity(cartItemId, storeId, action) {
             try {
-                const response = await fetch('/cart/updateQuantity', {
+                const response = await fetch(`/cart/updateQuantity`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cartItemId, action }),
+                    body: JSON.stringify({ cartItemId, storeId, action }),
                 });
 
                 if (response.ok) {
@@ -183,14 +183,14 @@
             }
         }
 
-        async function removeFromCart(cartItemId) {
+        async function removeFromCart(cartItemId, storeId) {
             try {
-                const response = await fetch('/cart/removeItem', {
+                const response = await fetch(`/cart/removeItem`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cartItemId }),
+                    body: JSON.stringify({ cartItemId, storeId }),
                 });
 
                 if (response.ok) {
@@ -213,39 +213,37 @@
 <div class="container">
     <!-- Cart Items Section -->
     <div class="cart-items">
-        <h2>Your Cart</h2>
-        <div th:each="item : ${cart.cartItems}" class="cart-item">
-            <img th:src="${item.product.imageURL}" alt="Product Image">
-            <div class="cart-item-details">
-                <p th:text="${item.product.productName}">Product Name</p>
-                <p>
-                    <!-- Show discounted price if available -->
+        <h2>Your Cart for Store ID: <span th:text="${storeId}"></span></h2>
+        <div th:if="${cart == null or cart.cartItems == null or cart.cartItems.isEmpty()}">
+            <p>Your cart is empty!</p>
+        </div>
+        <div th:if="${cart != null and cart.cartItems != null and !cart.cartItems.isEmpty()}">
+            <div th:each="item : ${cart.cartItems}" class="cart-item">
+                <img th:src="${item.product.imageURL}" alt="Product Image" th:if="${item.product.imageURL != null}">
+                <div class="cart-item-details">
+                    <p th:text="${item.product.productName}">Product Name</p>
+                    <p>
                     <span th:if="${item.product.discountedPrice != null}">
-                        <span class="original-price" th:text="'$' + ${item.product.price}"
-                              style="text-decoration: line-through; color: gray;">Original Price</span>
-                        <span class="discounted-price" th:text="'$' + ${item.product.discountedPrice}"
-                              style="color: red; font-weight: bold;">Discounted Price</span>
+                        <span th:text="'$' + ${item.product.price}" style="text-decoration: line-through;"></span>
+                        <span th:text="'$' + ${item.product.discountedPrice}" style="color: red;"></span>
                     </span>
-                    <!-- Show only the original price if discounted price is null -->
-                    <span th:if="${item.product.discountedPrice == null}"
-                          th:text="'$' + ${item.product.price}">Original Price</span>
-                </p>
-                <div class="quantity-control">
-                    <button class="decrease-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
-                    <span th:text="${item.quantity}">1</span>
-                    <button class="increase-btn" th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
+                        <span th:if="${item.product.discountedPrice == null}" th:text="'$' + ${item.product.price}"></span>
+                    </p>
+                    <div class="quantity-control">
+                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
+                        <span th:text="${item.quantity}">1</span>
+                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
+                    </div>
                 </div>
+                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ')'">Remove</button>
             </div>
-            <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ')'">
-                🗑
-            </button>
         </div>
     </div>
 
+
     <!-- Order Summary Section -->
-    <!-- Order Summary Section -->
-    <div class="order-summary">
-        <h3>Order Summary</h3>
+    <div class="order-summary" th:if="${cart != null}">
+        <h3>Order Summary for Store ID: <span th:text="${storeId}"></span></h3>
         <p><span>Subtotal:</span> $<span th:text="${cart.totalPrice}">0.00</span></p>
 
         <p th:if="${storePromotion == BUY_ONE_GET_ONE }">
@@ -255,9 +253,12 @@
         <p><span>Shipping:</span> $<span th:text="${cart.getShippingCost()}">0.00</span></p>
         <hr>
         <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
-        <button class="checkout-button" onclick="window.location.href='/checkout'">Proceed to Checkout</button>
-    </div>
+        <button class="checkout-button"
+                th:onclick="'window.location.href=\'/checkout?storeId=\' + ' + ${storeId}">
+            Proceed to Checkout
+        </button>
 
+    </div>
 </div>
 </body>
 </html>
