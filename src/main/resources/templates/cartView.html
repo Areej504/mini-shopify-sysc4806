@@ -249,13 +249,13 @@
         <p><span>Subtotal:</span> $<span th:text="${cart.totalPrice}">0.00</span></p>
 
         <p th:if="${storePromotion == BUY_ONE_GET_ONE }">
-            <span class="savings"> Extra Savings:</span> -$<span th:text="${cart.getStoreDiscount()}">0.00</span>
+            <span class="savings" style="color: red;"> Extra Savings:</span> -$<span th:text="${cart.getStoreDiscount()}">0.00</span>
         </p>
         <p><span>GST (13%):</span> $<span th:text="${cart.getGst()}">0.00</span></p>
         <p><span>Shipping:</span> $<span th:text="${cart.getShippingCost()}">0.00</span></p>
         <hr>
         <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
-        <button class="checkout-button" onclick="window.location.href='/paymentView'">Proceed to Checkout</button>
+        <button class="checkout-button" onclick="window.location.href='/checkout'">Proceed to Checkout</button>
     </div>
 
 </div>
