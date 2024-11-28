@@ -27,7 +27,7 @@ public class OrderControllerTest {
     // Scenario 1: Accessing the payment view
     @Test
     public void testOpenPaymentView_ReturnsPaymentView() throws Exception {
-        mockMvc.perform(get("/checkout"))
+        mockMvc.perform(get("/cart/checkout"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("shopCheckout"));
     }

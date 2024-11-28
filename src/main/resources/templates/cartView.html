@@ -255,7 +255,7 @@
         <p><span>Shipping:</span> $<span th:text="${cart.getShippingCost()}">0.00</span></p>
         <hr>
         <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
-        <button class="checkout-button" onclick="window.location.href='/checkout'">Proceed to Checkout</button>
+        <button class="checkout-button" onclick="window.location.href='/cart/checkout'">Proceed to Checkout</button>
     </div>
 
 </div>

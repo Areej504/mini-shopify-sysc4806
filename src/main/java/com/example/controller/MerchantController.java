@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.model.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class MerchantController {
@@ -22,6 +20,21 @@ public class MerchantController {
     private MerchantRepository merchantRepository;
     @Autowired
     private ShopRepository shopRepository;
+
+    @RequestMapping("/")
+    public String showWelcomePage(HttpSession session) {
+        // Invalidate the ongoing session when navigating back to welcome page
+        session.invalidate();
+        return "index.html";
+    }
+
+    private Boolean InvalidSession(HttpSession session, Long merchantId) {
+        Merchant merchant = (Merchant) session.getAttribute("merchant");
+        if (merchant == null || !merchant.getMerchantId().equals(merchantId)) { //check if session invalidated
+            return true;
+        }
+        return false;
+    }
 
     //create Merchant page
     @GetMapping("/create-merchant")
@@ -53,13 +66,15 @@ public class MerchantController {
     }
 
     @PostMapping("/merchant-login")
-    public ResponseEntity<String> loginMerchant(@RequestParam("email") String email, @RequestParam("password") String password) {
+    public ResponseEntity<String> loginMerchant(@RequestParam("email") String email, @RequestParam("password") String password, HttpSession session) {
         Optional<Merchant> merchant = merchantRepository.findByEmail(email);
 
         if (merchant.isPresent()) {
             Merchant foundMerchant = merchant.get();
             //TODO: Confirm the password hash with passwordEncoder
             if (password.equals(foundMerchant.getPassword())) {
+                // Store merchant in the session
+                session.setAttribute("merchant", foundMerchant);
                 // Return merchant ID on successful login
                 return ResponseEntity.ok(foundMerchant.getMerchantId().toString());
             } else {
@@ -75,14 +90,19 @@ public class MerchantController {
 
     // Mapping for the merchant button to open merchantView1.html
     @RequestMapping("/merchant")
-    public String openMerchantHomeScreen(@RequestParam Long merchantId, Model model) {
+    public String openMerchantHomeScreen(@RequestParam Long merchantId, HttpSession session, Model model) {
+       if(InvalidSession(session, merchantId)){
+           return "redirect:/merchant-login";
+       }
         model.addAttribute("merchantId", merchantId);
         return "merchantView1";
     }
 
     @GetMapping("/create-shop")
-    public String showCreateShopForm(@RequestParam Long merchantId, Model model) {
-
+    public String showCreateShopForm(@RequestParam Long merchantId, HttpSession session, Model model) {
+        if(InvalidSession(session, merchantId)){
+            return "redirect:/merchant-login";
+        }
         // Add the merchant and shop to the model
         model.addAttribute("shop", new Shop());
         model.addAttribute("categories", Category.values());
@@ -111,7 +131,10 @@ public class MerchantController {
     }
 
     @GetMapping("/manage-stores")
-    public String openManageStores(@RequestParam Long merchantId, Model model){
+    public String openManageStores(@RequestParam Long merchantId, HttpSession session, Model model){
+        if(InvalidSession(session, merchantId)){
+            return "redirect:/merchant-login";
+        }
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Merchant Id"));
         List<Shop> shops = shopRepository.findByMerchant(merchant);
