@@ -213,7 +213,7 @@
 <div class="container">
     <!-- Cart Items Section -->
     <div class="cart-items">
-        <h2>Your Cart for Store ID: <span th:text="${storeId}"></span></h2>
+        <h2>Your Cart: </h2>
         <div th:if="${cart == null or cart.cartItems == null or cart.cartItems.isEmpty()}">
             <p>Your cart is empty!</p>
         </div>
@@ -235,7 +235,9 @@
                         <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ',' + ${storeId} + ',' + ${item.product.getInventory()} +', \'increase\')'">+</button>
                     </div>
                 </div>
-                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ',' + ${storeId} +')'">Remove</button>
+                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ',' + ${storeId} + ')'">
+                    🗑
+                </button>
             </div>
         </div>
     </div>
@@ -243,7 +245,7 @@
 
     <!-- Order Summary Section -->
     <div class="order-summary" th:if="${cart != null}">
-        <h3>Order Summary for Store ID: <span th:text="${storeId}"></span></h3>
+        <h3>Order Summary:</h3>
         <p><span>Subtotal:</span> $<span th:text="${cart.totalPrice}">0.00</span></p>
 
         <p th:if="${storePromotion == BUY_ONE_GET_ONE }">
