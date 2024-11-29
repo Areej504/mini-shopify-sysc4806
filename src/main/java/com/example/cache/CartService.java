@@ -22,7 +22,7 @@ public class CartService {
         return "cart:" + sessionId + ":" + storeId; // Composite key
     }
 
-    public void addToCart(String sessionId, Long storeId, Long productId, int quantity) {
+    public Boolean addToCart(String sessionId, Long storeId, Long productId, int quantity, int inventory) {
         String key = generateCartKey(sessionId, storeId);
         List<Map<String, Object>> cartItems = (List<Map<String, Object>>) redisTemplate.opsForValue().get(key);
         System.out.println("Session aC: " + sessionId);
@@ -33,10 +33,13 @@ public class CartService {
 
         boolean itemExists = false;
         for (Map<String, Object> item : cartItems) {
-            if (item.get("productId").equals(productId)) {
+            if (item.get("productId").equals(productId) && ((int) item.get("quantity") + quantity) <= inventory) {
                 item.put("quantity", (int) item.get("quantity") + quantity);
                 itemExists = true;
                 break;
+            }
+            else {
+                return false;
             }
         }
         Random r = new Random();
@@ -50,6 +53,7 @@ public class CartService {
         }
 
         redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1)); // 1-hour TTL
+        return true;
     }
 
     public boolean updateQuantity(String sessionId, Long storeId, Long cartItemId, String action, int inventory) {

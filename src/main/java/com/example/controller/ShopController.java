@@ -106,10 +106,12 @@ public class ShopController {
         // Validate and extract productId
         Long productId = null;
         Long storeId = null;
+        int inventory = 0;
 
         try {
             productId = Long.parseLong(requestBody.get("productId").toString());
             storeId = Long.parseLong(requestBody.get("storeId").toString());
+            inventory = Integer.parseInt(requestBody.get("inventory").toString());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("message", "Invalid or missing Product ID or Store ID"));
         }
@@ -128,7 +130,10 @@ public class ShopController {
 
         // Add product to cart
         String sessionId = getSessionId(session);
-        cartService.addToCart(sessionId, storeId, productId, 1);
+        Boolean success = cartService.addToCart(sessionId, storeId, productId, 1, inventory);
+        if (!success){
+            return ResponseEntity.status(400).body(Map.of("message", "Exceeding inventory."));
+        }
 
         // Get updated cart item count
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
