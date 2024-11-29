@@ -41,6 +41,9 @@ public class Cart {
     // Constructor
     public Cart() {}
 
+    public Cart(Shop shop){
+        this.shop = shop;
+    }
     public Cart(Customer customer) {
         this.customer = customer;
     }

@@ -33,13 +33,19 @@ public class CartService {
 
         boolean itemExists = false;
         for (Map<String, Object> item : cartItems) {
-            if (item.get("productId").equals(productId) && ((int) item.get("quantity") + quantity) <= inventory) {
-                item.put("quantity", (int) item.get("quantity") + quantity);
-                itemExists = true;
-                break;
-            }
-            else {
-                return false;
+            System.out.println("Product ID: " + item.get("productId"));
+            System.out.println("Quantity: " + item.get("quantity"));
+            System.out.println("Inventory: " + inventory);
+
+            if (item.get("productId").equals(productId)) {
+                if (((int) item.get("quantity") + quantity) <= inventory) {
+                    item.put("quantity", (int) item.get("quantity") + quantity);
+                    itemExists = true;
+                    break;
+                }
+                else {
+                    return false;
+                }
             }
         }
         Random r = new Random();

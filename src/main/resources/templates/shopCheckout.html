@@ -83,29 +83,32 @@
 <body>
 <!-- Top Banner with Shop Name Title -->
 <div class="top-banner">
-  <h1 th:text="${shopName} + ' - Checkout'">Shop Name</h1>
+  <h1 th:text="${shop.name}">Shop Name</h1>
 </div>
 
 <div class="checkout-container">
   <h2>Checkout</h2>
-  <form action="/verifyEmail" method="post" id="emailForm">
+  <form id="checkoutForm" action="/userCheckout" method="post">
     <!-- Email Input -->
     <div class="form-group">
       <label for="email">Email</label>
       <input type="email" id="email" name="email" placeholder="Enter your email" required>
     </div>
 
-    <!-- Password Input (hidden by default) -->
+    <!-- Password Input -->
     <div class="form-group" id="passwordGroup" style="display: none;">
       <label for="password">Password</label>
       <input type="password" id="password" name="password" placeholder="Enter your password">
     </div>
 
-    <!-- Guest Checkout Button -->
-    <div class="form-actions">
-      <button type="button" id="guestCheckout" class="guest-btn">Checkout as a Guest</button>
-    </div>
+    <!-- Submit for Registered Users -->
+    <button type="submit" id="userCheckoutBtn" style="display: none;">Continue as User</button>
   </form>
+
+  <!-- Guest Checkout Button -->
+  <div class="form-actions">
+    <button type="button" id="guestCheckout" class="guest-btn" data-shop-id=1>Checkout as a Guest</button>
+  </div>
 </div>
 
 <script>
@@ -127,8 +130,10 @@
   });
 
   guestCheckoutButton.addEventListener('click', function () {
-    // Redirect to guest checkout endpoint
-    window.location.href = '/guestCheckout';
+    const shopId = this.getAttribute('data-shop-id'); // Get shopId from data attribute
+    console.log(shopId)
+    window.location.href = `/guestCheckout?storeId=${shopId}`;
+
   });
 </script>
 </body>
