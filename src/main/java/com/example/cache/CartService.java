@@ -101,15 +101,23 @@ public class CartService {
     }
 
 
-    public void removeFromCart(String sessionId, Long storeId, Long productId) {
+    public boolean removeFromCart(String sessionId, Long storeId, Long cartItemId) {
         String key = generateCartKey(sessionId, storeId);
         List<Map<String, Object>> cartItems = (List<Map<String, Object>>) redisTemplate.opsForValue().get(key);
 
         if (cartItems != null) {
-            cartItems.removeIf(item -> item.get("productId").equals(productId));
-            redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1)); // Update expiration
+            // Remove item with matching cartItemId
+            boolean removed = cartItems.removeIf(item -> item.get("cartItemId").toString().equals(cartItemId.toString()));
+            if (removed) {
+                redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1)); // Update expiration
+                System.out.println("Item removed. Updated cart: " + cartItems);
+                return true;
+            }
         }
+        System.out.println("Item not found in cart.");
+        return false; // Item not found
     }
+
 
     public void clearCart(String sessionId, Long storeId) {
         String key = generateCartKey(sessionId, storeId);

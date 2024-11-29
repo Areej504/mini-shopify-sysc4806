@@ -190,7 +190,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cartItemId, storeId }),
+                    body: JSON.stringify({cartItemId, storeId}),
                 });
 
                 if (response.ok) {
@@ -235,7 +235,7 @@
                         <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ',' + ${storeId} + ',' + ${item.product.getInventory()} +', \'increase\')'">+</button>
                     </div>
                 </div>
-                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ',' + ${storeId}')'">Remove</button>
+                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ',' + ${storeId} +')'">Remove</button>
             </div>
         </div>
     </div>

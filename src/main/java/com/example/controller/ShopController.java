@@ -172,16 +172,21 @@ public class ShopController {
         }
     }
 
-    @PostMapping("/removeFromCart")
+    @PostMapping("/cart/removeItem")
     @ResponseBody
     public ResponseEntity<String> removeFromCart(@RequestBody Map<String, Object> requestBody, HttpSession session) {
-        Long productId = ((Number) requestBody.get("productId")).longValue();
+        Long cartItemId = ((Number) requestBody.get("cartItemId")).longValue(); // Extract cartItemId
         Long storeId = ((Number) requestBody.get("storeId")).longValue(); // Extract storeId
 
+        System.out.println("IM IN");
         String sessionId = getSessionId(session);
-        cartService.removeFromCart(sessionId, storeId, productId);
+        boolean success = cartService.removeFromCart(sessionId, storeId, cartItemId);
 
-        return ResponseEntity.ok("Item removed successfully");
+        if (success) {
+            return ResponseEntity.ok("Item removed successfully");
+        } else {
+            return ResponseEntity.status(400).body("Failed to remove item from cart");
+        }
     }
 
     @PostMapping("/clearCart")
