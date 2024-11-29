@@ -20,6 +20,13 @@ public class CartItem {
     // Constructor
     public CartItem() {}
 
+    public CartItem(Cart cart, Product product, int quantity, Long cartItemId) {
+        this.cart = cart;
+        this.product = product;
+        this.quantity = quantity;
+        this.cartItemId = cartItemId;
+    }
+
     public CartItem(Cart cart, Product product, int quantity) {
         this.cart = cart;
         this.product = product;

@@ -162,14 +162,14 @@
         }
     </style>
     <script>
-        async function updateQuantity(cartItemId, storeId, action) {
+        async function updateQuantity(cartItemId, storeId, inventory, action) {
             try {
                 const response = await fetch(`/cart/updateQuantity`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cartItemId, storeId, action }),
+                    body: JSON.stringify({ cartItemId, storeId, inventory, action }),
                 });
 
                 if (response.ok) {
@@ -230,12 +230,12 @@
                         <span th:if="${item.product.discountedPrice == null}" th:text="'$' + ${item.product.price}"></span>
                     </p>
                     <div class="quantity-control">
-                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'decrease\')'">-</button>
+                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ',' + ${storeId} + ',' + ${item.product.getInventory()} +', \'decrease\')'">-</button>
                         <span th:text="${item.quantity}">1</span>
-                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ', \'increase\')'">+</button>
+                        <button th:onclick="'updateQuantity(' + ${item.cartItemId} + ',' + ${storeId} + ',' + ${item.product.getInventory()} +', \'increase\')'">+</button>
                     </div>
                 </div>
-                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ')'">Remove</button>
+                <button class="remove-btn" th:onclick="'removeFromCart(' + ${item.cartItemId} + ',' + ${storeId}')'">Remove</button>
             </div>
         </div>
     </div>
