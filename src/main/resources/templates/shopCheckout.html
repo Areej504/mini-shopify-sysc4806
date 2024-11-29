@@ -107,7 +107,7 @@
 
   <!-- Guest Checkout Button -->
   <div class="form-actions">
-    <button type="button" id="guestCheckout" class="guest-btn" data-shop-id=1>Checkout as a Guest</button>
+    <button type="button" id="guestCheckout" class="guest-btn" th:attr="data-shop-id=${shop.shopId}">Checkout as a Guest</button>
   </div>
 </div>
 
