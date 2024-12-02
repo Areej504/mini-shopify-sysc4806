@@ -58,7 +58,6 @@ public class ProductTest {
         product.setInventory(newInventory);
         product.setPromotionType(newPromotionType);
         product.setCategory(newCategory);
-        product.setOrder(newOrderInfo);
         product.setShop(newShop);
 
         assertEquals(newName, product.getProductName());
@@ -67,7 +66,6 @@ public class ProductTest {
         assertEquals(newInventory, product.getInventory());
         assertEquals(newPromotionType, product.getPromotionType());
         assertEquals(newCategory, product.getCategory());
-        assertEquals(newOrderInfo, product.getOrder());
         assertEquals(newShop, product.getShop());
     }
 
@@ -119,18 +117,6 @@ public class ProductTest {
 
         product.setCategory(Category.FOOD);
         assertEquals(Category.FOOD, product.getCategory());
-    }
-
-    @Test
-    public void testAssociationWithOrderInfo() {
-        assertNull(product.getOrder());
-
-        product.setOrder(orderInfo);
-        assertEquals(orderInfo, product.getOrder());
-
-        OrderInfo newOrderInfo = new OrderInfo();
-        product.setOrder(newOrderInfo);
-        assertEquals(newOrderInfo, product.getOrder());
     }
 
     @Test

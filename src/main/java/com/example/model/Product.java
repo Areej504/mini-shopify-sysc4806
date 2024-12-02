@@ -21,9 +21,6 @@ public class Product {
     private PromotionType promotionType;
 
     @ManyToOne
-    private OrderInfo orderInfo;
-
-    @ManyToOne
     private Shop shop;
 
     // Constructors
@@ -113,10 +110,6 @@ public class Product {
     public void setPromotionType(PromotionType promotionType) {
         this.promotionType = promotionType;
     }
-
-    public OrderInfo getOrder(){return orderInfo;}
-
-    public void setOrder(OrderInfo orderInfo){this.orderInfo = orderInfo;}
 
     public Shop getShop(){return shop;}
 

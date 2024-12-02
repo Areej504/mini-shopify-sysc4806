@@ -2,6 +2,7 @@ package com.example.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,16 @@ public class Cart {
     private BigDecimal finalPrice; // Final price after discount and GST
     private double shippingCost; // Shipping cost
 
+    @OneToOne
+    private OrderInfo orderInfo;
+
+    public OrderInfo getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(OrderInfo orderInfo) {
+        this.orderInfo = orderInfo;
+    }
     public String getImageUrl() {
         return imageUrl;
     }
@@ -40,6 +51,9 @@ public class Cart {
     // Constructor
     public Cart() {}
 
+    public Cart(Shop shop){
+        this.shop = shop;
+    }
     public Cart(Customer customer) {
         this.customer = customer;
     }
@@ -80,19 +94,19 @@ public class Cart {
         this.totalPrice = totalPrice;
     }
 
-    public double getShippingCost(){
-        if (cartItems.isEmpty()){
-            return 0;
+    public double getShippingCost() {
+        if (cartItems.isEmpty()) {
+            return 0.00;
         }
         PromotionType promotion = cartItems.get(0).getProduct().getShop().getPromotion();
-        shippingCost = 7;
-        if (promotion == null){
-            return shippingCost;
+        shippingCost = 7.00;
+        if (promotion == null) {
+            return Math.round(shippingCost * 100.0) / 100.0;
         }
-        if (promotion == PromotionType.FREE_SHIPPING){
-            shippingCost = 0;
+        if (promotion == PromotionType.FREE_SHIPPING) {
+            shippingCost = 0.00;
         }
-        return shippingCost;
+        return Math.round(shippingCost * 100.0) / 100.0;
     }
 
     public BigDecimal getStoreDiscount() {
@@ -100,7 +114,7 @@ public class Cart {
         // Ensure cart is not empty
         if (cartItems.isEmpty()) {
             System.out.println("st 1");
-            return discount;
+            return discount.setScale(2, RoundingMode.HALF_UP);
         }
 
         // Get the promotion type of the shop
@@ -108,7 +122,7 @@ public class Cart {
 
         if (promotion == null) {
             System.out.println("st 2");
-            return discount;
+            return discount.setScale(2, RoundingMode.HALF_UP);
         }
 
         if (promotion == PromotionType.BUY_ONE_GET_ONE) {
@@ -138,7 +152,7 @@ public class Cart {
             }
         }
 
-        return discount;
+        return discount.setScale(2, RoundingMode.HALF_UP);
     }
 
 
@@ -155,7 +169,7 @@ public class Cart {
     }
 
     public BigDecimal getGst(){
-        return totalPrice.subtract(getStoreDiscount()).multiply(BigDecimal.valueOf(gst));
+        return totalPrice.subtract(getStoreDiscount()).multiply(BigDecimal.valueOf(gst)).setScale(2, RoundingMode.HALF_UP);
     }
 
     //Methods
@@ -191,8 +205,8 @@ public class Cart {
         for (CartItem item : cartItems) {
             total = total.add(item.getTotalPrice());
         }
-        totalPrice = total;
-        return total;
+        totalPrice = total.setScale(2, RoundingMode.HALF_UP);
+        return totalPrice;
     }
 
     public BigDecimal getFinalPrice() {
@@ -209,7 +223,7 @@ public class Cart {
         // Final price calculation: Subtotal + GST - Discount + Shipping
         BigDecimal finalAmount = subtotal.add(gstAmount).subtract(discountAmount).add(BigDecimal.valueOf(shipping));
         finalPrice = finalAmount;
-        return finalAmount;
+        return finalAmount.setScale(2, RoundingMode.HALF_UP);
     }
 
     private CartItem findCartItem(Product product) {

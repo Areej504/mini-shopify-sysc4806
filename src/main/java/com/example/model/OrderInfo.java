@@ -19,8 +19,8 @@ public class OrderInfo {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.ALL)
-    private List<Product> products;
+    @OneToOne
+    private Cart cart;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -28,13 +28,24 @@ public class OrderInfo {
     @OneToOne // One-to-one relationship with Payment
     private Payment payment;  // Only one payment per order
 
+    public Shipping getShipping() {
+        return shipping;
+    }
+
+    public void setShipping(Shipping shipping) {
+        this.shipping = shipping;
+    }
+
+    @OneToOne
+    private Shipping shipping;
+
     public OrderInfo() {}
 
-    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, List<Product> products, OrderStatus status) {
+    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;
-        this.products = products;
+        this.cart = cart;
         this.status = status;
     }
 
@@ -71,14 +82,6 @@ public class OrderInfo {
         this.customer = customer;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> orderItems) {
-        this.products = orderItems;
-    }
-
     public void setStatus(OrderStatus status){
         this.status = status;
     }
@@ -95,12 +98,12 @@ public class OrderInfo {
         this.payment = payment;
     }
 
-    //Methods
-    public void calculateTotalPrice(){}
-
-    public void updateStatus(){}
-
-    public void setProductsOrdered(){}
+    public void setCart(Cart cart){
+        this.cart = cart;
+    }
+    public Cart getCart(){
+        return cart;
+    }
 
     @Override
     public String toString() {
@@ -109,7 +112,7 @@ public class OrderInfo {
                 ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
                 ", customer=" + customer +
-                ", products=" + products +
+                ", cart=" + cart +
                 ", status=" + status +
                 ", payment=" + payment +
                 '}';

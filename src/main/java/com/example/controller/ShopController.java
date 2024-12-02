@@ -62,7 +62,9 @@ public class ShopController {
         String sessionId = getSessionId(session);
 
         // Retrieve the cart for the given sessionId and storeId
+        System.out.println("Session CV: " + sessionId);
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
+        System.out.println("cart Items: " + cartItems);
 
         Cart cart = new Cart();
         List<CartItem> cartItemList = new ArrayList<>();
@@ -73,19 +75,21 @@ public class ShopController {
                 try {
                     Long productId = Long.valueOf(item.get("productId").toString());
                     int quantity = Integer.parseInt(item.get("quantity").toString());
+                    Long cartItemId = Long.valueOf(item.get("cartItemId").toString());
 
                     Optional<Product> productOptional = productRepository.findById(productId);
                     if (productOptional.isPresent()) {
                         Product product = productOptional.get();
-                        cartItemList.add(new CartItem(cart, product, quantity));
+                        cartItemList.add(new CartItem(cart, product, quantity, cartItemId));
                     }
+                    System.out.println("Cart Item ID: " + cartItemId);
                 } catch (Exception e) {
                     // Skip malformed items
                     continue;
                 }
             }
         }
-
+        System.out.println("Cart items 2: " + cartItemList);
         cart.setCartItems(cartItemList);
 
         // Add cart and storeId to the model for rendering
@@ -102,10 +106,12 @@ public class ShopController {
         // Validate and extract productId
         Long productId = null;
         Long storeId = null;
+        int inventory = 0;
 
         try {
             productId = Long.parseLong(requestBody.get("productId").toString());
             storeId = Long.parseLong(requestBody.get("storeId").toString());
+            inventory = Integer.parseInt(requestBody.get("inventory").toString());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("message", "Invalid or missing Product ID or Store ID"));
         }
@@ -124,10 +130,14 @@ public class ShopController {
 
         // Add product to cart
         String sessionId = getSessionId(session);
-        cartService.addToCart(sessionId, storeId, productId, 1);
+        Boolean success = cartService.addToCart(sessionId, storeId, productId, 1, inventory);
+        if (!success){
+            return ResponseEntity.status(400).body(Map.of("message", "Exceeding inventory."));
+        }
 
         // Get updated cart item count
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
+        System.out.println("Items: " + cartItems);
         int totalItemsInCart = cartItems.stream()
                 .mapToInt(item -> Integer.parseInt(item.get("quantity").toString()))
                 .sum();
@@ -135,19 +145,48 @@ public class ShopController {
         return ResponseEntity.ok(Map.of("message", "Product added to cart successfully!", "totalItemsInCart", String.valueOf(totalItemsInCart)));
     }
 
-
-
-
-    @PostMapping("/removeFromCart")
+    @PostMapping("/cart/updateQuantity")
     @ResponseBody
-    public ResponseEntity<String> removeFromCart(@RequestBody Map<String, Object> requestBody, HttpSession session) {
-        Long productId = ((Number) requestBody.get("productId")).longValue();
-        Long storeId = ((Number) requestBody.get("storeId")).longValue(); // Extract storeId
+    public ResponseEntity<String> updateQuantity(
+            @RequestBody Map<String, Object> requestBody, HttpSession session) {
+        System.out.println("Received payload: " + requestBody);
+        Long cartItemId = ((Number) requestBody.get("cartItemId")).longValue();
+        Long storeId = ((Number) requestBody.get("storeId")).longValue();
+        int inventory = ((Number) requestBody.get("inventory")).intValue();
+        String action = requestBody.get("action").toString();
+
+
+        System.out.println("cartItemId: " + cartItemId);
+        System.out.println("storeId: " + storeId);
+        System.out.println("action: " + action);
+        System.out.println("inventory: "+ inventory);
 
         String sessionId = getSessionId(session);
-        cartService.removeFromCart(sessionId, storeId, productId);
 
-        return ResponseEntity.ok("Item removed successfully");
+        boolean success = cartService.updateQuantity(sessionId, storeId, cartItemId, action, inventory);
+
+        if (success) {
+            return ResponseEntity.ok("Quantity updated successfully");
+        } else {
+            return ResponseEntity.status(400).body("Failed to update quantity");
+        }
+    }
+
+    @PostMapping("/cart/removeItem")
+    @ResponseBody
+    public ResponseEntity<String> removeFromCart(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+        Long cartItemId = ((Number) requestBody.get("cartItemId")).longValue(); // Extract cartItemId
+        Long storeId = ((Number) requestBody.get("storeId")).longValue(); // Extract storeId
+
+        System.out.println("IM IN");
+        String sessionId = getSessionId(session);
+        boolean success = cartService.removeFromCart(sessionId, storeId, cartItemId);
+
+        if (success) {
+            return ResponseEntity.ok("Item removed successfully");
+        } else {
+            return ResponseEntity.status(400).body("Failed to remove item from cart");
+        }
     }
 
     @PostMapping("/clearCart")

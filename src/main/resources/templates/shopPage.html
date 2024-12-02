@@ -290,14 +290,14 @@
             </div>
 
             <button class="add-to-cart-btn"
-                    th:onclick="${product.inventory > 0} ? 'addToCart(' + ${product.productId} + ', ' + ${storeId} + ')' : null"
+                    th:onclick="${product.inventory > 0} ? 'addToCart(' + ${product.productId} + ', ' + ${storeId} + ',' + ${product.getInventory()} + ')' : null"
                     th:disabled="${product.inventory <= 0}"
                     th:text="${product.inventory > 0 ? 'Add to Cart' : 'Sold Out'}">
                 Add to Cart
             </button>
 
             <script>
-                async function addToCart(productId, storeId) {
+                async function addToCart(productId, storeId, inventory) {
                     try {
                         const response = await fetch('/addToCart', {
                             method: 'POST',
@@ -307,6 +307,7 @@
                             body: JSON.stringify({
                                 productId: productId,
                                 storeId: storeId,
+                                inventory: inventory
                             }),
                         });
 
