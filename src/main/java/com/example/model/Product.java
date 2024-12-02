@@ -111,10 +111,6 @@ public class Product {
         this.promotionType = promotionType;
     }
 
-    public OrderInfo getOrder(){return orderInfo;}
-
-    public void setOrder(OrderInfo orderInfo){this.orderInfo = orderInfo;}
-
     public Shop getShop(){return shop;}
 
     public void setShop(Shop shop){this.shop=shop;}
