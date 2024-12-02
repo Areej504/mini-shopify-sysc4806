@@ -28,6 +28,12 @@ public class OrderController {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
 
+    @Autowired
+    private ShippingRepository shippingRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
+
     private String getSessionId(HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
         if (sessionId == null) {
@@ -104,12 +110,13 @@ public class OrderController {
         model.addAttribute("cartItems", processedCartItems);
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("promotion", PromotionType.BUY_ONE_GET_ONE);
+        model.addAttribute("shipping", new Shipping());
 
         return "paymentView"; // Replace with your Thymeleaf payment page template name
     }
 
     @PostMapping("/processPayment")
-    public String processPayment(HttpSession session, Long storeId, Shipping shipping, Payment payment, Model model) {
+    public String processPayment(HttpSession session, Long storeId, Shipping shipping, Model model) {
         // Get session-specific cart item count for the store
         String sessionId = getSessionId(session);
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
@@ -117,8 +124,11 @@ public class OrderController {
         // Step 3: Create the OrderInfo object
         OrderInfo order = new OrderInfo();
         order.setOrderDate(new Date()); // Set current date as the order date
-        order.setPayment(payment);
+
+        shippingRepository.save(shipping);
         order.setShipping(shipping);
+
+        System.out.println("Print reached here!");
 
         // Step 5: Associate cart items with the order
         Shop shop = shopRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + storeId));
@@ -126,10 +136,8 @@ public class OrderController {
 
         List<CartItem> cartItemList = new ArrayList<>();
 
-        // Process cart items to calculate totals
-        List<Map<String, Object>> processedCartItems = new ArrayList<>();
-
         for (Map<String, Object> item : cartItems) {
+            System.out.println("Point 2!");
             Long productId = (Long) item.get("productId");
 
             if (productId == null) {
@@ -144,9 +152,13 @@ public class OrderController {
             int quantity = (int) item.get("quantity");
 
             cartItemList.add(new CartItem(cart, product, quantity));
-
+            System.out.println(cartItemList);
         }
         cart.setCartItems(cartItemList);
+
+        // Save the Cart before associating it with OrderInfo
+        cart = cartRepository.save(cart);
+
         order.setCart(cart);
 
         // Step 6: Save the order
