@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -15,18 +16,33 @@ public class OrderInfoTest {
 
     private OrderInfo order;
     private Customer mockCustomer;
+    private Cart mockCart;
+    private CartItem mockCartItem1;
+    private CartItem mockCartItem2;
     private Product mockProduct1;
     private Product mockProduct2;
-    private Payment mockPayment;
 
     @BeforeEach
     public void setUp() {
         mockCustomer = mock(Customer.class);
+        mockCart = mock(Cart.class);
+        mockCartItem1 = mock(CartItem.class);
+        mockCartItem2 = mock(CartItem.class);
         mockProduct1 = mock(Product.class);
         mockProduct2 = mock(Product.class);
-        mockPayment = mock(Payment.class);
 
-        order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, Arrays.asList(mockProduct1, mockProduct2), OrderStatus.PROCESSING);
+        when(mockCartItem1.getProduct()).thenReturn(mockProduct1);
+        when(mockCartItem1.getQuantity()).thenReturn(2);
+        when(mockCartItem2.getProduct()).thenReturn(mockProduct2);
+        when(mockCartItem2.getQuantity()).thenReturn(1);
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(mockCartItem1);
+        cartItems.add(mockCartItem2);
+
+        when(mockCart.getCartItems()).thenReturn(cartItems);
+
+        order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, mockCart, OrderStatus.PROCESSING);
     }
 
     @Test
@@ -39,7 +55,7 @@ public class OrderInfoTest {
         assertNull(order.getOrderDate(), "Order date should be null by default.");
         assertNull(order.getTotalAmount(), "Total amount should be null by default.");
         assertNull(order.getCustomer(), "Customer should be null by default.");
-        assertNull(order.getProducts(), "Products list should be null by default.");
+        assertNull(order.getCart(), "Cart should be null by default.");
         assertNull(order.getStatus(), "Order status should be null by default.");
         assertNull(order.getPayment(), "Payment should be null by default.");
     }
@@ -49,14 +65,13 @@ public class OrderInfoTest {
         // Arrange
         Date orderDate = new Date();
         BigDecimal totalAmount = new BigDecimal("100.00");
-        List<Product> products = Arrays.asList(mockProduct1, mockProduct2);
         Payment payment = mock(Payment.class);
 
         order.setOrderId(1L);
         order.setOrderDate(orderDate);
         order.setTotalAmount(totalAmount);
         order.setCustomer(mockCustomer);
-        order.setProducts(products);
+        order.setCart(mockCart);
         order.setStatus(OrderStatus.SHIPPED);
         order.setPayment(payment);
 
@@ -65,7 +80,7 @@ public class OrderInfoTest {
         assertEquals(orderDate, order.getOrderDate(), "Order date should be set correctly.");
         assertEquals(totalAmount, order.getTotalAmount(), "Total amount should be set correctly.");
         assertEquals(mockCustomer, order.getCustomer(), "Customer should be set correctly.");
-        assertEquals(products, order.getProducts(), "Products list should be set correctly.");
+        assertEquals(mockCart, order.getCart(), "Cart should be set correctly.");
         assertEquals(OrderStatus.SHIPPED, order.getStatus(), "Order status should be set correctly.");
         assertEquals(payment, order.getPayment(), "Payment should be set correctly.");
     }
@@ -73,23 +88,26 @@ public class OrderInfoTest {
     @Test
     public void testGetProducts_WithNoProducts() {
         // Arrange
-        order.setProducts(null);
+        when(mockCart.getCartItems()).thenReturn(new ArrayList<>());
 
         // Act
-        List<Product> products = order.getProducts();
+        List<CartItem> items = order.getCart().getCartItems();
 
         // Assert
-        assertNull(products, "Products list should be null when no products are added.");
+        assertTrue(items.isEmpty(), "Cart should be empty when no items are added.");
     }
 
     @Test
     public void testGetProducts_WithProducts() {
-        // Arrange
-        List<Product> products = Arrays.asList(mockProduct1, mockProduct2);
-        order.setProducts(products);
+        // Act
+        List<CartItem> items = order.getCart().getCartItems();
 
-        // Act & Assert
-        assertEquals(2, order.getProducts().size(), "Products list should contain two elements.");
+        // Assert
+        assertEquals(2, items.size(), "Cart should contain two items.");
+        assertEquals(mockProduct1, items.get(0).getProduct(), "First product should match.");
+        assertEquals(2, items.get(0).getQuantity(), "First product quantity should match.");
+        assertEquals(mockProduct2, items.get(1).getProduct(), "Second product should match.");
+        assertEquals(1, items.get(1).getQuantity(), "Second product quantity should match.");
     }
 
     @Test
@@ -98,26 +116,32 @@ public class OrderInfoTest {
         when(mockProduct1.getPrice()).thenReturn(new BigDecimal("50.00"));
         when(mockProduct2.getPrice()).thenReturn(new BigDecimal("25.00"));
 
-        // Act & Assert
-        assertDoesNotThrow(() -> {
-            order.calculateTotalPrice(); // Placeholder for functionality
-        }, "calculateTotalPrice method should not throw an exception.");
+        // Act
+        BigDecimal totalPrice = mockCart.getCartItems().stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Assert
+        assertEquals(new BigDecimal("125.00"), totalPrice, "Total price should match the sum of item prices.");
     }
 
     @Test
     public void testUpdateStatus() {
-        // Act & Assert
-        assertDoesNotThrow(() -> {
-            order.updateStatus(); // Placeholder for functionality
-        }, "updateStatus method should not throw an exception.");
+        // Act
+        order.setStatus(OrderStatus.SHIPPED);
+
+        // Assert
+        assertEquals(OrderStatus.SHIPPED, order.getStatus(), "Order status should be updated to SHIPPED.");
     }
 
     @Test
-    public void testSetProductsOrdered() {
-        // Act & Assert
-        assertDoesNotThrow(() -> {
-            order.setProductsOrdered(); // Placeholder for functionality
-        }, "setProductsOrdered method should not throw an exception.");
+    public void testCartItemsQuantity() {
+        // Act
+        List<CartItem> items = order.getCart().getCartItems();
+
+        // Assert
+        assertEquals(2, items.get(0).getQuantity(), "First item's quantity should be correct.");
+        assertEquals(1, items.get(1).getQuantity(), "Second item's quantity should be correct.");
     }
 
     @Test
