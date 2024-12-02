@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -23,6 +24,9 @@ public class OrderController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     private String getSessionId(HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
@@ -90,14 +94,6 @@ public class OrderController {
             double price = product.getDiscountedPrice() != null
                     ? product.getDiscountedPrice().doubleValue()
                     : product.getPrice().doubleValue();
-            double itemTotal = price * quantity;
-//            processedCartItems.add(Map.of(
-//                    "name", product.getProductName(),
-//                    "quantity", quantity,
-//                    "price", price,
-//                    "total", itemTotal
-//            ));
-//            totalAmount += itemTotal;
 
             cartItemList.add(new CartItem(cart, product, quantity));
 
@@ -108,15 +104,56 @@ public class OrderController {
         model.addAttribute("cartItems", processedCartItems);
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("promotion", PromotionType.BUY_ONE_GET_ONE);
-//        // Add other dynamic fields
-//        model.addAttribute("paymentMethods", List.of("Credit Card", "Debit Card", "PayPal"));
-//
-//        // Add any default values for payment fields, if needed
-//        model.addAttribute("defaultPaymentMethod", "Credit Card");
-//        model.addAttribute("totalAmount", 100.00); // Example value, fetch actual value dynamically
 
-        // Add any other data needed for the payment page
         return "paymentView"; // Replace with your Thymeleaf payment page template name
+    }
+
+    @PostMapping("/processPayment")
+    public String processPayment(HttpSession session, Long storeId, Shipping shipping, Payment payment, Model model) {
+        // Get session-specific cart item count for the store
+        String sessionId = getSessionId(session);
+        List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
+
+        // Step 3: Create the OrderInfo object
+        OrderInfo order = new OrderInfo();
+        order.setOrderDate(new Date()); // Set current date as the order date
+        order.setPayment(payment);
+        order.setShipping(shipping);
+
+        // Step 5: Associate cart items with the order
+        Shop shop = shopRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + storeId));
+        Cart cart = new Cart(shop);
+
+        List<CartItem> cartItemList = new ArrayList<>();
+
+        // Process cart items to calculate totals
+        List<Map<String, Object>> processedCartItems = new ArrayList<>();
+
+        for (Map<String, Object> item : cartItems) {
+            Long productId = (Long) item.get("productId");
+
+            if (productId == null) {
+                System.out.println("Product ID is null for cart item: " + item);
+                continue;
+            }
+
+            // Fetch the Product object using productId
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + productId));
+
+            int quantity = (int) item.get("quantity");
+
+            cartItemList.add(new CartItem(cart, product, quantity));
+
+        }
+        cart.setCartItems(cartItemList);
+        order.setCart(cart);
+
+        // Step 6: Save the order
+        orderInfoRepository.save(order);
+
+        model.addAttribute("order", order);
+        return "orderConfirmation"; // Redirect to an order confirmation view
     }
 
 

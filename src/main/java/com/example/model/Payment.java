@@ -18,9 +18,6 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
-
     @OneToOne(mappedBy = "payment")
     private OrderInfo orderInfo;
 
@@ -30,14 +27,13 @@ public class Payment {
     // Constructors
     public Payment() {}
 
-    public Payment(Date paymentDate, BigDecimal amount, PaymentMethod paymentMethod, PaymentStatus status, OrderInfo orderInfo, Customer customer, String paymentDetails) {
-        if (paymentDate == null || amount == null || paymentMethod == null || status == null || customer == null || paymentDetails == null) {
+    public Payment(Date paymentDate, BigDecimal amount, PaymentMethod paymentMethod, OrderInfo orderInfo, Customer customer, String paymentDetails) {
+        if (paymentDate == null || amount == null || paymentMethod == null || customer == null || paymentDetails == null) {
             throw new NullPointerException("Payment fields cannot be null");
         }
         this.paymentDate = paymentDate;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
-        this.status = status;
         this.orderInfo = orderInfo;
         this.customer = customer;
     }
@@ -88,17 +84,6 @@ public class Payment {
 
     }
 
-    public PaymentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PaymentStatus status) {
-        if (status == null) {
-            throw new NullPointerException("Payment Status cannot be null");
-        }
-        this.status = status;
-    }
-
     public OrderInfo getOrder() {
         return orderInfo;
     }
@@ -125,7 +110,6 @@ public class Payment {
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
                 ", paymentMethod=" + paymentMethod +
-                ", status=" + status +
                 ", order=" + orderInfo +
                 ", customer=" + customer +
                 '}';

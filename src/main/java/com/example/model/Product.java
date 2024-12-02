@@ -21,9 +21,6 @@ public class Product {
     private PromotionType promotionType;
 
     @ManyToOne
-    private OrderInfo orderInfo;
-
-    @ManyToOne
     private Shop shop;
 
     // Constructors

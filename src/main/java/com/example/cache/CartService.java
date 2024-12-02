@@ -12,6 +12,7 @@ import java.util.*;
 public class CartService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private static final int expiryDurationInSeconds = 3600;
 
     @Autowired
     public CartService(RedisTemplate<String, Object> redisTemplate) {
@@ -58,7 +59,7 @@ public class CartService {
             cartItems.add(newItem);
         }
 
-        redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1)); // 1-hour TTL
+        redisTemplate.opsForValue().set(key, cartItems, Duration.ofSeconds(expiryDurationInSeconds)); // 1-hour TTL
         return true;
     }
 
@@ -85,14 +86,13 @@ public class CartService {
                 }
 
                 String key = generateCartKey(sessionId, storeId);
-                redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1));
+                redisTemplate.opsForValue().set(key, cartItems, Duration.ofSeconds(expiryDurationInSeconds));
                 System.out.println("Updated cart saved to Redis: " + cartItems);
                 return true;
             }
         }
         return false;
     }
-
 
     public List<Map<String, Object>> getCart(String sessionId, Long storeId) {
         String key = generateCartKey(sessionId, storeId);
@@ -106,7 +106,6 @@ public class CartService {
         return cartItems;
     }
 
-
     public boolean removeFromCart(String sessionId, Long storeId, Long cartItemId) {
         String key = generateCartKey(sessionId, storeId);
         List<Map<String, Object>> cartItems = (List<Map<String, Object>>) redisTemplate.opsForValue().get(key);
@@ -115,7 +114,7 @@ public class CartService {
             // Remove item with matching cartItemId
             boolean removed = cartItems.removeIf(item -> item.get("cartItemId").toString().equals(cartItemId.toString()));
             if (removed) {
-                redisTemplate.opsForValue().set(key, cartItems, Duration.ofHours(1)); // Update expiration
+                redisTemplate.opsForValue().set(key, cartItems, Duration.ofSeconds(expiryDurationInSeconds)); // Update expiration
                 System.out.println("Item removed. Updated cart: " + cartItems);
                 return true;
             }

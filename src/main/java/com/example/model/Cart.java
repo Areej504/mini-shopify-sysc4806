@@ -29,6 +29,16 @@ public class Cart {
     private BigDecimal finalPrice; // Final price after discount and GST
     private double shippingCost; // Shipping cost
 
+    @OneToOne
+    private OrderInfo orderInfo;
+
+    public OrderInfo getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(OrderInfo orderInfo) {
+        this.orderInfo = orderInfo;
+    }
     public String getImageUrl() {
         return imageUrl;
     }
