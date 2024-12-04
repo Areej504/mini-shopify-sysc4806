@@ -76,8 +76,8 @@
 <div class="container">
     <div class="header">
         <h1>Order Confirmation</h1>
-        <p>Thank you for shopping at <span th:text="${storeName}"></span>!</p>
-        <p>Your order is being processed. You will receive a confirmation email shortly.</p>
+        <p>Thank you for shopping at <span th:text="${order.getCart().getShop().name}"></span>!</p>
+        <p>Your order is being <span th:text="${order.getStatus().getDescription()}"></span>. You will receive a confirmation email shortly.</p>
     </div>
 
     <div class="order-summary">
@@ -92,13 +92,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${order.products}">
+            <tr th:each="item : ${order.cart.getCartItems()}">
                 <td>
-                    <img th:src="${product.imageUrl}" alt="Product Image">
+                    <img th:src="${item.product.imageURL}" alt="Product Image">
                 </td>
-                <td th:text="${product.name}"></td>
-                <td th:text="${product.quantity}"></td>
-                <td th:text="${product.price}"></td>
+                <td th:text="${item.product.productName}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.totalPrice}"></td>
             </tr>
             </tbody>
         </table>
@@ -110,12 +110,12 @@
 
     <div class="shipping-details">
         <h3>Shipping Information</h3>
-        <p>Name: <span th:text="${order.shipping.fullName}"></span></p>
-        <p>Address: <span th:text="${order.shipping.address}"></span></p>
-        <p>City: <span th:text="${order.shipping.city}"></span></p>
-        <p>State: <span th:text="${order.shipping.state}"></span></p>
-        <p>Zip Code: <span th:text="${order.shipping.zip}"></span></p>
-        <p>Phone: <span th:text="${order.shipping.phone}"></span></p>
+        <p>Name: <span th:text="${order.shipping.getShippingName()}"></span></p>
+        <p>Address: <span th:text="${order.shipping.getShippingAddress()}"></span></p>
+        <p>City: <span th:text="${order.shipping.getShippingCity()}"></span></p>
+        <p>State: <span th:text="${order.shipping.getShippingState()}"></span></p>
+        <p>Zip Code: <span th:text="${order.shipping.getShippingZip()}"></span></p>
+        <p>Phone: <span th:text="${order.shipping.getShippingPhone()}"></span></p>
     </div>
 </div>
 

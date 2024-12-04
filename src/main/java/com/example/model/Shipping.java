@@ -1,6 +1,7 @@
 package com.example.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.OneToOne;
 public class Shipping {
 
     @Id
+    @GeneratedValue
     private Long shippingId;
 
     @OneToOne

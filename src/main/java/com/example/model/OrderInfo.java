@@ -25,8 +25,8 @@ public class OrderInfo {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne // One-to-one relationship with Payment
-    private Payment payment;  // Only one payment per order
+//    @OneToOne // One-to-one relationship with Payment
+//    private Payment payment;  // Only one payment per order
 
     public Shipping getShipping() {
         return shipping;
@@ -90,13 +90,13 @@ public class OrderInfo {
         return status;
     }
 
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
+//    public Payment getPayment() {
+//        return payment;
+//    }
+//
+//    public void setPayment(Payment payment) {
+//        this.payment = payment;
+//    }
 
     public void setCart(Cart cart){
         this.cart = cart;
@@ -114,7 +114,6 @@ public class OrderInfo {
                 ", customer=" + customer +
                 ", cart=" + cart +
                 ", status=" + status +
-                ", payment=" + payment +
                 '}';
     }
 
