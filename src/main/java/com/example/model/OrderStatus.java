@@ -1,12 +1,12 @@
 package com.example.model;
 
 public enum OrderStatus {
-    PROCESSING("Order is being prepared"),
-    SHIPPED("Order has been shipped"),
-    DELIVERED("Order delivered to customer"),
-    CANCELED("Order was canceled"),
+    PROCESSING("processed"),
+    SHIPPED("shipped"),
+    DELIVERED("delivered to customer"),
+    CANCELED("canceled"),
     RETURN_REQUESTED("Return has been requested by customer"),
-    RETURNED("Order was returned by customer"),
+    RETURNED("returned by customer"),
     REFUNDED("Customer has been refunded"),
     COMPLETED("Customer completed order"),
     CANCELLED("Customer cancelled order"),;

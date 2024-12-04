@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
@@ -116,7 +117,7 @@ public class OrderController {
     }
 
     @PostMapping("/processPayment")
-    public String processPayment(HttpSession session, Long storeId, Shipping shipping, Model model) {
+    public String processPayment(HttpSession session, Long storeId, @ModelAttribute Shipping shipping, Model model) {
         // Get session-specific cart item count for the store
         String sessionId = getSessionId(session);
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
@@ -160,14 +161,14 @@ public class OrderController {
         cart = cartRepository.save(cart);
 
         order.setCart(cart);
+        order.setStatus(OrderStatus.PROCESSING);
 
         // Step 6: Save the order
         orderInfoRepository.save(order);
+        cartService.clearCart(sessionId, storeId);
+
 
         model.addAttribute("order", order);
         return "orderConfirmation"; // Redirect to an order confirmation view
     }
-
-
-
 }
