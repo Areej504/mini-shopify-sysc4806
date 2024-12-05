@@ -42,6 +42,8 @@ public class OrderInfoTest {
 
         when(mockCart.getCartItems()).thenReturn(cartItems);
 
+//        Shop testShop = new Shop();
+//        testShop.setShopId(1L);
         order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, mockCart, OrderStatus.PROCESSING);
     }
 

@@ -168,7 +168,7 @@ public class OrderController {
         cart = cartRepository.save(cart);
 
         order.setCart(cart);
-        //order.setStatus(OrderStatus.PROCESSING);
+        order.setStatus(OrderStatus.PROCESSING);
 
         // Step 6: Save the order
         orderInfoRepository.save(order);

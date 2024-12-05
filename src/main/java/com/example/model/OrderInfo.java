@@ -56,8 +56,8 @@ public class OrderInfo {
 
     public OrderInfo() {}
 
-    public OrderInfo(Long shopId, Shop shop, Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
-        this.shop = shop; //added by warda
+    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
+        //this.shop = shop; //added by warda
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;
