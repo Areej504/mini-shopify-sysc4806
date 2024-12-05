@@ -7,4 +7,6 @@ import java.util.List;
 @Repository
 public interface OrderInfoRepository extends CrudRepository<OrderInfo, Long> {
     List<OrderInfo> findByStatus(OrderStatus status);
+
+    List<OrderInfo> findByShop(Shop shop); //added by warda
 }

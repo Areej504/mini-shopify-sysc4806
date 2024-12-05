@@ -118,13 +118,19 @@ public class OrderController {
 
     @PostMapping("/processPayment")
     public String processPayment(HttpSession session, Long storeId, @ModelAttribute Shipping shipping, Model model) {
+        // Fetch the Shop //added by warda
+        Shop shop = shopRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Shop not found for ID: " + storeId));
+
         // Get session-specific cart item count for the store
         String sessionId = getSessionId(session);
         List<Map<String, Object>> cartItems = cartService.getCart(sessionId, storeId);
 
         // Step 3: Create the OrderInfo object
         OrderInfo order = new OrderInfo();
+        order.setShop(shop); //added by warda
         order.setOrderDate(new Date()); // Set current date as the order date
+        order.setStatus(OrderStatus.PROCESSING); //added by warda
 
         shippingRepository.save(shipping);
         order.setShipping(shipping);
@@ -132,7 +138,8 @@ public class OrderController {
         System.out.println("Print reached here!");
 
         // Step 5: Associate cart items with the order
-        Shop shop = shopRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + storeId));
+//        Shop shop2 = shopRepository.findById(storeId).
+//                orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + storeId));
         Cart cart = new Cart(shop);
 
         List<CartItem> cartItemList = new ArrayList<>();
@@ -161,7 +168,7 @@ public class OrderController {
         cart = cartRepository.save(cart);
 
         order.setCart(cart);
-        order.setStatus(OrderStatus.PROCESSING);
+        //order.setStatus(OrderStatus.PROCESSING);
 
         // Step 6: Save the order
         orderInfoRepository.save(order);

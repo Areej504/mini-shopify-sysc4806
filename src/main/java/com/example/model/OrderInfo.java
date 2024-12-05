@@ -11,6 +11,9 @@ public class OrderInfo {
     @GeneratedValue
     private Long orderId;
 
+    @ManyToOne
+    private Shop shop;//added by warda
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 
@@ -24,6 +27,18 @@ public class OrderInfo {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+
+//    @ManyToOne
+//    private Shop shop;
+//
+//    public Shop getShop() {
+//        return shop;
+//    }
+//
+//    public void setShop(Shop shop) {
+//        this.shop = shop;
+//    }
 
 //    @OneToOne // One-to-one relationship with Payment
 //    private Payment payment;  // Only one payment per order
@@ -41,7 +56,8 @@ public class OrderInfo {
 
     public OrderInfo() {}
 
-    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
+    public OrderInfo(Long shopId, Shop shop, Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
+        this.shop = shop; //added by warda
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;
@@ -117,4 +133,12 @@ public class OrderInfo {
                 '}';
     }
 
+    //added by warda
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }
