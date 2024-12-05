@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class OrderInfoTest {
-
     private OrderInfo order;
     private Customer mockCustomer;
     private Cart mockCart;

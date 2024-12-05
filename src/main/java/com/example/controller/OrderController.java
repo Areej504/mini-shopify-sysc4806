@@ -129,8 +129,6 @@ public class OrderController {
         shippingRepository.save(shipping);
         order.setShipping(shipping);
 
-        System.out.println("Print reached here!");
-
         // Step 5: Associate cart items with the order
         Shop shop = shopRepository.findById(storeId).orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + storeId));
         Cart cart = new Cart(shop);
@@ -138,7 +136,6 @@ public class OrderController {
         List<CartItem> cartItemList = new ArrayList<>();
 
         for (Map<String, Object> item : cartItems) {
-            System.out.println("Point 2!");
             Long productId = (Long) item.get("productId");
 
             if (productId == null) {
