@@ -174,31 +174,32 @@
         }
 
         .promotion-banner {
-            width: 100%; /* Full width */
-            background-color: #e8f9ff; /* Light blue background */
-            color: #007b8f; /* Dark teal text */
-            font-size: 1em; /* Slightly larger font for readability */
-            height: 40px; /* Thin height */
-            line-height: 40px; /* Center text vertically */
-            overflow: hidden; /* Hide text overflow */
-            position: relative; /* Relative for child positioning */
-            border-top: 1px solid #bde4ef; /* Subtle border */
+            width: 100%;
+            background-color: #e8f9ff;
+            color: #007b8f;
+            font-size: 1em;
+            height: 40px;
+            line-height: 40px;
+            overflow: hidden;
+            position: relative;
+            border-top: 1px solid #bde4ef;
             border-bottom: 1px solid #bde4ef;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            display: flex; /* Flexbox for alignment */
-            align-items: center; /* Center vertically */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
         }
 
         .marquee-wrapper {
             display: inline-block; /* Inline wrapper for animation */
-            white-space: nowrap; /* Prevent text wrapping */
-            animation: scroll-text 15s linear infinite; /* Smooth scrolling effect */
+            white-space: nowrap;
+            position: absolute; /* Position absolutely for full control */
+            animation: scroll-text 20s linear infinite; /* Smooth scrolling effect */
         }
 
         /* Keyframes for smooth scrolling */
         @keyframes scroll-text {
             0% {
-                transform: translateX(100%); /* Start fully off-screen to the right */
+                transform: translateX(100vw); /* Start fully off-screen to the right */
             }
             100% {
                 transform: translateX(-100%); /* Move fully off-screen to the left */
