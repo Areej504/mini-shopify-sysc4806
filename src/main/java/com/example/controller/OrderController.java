@@ -126,6 +126,17 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/order-details/{id}")
+    @ResponseBody
+    public ResponseEntity<OrderInfo> getOrderDetails(@PathVariable Long id) {
+        OrderInfo order = orderInfoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
+        return ResponseEntity.ok(order);
+    }
+
+
+
+
 
     @PostMapping("/processPayment")
     public String processPayment(HttpSession session, Long storeId, @ModelAttribute Shipping shipping, Model model) {
