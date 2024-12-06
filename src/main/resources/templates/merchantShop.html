@@ -344,8 +344,7 @@
                     <td th:text="${order.status}"></td>
                     <td th:text="${order.totalAmount} + ' USD'"></td>
                     <td>
-<!--                        <a th:href="@{/order-details/{id}(id=${order.orderId})}">View Details</a>-->
-                        <button type="button" onclick="openOrderDetailsModal('/order-details/[[${order.orderId}]]')">View Details</button>
+                        <a th:href="@{/order-details/{id}(id=${order.orderId})}">View Details</a>
                     </td>
                 </tr>
                 <tr th:if="${orders.size() == 0}">
@@ -354,26 +353,6 @@
                 </tbody>
             </table>
         </div>
-        <!-- Order Details Modal//added by warda -->
-        <div id="orderDetailsModal" class="modal">
-            <div class="modal-content">
-                <h3>Order Details</h3>
-                <div id="orderDetailsContent">
-                    <!-- JavaScript will populate this content -->
-                </div>
-                <div>
-                    <label for="orderStatusSelect">Update Status:</label>
-                    <select id="orderStatusSelect">
-                        <option th:each="status : ${statuses.setStatus()}" th:value="${status}" th:text="${status}"></option>
-                    </select>
-                </div>
-                <div class="button-row">
-                    <button type="button" onclick="updateOrderStatus()">Update Status</button>
-                    <button type="button" onclick="closeModal('orderDetailsModal')">Close</button>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 
@@ -629,65 +608,92 @@
     }
 
     //added by warda
-    function openOrderDetailsModal(orderDetailsUrl) {
-        fetch(orderDetailsUrl)
-            .then(response => {
-                if (!response.ok) throw new Error("Failed to fetch order details");
-                return response.json();
-            })
-            .then(order => {
-                const modalContent = document.getElementById("orderDetailsContent");
+    // function loadOrderList() {
+    //     fetch(`/merchantShop/${shopId}/orders`)
+    //         .then(response => response.json())
+    //         .then(orders => {
+    //             const mainContent = document.querySelector('.main-content');
+    //             mainContent.innerHTML = `<h2>Order List</h2>`;
+    //             orders.forEach(order => {
+    //                 mainContent.innerHTML += `
+    //                 <div class="order-card">
+    //                     <p>Order ID: ${order.orderId}</p>
+    //                     <p>Customer: ${order.customer?.name || "Unknown"}</p>
+    //                     <p>Total Amount: $${order.totalAmount || "0.00"}</p>
+    //                     <p>Status:
+    //                         <select onchange="updateOrderStatus(${order.orderId}, this.value)">
+    //                             ${Object.keys(OrderStatus).map(status => `
+    //                                 <option value="${status}" ${order.status === status ? "selected" : ""}>
+    //                                     ${OrderStatus[status].description || status}
+    //                                 </option>`).join('')}
+    //                         </select>
+    //                     </p>
+    //                 </div>
+    //                 `;
+    //             });
+    //         })
+    //         .catch(error => console.error("Error loading orders:", error));
+    // }
 
-                // Populate the modal with order details
-                modalContent.innerHTML = `
-                <p><strong>Order ID:</strong> ${order.orderId}</p>
-                <p><strong>Date:</strong> ${new Date(order.orderDate).toLocaleString()}</p>
-                <p><strong>Total Amount:</strong> $${order.totalAmount}</p>
-                <h4>Items:</h4>
-                <ul>
-                    ${order.cart.cartItems
-                    .map(
-                        item => `
-                        <li>
-                            <img src="${item.product.imageURL}"
-                                 alt="${item.product.productName}"
-                                 style="width:50px; height:auto;">
-                            ${item.product.productName} -
-                            ${item.quantity} x $${item.product.price.toFixed(2)} =
-                            $${(item.quantity * item.product.price).toFixed(2)}
-                        </li>`
-                    )
-                    .join("")}
-                </ul>
-            `;
-
-                // Attach the order ID to the modal for updating status
-                modalContent.dataset.orderId = order.orderId;
-
-                // Open the modal
-                openModal("orderDetailsModal");
-            })
-            .catch(error => console.error("Error fetching order details:", error));
-    }
-
-    function updateOrderStatus() {
-        const status = document.getElementById("orderStatusSelect").value;
-        const orderId = document.getElementById("orderDetailsContent").dataset.orderId;
-
-        fetch(`/orders/${orderId}/status?status=${status}`, { method: "PUT" })
+    function updateOrderStatus(orderId, newStatus) {
+        fetch(`/orders/${orderId}/status?status=${newStatus}`, { method: 'PUT' })
             .then(response => {
                 if (response.ok) {
-                    alert("Order status updated successfully");
-                    closeModal("orderDetailsModal");
-                    location.reload(); // Reload the page to reflect the updated status
+                    alert('Order status updated successfully');
                 } else {
-                    alert("Failed to update order status");
+                    alert('Failed to update order status');
                 }
             })
             .catch(error => console.error("Error updating order status:", error));
     }
 
 
+    // Toggle between products and orders view
+    // function toggleView(view) {
+    //     const productContainer = document.querySelector('.main-content');
+    //     const ordersContainer = document.getElementById('orders-container');
+    //     if (view === 'orders') {
+    //         productContainer.style.display = 'none';
+    //         ordersContainer.style.display = 'block';
+    //     } else {
+    //         productContainer.style.display = 'block';
+    //         ordersContainer.style.display = 'none';
+    //     }
+    // }
+    //
+    // // Function to update order status
+    // function updateOrderStatus(selectElement, orderId) {
+    //     const newStatus = selectElement.value;
+    //     fetch(`/updateOrderStatus/${orderId}`, {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ status: newStatus })
+    //     }).then(response => {
+    //         if (!response.ok) {
+    //             alert('Failed to update order status. Please try again.');
+    //         } else {
+    //             alert('Order status updated successfully.');
+    //             location.reload(); // Reload to refresh data
+    //         }
+    //     }).catch(error => {
+    //         console.error('Error updating order status:', error);
+    //     });
+    // }
+    // function showOrders() {
+    //     document.getElementById('product-list-container').style.display = 'none';
+    //     document.getElementById('order-list-container').style.display = 'block';
+    // }
+    // //added by warda
+    // function updateOrderStatus(selectElement, orderId) {
+    //     const newStatus = selectElement.value;
+    //     fetch(`/updateOrderStatus?orderId=${orderId}&status=${newStatus}`, { method: 'POST' })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 alert('Failed to update order status.');
+    //             }
+    //         })
+    //         .catch(error => console.error('Error updating order status:', error));
+    // }
 
 
 </script>
