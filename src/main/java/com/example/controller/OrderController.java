@@ -44,19 +44,6 @@ public class OrderController {
         return sessionId;
     }
 
-    @GetMapping("/checkout")
-    public String openCheckoutView(@RequestParam Long storeId, Model model) {
-        // Fetch store details
-        Optional<Shop> shopOptional = shopRepository.findById(storeId);
-        if (shopOptional.isPresent()) {
-            Shop shop = shopOptional.get();
-            model.addAttribute("shop", shop); // Add store name to the model
-        } else {
-            model.addAttribute("shopName", "Unknown Store"); // Fallback if store not found
-        }
-        return "shopCheckout"; // View name
-    }
-
     @GetMapping("/guestCheckout")
     public String guestCheckout(@RequestParam(required = false) Long storeId, HttpSession session, Model model) {
         // Fetch store name if storeId is provided
@@ -113,7 +100,7 @@ public class OrderController {
         model.addAttribute("promotion", PromotionType.BUY_ONE_GET_ONE);
         model.addAttribute("shipping", new Shipping());
 
-        return "paymentView"; // Replace with your Thymeleaf payment page template name
+        return "paymentView";
     }
 
     //added by warda
@@ -164,7 +151,7 @@ public class OrderController {
                     .orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + productId));
 
             int quantity = (int) item.get("quantity");
-
+            product.setInventory(product.getInventory() - quantity);
             cartItemList.add(new CartItem(cart, product, quantity));
             System.out.println(cartItemList);
         }
@@ -186,7 +173,7 @@ public class OrderController {
         cartService.clearCart(sessionId, storeId);
 
         model.addAttribute("order", order);
-        return "orderConfirmation"; // Redirect to an order confirmation view
+        return "orderConfirmation"; // Redirect to order confirmation view
     }
 
     @GetMapping("/api/order-details/{orderId}")

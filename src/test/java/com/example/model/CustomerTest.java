@@ -124,35 +124,4 @@ public class CustomerTest {
         assertTrue(customerString.contains("email='johndoe@example.com'"), "toString should contain customer email.");
         assertTrue(customerString.contains("address='123 Street'"), "toString should contain customer address.");
     }
-
-    // Placeholder tests for unimplemented methods
-    @Test
-    public void testPlaceOrder() {
-        // Act & Assert
-        assertDoesNotThrow(() -> customer.placeOrder(), "placeOrder should not throw an exception.");
-    }
-
-    @Test
-    public void testSearchShops() {
-        // Act & Assert
-        assertDoesNotThrow(() -> customer.searchShops(), "searchShops should not throw an exception.");
-    }
-
-    @Test
-    public void testMakePayment() {
-        // Act & Assert
-        assertDoesNotThrow(() -> customer.makePayment(), "makePayment should not throw an exception.");
-    }
-
-    @Test
-    public void testAddToCart() {
-        // Act & Assert
-        assertDoesNotThrow(() -> customer.addToCart(), "addToCart should not throw an exception.");
-    }
-
-    @Test
-    public void testRemoveFromCart() {
-        // Act & Assert
-        assertDoesNotThrow(() -> customer.removeFromCart(), "removeFromCart should not throw an exception.");
-    }
 }

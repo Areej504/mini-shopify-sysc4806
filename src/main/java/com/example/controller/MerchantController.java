@@ -22,8 +22,6 @@ public class MerchantController {
     private MerchantRepository merchantRepository;
     @Autowired
     private ShopRepository shopRepository;
-    @Autowired
-    private OrderInfoRepository orderInfoRepository;
 
     //create Merchant page
     @GetMapping("/create-merchant")
@@ -133,24 +131,5 @@ public class MerchantController {
         existingShop.setPromotion(shop.getPromotion());
         shopRepository.save(existingShop);
         return "redirect:/merchantShop/" + shopId;
-    }
-
-    //added by warda
-//    @GetMapping("/merchantShop/{shopId}/orders")
-//    public ResponseEntity<List<OrderInfo>> getOrdersByShop(@PathVariable Long shopId) {
-//        // Fetch orders for the given shop
-//        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new IllegalArgumentException("Shop not found"));
-//        List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
-//        return ResponseEntity.ok(orders);
-//    }
-
-    @PutMapping("/orders/{orderId}/status")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatus status) {
-        // Update the status of a specific order
-        OrderInfo order = orderInfoRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
-        order.setStatus(status);
-        orderInfoRepository.save(order);
-        return ResponseEntity.ok("Order status updated successfully");
     }
 }

@@ -256,7 +256,7 @@
         <hr>
         <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
         <button class="checkout-button"
-                th:onclick="'window.location.href=\'/checkout?storeId=\' + ' + ${storeId}">
+                th:onclick="'window.location.href=\'/guestCheckout?storeId=\' + ' + ${storeId}">
             Proceed to Checkout
         </button>
 
