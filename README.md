@@ -84,6 +84,7 @@ Added a back-to-homepage-on-logo-click feature across all pages:
 Issue addressed: #66.
 Extended web layer testing for the CartController:
 Issue addressed: #37.
+Integrate Access Controls on Merchant side(#81).
 
 Rama
 Milestone 1
