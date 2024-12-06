@@ -19,6 +19,9 @@ public class OrderInfo {
     @ManyToOne
     private Customer customer;
 
+    @ManyToOne
+    private Shop shop;
+
     @OneToOne
     private Cart cart;
 
@@ -83,6 +86,7 @@ public class OrderInfo {
     }
 
     public void setStatus(OrderStatus status){
+
         this.status = status;
     }
 
@@ -117,4 +121,11 @@ public class OrderInfo {
                 '}';
     }
 
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }

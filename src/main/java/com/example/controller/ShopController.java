@@ -23,6 +23,10 @@ public class ShopController {
     @Autowired
     private CartService cartService; // Injected CartService
 
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
+
+
     private String getSessionId(HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
         if (sessionId == null) {
@@ -42,6 +46,10 @@ public class ShopController {
             model.addAttribute("products", shopDetails.getProducts());
             model.addAttribute("shopPromotion", shopDetails.getPromotion());
             model.addAttribute("storeId", shopId); // Pass storeId to the view
+
+            //added by warda
+//            List<OrderInfo> orders = orderInfoRepository.findByShop(shopDetails);
+//            model.addAttribute("orders", orders); // Add orders to model
         }
 
         // Get session-specific cart item count for the store

@@ -290,6 +290,8 @@
         <button onclick="openModal('addProductModal')">Add Product</button>
         <button onclick="openModal('removeProductModal')">Remove Product</button>
         <button onclick="openModal('setPromotionModal')">Set Promotion</button>
+<!--        added by warda-->
+        <button onclick="loadOrderList()">View Orders</button>
     </div>
 
     <!-- Main Content Area -->
@@ -325,6 +327,7 @@
     </div>
 
 </div>
+
 
 <!-- Modals -->
 <div id="addProductModal" class="modal">
@@ -564,6 +567,94 @@
                 alert('An error occurred while setting the promotion.');
             });
     }
+
+    //added by warda
+    function loadOrderList() {
+        fetch(`/merchantShop/${shopId}/orders`)
+            .then(response => response.json())
+            .then(orders => {
+                const mainContent = document.querySelector('.main-content');
+                mainContent.innerHTML = `<h2>Order List</h2>`;
+                orders.forEach(order => {
+                    mainContent.innerHTML += `
+                    <div class="order-card">
+                        <p>Order ID: ${order.id}</p>
+                        <p>Customer: ${order.customerName}</p>
+                        <p>Status:
+                            <select onchange="updateOrderStatus(${order.id}, this.value)">
+                                ${Object.values(OrderStatus).map(
+                        status => `<option value="${status}" ${
+                            order.status === status ? "selected" : ""
+                        }>${status}</option>`
+                    ).join('')}
+                            </select>
+                        </p>
+                    </div>
+                `;
+                });
+            })
+            .catch(error => console.error("Error loading orders:", error));
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        fetch(`/orders/${orderId}/status?status=${newStatus}`, { method: 'PUT' })
+            .then(response => {
+                if (response.ok) {
+                    alert('Order status updated successfully');
+                } else {
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => console.error("Error updating order status:", error));
+    }
+
+
+    // Toggle between products and orders view
+    // function toggleView(view) {
+    //     const productContainer = document.querySelector('.main-content');
+    //     const ordersContainer = document.getElementById('orders-container');
+    //     if (view === 'orders') {
+    //         productContainer.style.display = 'none';
+    //         ordersContainer.style.display = 'block';
+    //     } else {
+    //         productContainer.style.display = 'block';
+    //         ordersContainer.style.display = 'none';
+    //     }
+    // }
+    //
+    // // Function to update order status
+    // function updateOrderStatus(selectElement, orderId) {
+    //     const newStatus = selectElement.value;
+    //     fetch(`/updateOrderStatus/${orderId}`, {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ status: newStatus })
+    //     }).then(response => {
+    //         if (!response.ok) {
+    //             alert('Failed to update order status. Please try again.');
+    //         } else {
+    //             alert('Order status updated successfully.');
+    //             location.reload(); // Reload to refresh data
+    //         }
+    //     }).catch(error => {
+    //         console.error('Error updating order status:', error);
+    //     });
+    // }
+    // function showOrders() {
+    //     document.getElementById('product-list-container').style.display = 'none';
+    //     document.getElementById('order-list-container').style.display = 'block';
+    // }
+    // //added by warda
+    // function updateOrderStatus(selectElement, orderId) {
+    //     const newStatus = selectElement.value;
+    //     fetch(`/updateOrderStatus?orderId=${orderId}&status=${newStatus}`, { method: 'POST' })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 alert('Failed to update order status.');
+    //             }
+    //         })
+    //         .catch(error => console.error('Error updating order status:', error));
+    // }
 
 
 </script>
