@@ -578,19 +578,19 @@
                 orders.forEach(order => {
                     mainContent.innerHTML += `
                     <div class="order-card">
-                        <p>Order ID: ${order.id}</p>
-                        <p>Customer: ${order.customerName}</p>
+                        <p>Order ID: ${order.orderId}</p>
+                        <p>Customer: ${order.customer?.name || "Unknown"}</p>
+                        <p>Total Amount: $${order.totalAmount || "0.00"}</p>
                         <p>Status:
-                            <select onchange="updateOrderStatus(${order.id}, this.value)">
-                                ${Object.values(OrderStatus).map(
-                        status => `<option value="${status}" ${
-                            order.status === status ? "selected" : ""
-                        }>${status}</option>`
-                    ).join('')}
+                            <select onchange="updateOrderStatus(${order.orderId}, this.value)">
+                                ${Object.keys(OrderStatus).map(status => `
+                                    <option value="${status}" ${order.status === status ? "selected" : ""}>
+                                        ${OrderStatus[status].description || status}
+                                    </option>`).join('')}
                             </select>
                         </p>
                     </div>
-                `;
+                    `;
                 });
             })
             .catch(error => console.error("Error loading orders:", error));

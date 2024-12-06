@@ -114,6 +114,18 @@ public class OrderController {
         return "paymentView"; // Replace with your Thymeleaf payment page template name
     }
 
+    //added by warda
+    @GetMapping("/merchantShop/{shopId}/orders")
+    public ResponseEntity<List<OrderInfo>> getOrdersByShop(@PathVariable Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Shop not found with ID: " + shopId));
+        List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
+        orders.sort(Comparator.comparing(order ->
+                order.getStatus() == OrderStatus.REFUNDED || order.getStatus() == OrderStatus.CANCELED));
+        return ResponseEntity.ok(orders);
+    }
+
+
     @PostMapping("/processPayment")
     public String processPayment(HttpSession session, Long storeId, @ModelAttribute Shipping shipping, Model model) {
         // Get session-specific cart item count for the store
@@ -162,6 +174,7 @@ public class OrderController {
         order.setStatus(OrderStatus.PROCESSING);
 
         // Step 6: Save the order
+        order.setStatus(OrderStatus.PROCESSING);
         orderInfoRepository.save(order);
         cartService.clearCart(sessionId, storeId);
 

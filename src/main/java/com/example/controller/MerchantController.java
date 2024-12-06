@@ -136,13 +136,13 @@ public class MerchantController {
     }
 
     //added by warda
-    @GetMapping("/merchantShop/{shopId}/orders")
-    public ResponseEntity<List<OrderInfo>> getOrdersByShop(@PathVariable Long shopId) {
-        // Fetch orders for the given shop
-        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new IllegalArgumentException("Shop not found"));
-        List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
-        return ResponseEntity.ok(orders);
-    }
+//    @GetMapping("/merchantShop/{shopId}/orders")
+//    public ResponseEntity<List<OrderInfo>> getOrdersByShop(@PathVariable Long shopId) {
+//        // Fetch orders for the given shop
+//        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new IllegalArgumentException("Shop not found"));
+//        List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
+//        return ResponseEntity.ok(orders);
+//    }
 
     @PutMapping("/orders/{orderId}/status")
     public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatus status) {
