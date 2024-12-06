@@ -120,6 +120,7 @@ public class OrderController {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("Shop not found with ID: " + shopId));
         List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
+        System.out.println("Orders: " + orders);
         orders.sort(Comparator.comparing(order ->
                 order.getStatus() == OrderStatus.REFUNDED || order.getStatus() == OrderStatus.CANCELED));
         return ResponseEntity.ok(orders);
@@ -172,12 +173,15 @@ public class OrderController {
 
         order.setCart(cart);
         order.setStatus(OrderStatus.PROCESSING);
+        order.setShop(shop);
+        order.setTotalAmount(cart.getTotalPrice());
 
         // Step 6: Save the order
         order.setStatus(OrderStatus.PROCESSING);
         orderInfoRepository.save(order);
+        System.out.println("Current order: " + order);
+        System.out.println("Saved Orders: " + orderInfoRepository.findByShop(shop));
         cartService.clearCart(sessionId, storeId);
-
 
         model.addAttribute("order", order);
         return "orderConfirmation"; // Redirect to an order confirmation view

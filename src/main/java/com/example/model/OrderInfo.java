@@ -44,12 +44,13 @@ public class OrderInfo {
 
     public OrderInfo() {}
 
-    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
+    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status, Shop shop) {
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;
         this.cart = cart;
         this.status = status;
+        this.shop = shop;
     }
 
     // Getters and Setters

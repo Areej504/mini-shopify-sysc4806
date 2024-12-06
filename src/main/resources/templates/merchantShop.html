@@ -287,49 +287,76 @@
 <div class="container">
     <!-- Left Panel -->
     <div class="left-panel">
+        <button onclick="toggleView('products')">View Products</button>
         <button onclick="openModal('addProductModal')">Add Product</button>
         <button onclick="openModal('removeProductModal')">Remove Product</button>
         <button onclick="openModal('setPromotionModal')">Set Promotion</button>
+        <button onclick="toggleView('orders')">View Orders</button>
 <!--        added by warda-->
-        <button onclick="loadOrderList()">View Orders</button>
+<!--        <button onclick="loadOrderList()">View Orders</button>-->
+
     </div>
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <h2>Product List</h2>
-        <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
-
-            <button class="edit-button"
-                    th:data-url="@{/merchantShop/{shopId}/product/{productId}(shopId=${shop.shopId},productId=${product.productId})}"
-                    onclick="openEditModal(this.getAttribute('data-url'))">Edit</button>
-            <!-- Product Details on the Left -->
-            <div class="product-details">
-                <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
-                <h3 th:text="${product.productName}">Product Name</h3>
-
-                <!-- Display discounted and original prices if there is a discount -->
-                <p th:if="${product.discountedPrice != null}">
-                    <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
-                    <br>
-                    <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
-                </p>
-                <!-- Display only the original price if there is no discount -->
-                <p th:if="${product.discountedPrice == null}" class="price" th:text="'Price: $' + ${product.price}"></p>
-
-                <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
-                <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
-                <p class="category" th:text="${product.category}">Category</p>
-                <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+        <!-- Product List -->
+        <div id="productList" class="content-section">
+            <h2>Product List</h2>
+            <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
+                <button class="edit-button"
+                        th:data-url="@{/merchantShop/{shopId}/product/{productId}(shopId=${shop.shopId},productId=${product.productId})}"
+                        onclick="openEditModal(this.getAttribute('data-url'))">Edit</button>
+                <div class="product-details">
+                    <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
+                    <h3 th:text="${product.productName}">Product Name</h3>
+                    <p th:if="${product.discountedPrice != null}">
+                        <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
+                        <br>
+                        <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
+                    </p>
+                    <p th:if="${product.discountedPrice == null}" class="price" th:text="'Price: $' + ${product.price}"></p>
+                    <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
+                    <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
+                    <p class="category" th:text="${product.category}">Category</p>
+                    <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+                </div>
+                <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
             </div>
-            <!-- Product Image on the Right -->
-            <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
+        </div>
+
+        <!-- Order List -->
+        <div id="orderList" class="content-section" style="display: none;">
+            <h2>Order List</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:text="${order.orderDate}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.totalAmount} + ' USD'"></td>
+                    <td>
+                        <a th:href="@{/order-details/{id}(id=${order.orderId})}">View Details</a>
+                    </td>
+                </tr>
+                <tr th:if="${orders.size() == 0}">
+                    <td colspan="5">You have no orders.</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
 
-
-<!-- Modals -->
+    <!-- Modals -->
 <div id="addProductModal" class="modal">
     <div class="modal-content">
         <h3>Add / Edit Product</h3>
@@ -567,34 +594,46 @@
                 alert('An error occurred while setting the promotion.');
             });
     }
+    function toggleView(view) {
+        const productList = document.getElementById('productList');
+        const orderList = document.getElementById('orderList');
+
+        if (view === 'products') {
+            productList.style.display = 'block';
+            orderList.style.display = 'none';
+        } else if (view === 'orders') {
+            productList.style.display = 'none';
+            orderList.style.display = 'block';
+        }
+    }
 
     //added by warda
-    function loadOrderList() {
-        fetch(`/merchantShop/${shopId}/orders`)
-            .then(response => response.json())
-            .then(orders => {
-                const mainContent = document.querySelector('.main-content');
-                mainContent.innerHTML = `<h2>Order List</h2>`;
-                orders.forEach(order => {
-                    mainContent.innerHTML += `
-                    <div class="order-card">
-                        <p>Order ID: ${order.orderId}</p>
-                        <p>Customer: ${order.customer?.name || "Unknown"}</p>
-                        <p>Total Amount: $${order.totalAmount || "0.00"}</p>
-                        <p>Status:
-                            <select onchange="updateOrderStatus(${order.orderId}, this.value)">
-                                ${Object.keys(OrderStatus).map(status => `
-                                    <option value="${status}" ${order.status === status ? "selected" : ""}>
-                                        ${OrderStatus[status].description || status}
-                                    </option>`).join('')}
-                            </select>
-                        </p>
-                    </div>
-                    `;
-                });
-            })
-            .catch(error => console.error("Error loading orders:", error));
-    }
+    // function loadOrderList() {
+    //     fetch(`/merchantShop/${shopId}/orders`)
+    //         .then(response => response.json())
+    //         .then(orders => {
+    //             const mainContent = document.querySelector('.main-content');
+    //             mainContent.innerHTML = `<h2>Order List</h2>`;
+    //             orders.forEach(order => {
+    //                 mainContent.innerHTML += `
+    //                 <div class="order-card">
+    //                     <p>Order ID: ${order.orderId}</p>
+    //                     <p>Customer: ${order.customer?.name || "Unknown"}</p>
+    //                     <p>Total Amount: $${order.totalAmount || "0.00"}</p>
+    //                     <p>Status:
+    //                         <select onchange="updateOrderStatus(${order.orderId}, this.value)">
+    //                             ${Object.keys(OrderStatus).map(status => `
+    //                                 <option value="${status}" ${order.status === status ? "selected" : ""}>
+    //                                     ${OrderStatus[status].description || status}
+    //                                 </option>`).join('')}
+    //                         </select>
+    //                     </p>
+    //                 </div>
+    //                 `;
+    //             });
+    //         })
+    //         .catch(error => console.error("Error loading orders:", error));
+    // }
 
     function updateOrderStatus(orderId, newStatus) {
         fetch(`/orders/${orderId}/status?status=${newStatus}`, { method: 'PUT' })
