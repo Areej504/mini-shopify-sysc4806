@@ -32,6 +32,14 @@ public class ShopController {
         return sessionId;
     }
 
+    // Mapping for the shopper button to open searchShops.html
+    @GetMapping("/shopper")
+    public String openCustomerScreen(Model model) {
+        List<Shop> shops = (List<Shop>) shopRepository.findAll(); // Fetch all shops from the database
+        model.addAttribute("shops", shops); // Add the shops to the model
+        return "searchShops"; // Return the Thymeleaf template for the customer screen;
+    }
+
     @GetMapping("/shopPage/{shopId}")
     public String getShopDetails(@PathVariable Long shopId, HttpSession session, Model model) {
         Optional<Shop> shop = shopRepository.findById(shopId);

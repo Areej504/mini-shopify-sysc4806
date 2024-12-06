@@ -54,27 +54,7 @@
             padding: 15px 0;
         }
 
-        /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
-        .sign-in-button {
-            position: absolute;
-            right: 20px; /* Push the button to the right edge */
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: #01a6cf;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .sign-in-button:hover {
-            background-color: #126b80;
-        }
-
+        /* Shop Actions Section (Add to cart, checkout button etc.) */
         .cart-container {
             width: 100%;
             display: flex;
@@ -194,31 +174,32 @@
         }
 
         .promotion-banner {
-            width: 100%; /* Full width */
-            background-color: #e8f9ff; /* Light blue background */
-            color: #007b8f; /* Dark teal text */
-            font-size: 1em; /* Slightly larger font for readability */
-            height: 40px; /* Thin height */
-            line-height: 40px; /* Center text vertically */
-            overflow: hidden; /* Hide text overflow */
-            position: relative; /* Relative for child positioning */
-            border-top: 1px solid #bde4ef; /* Subtle border */
+            width: 100%;
+            background-color: #e8f9ff;
+            color: #007b8f;
+            font-size: 1em;
+            height: 40px;
+            line-height: 40px;
+            overflow: hidden;
+            position: relative;
+            border-top: 1px solid #bde4ef;
             border-bottom: 1px solid #bde4ef;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            display: flex; /* Flexbox for alignment */
-            align-items: center; /* Center vertically */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
         }
 
         .marquee-wrapper {
             display: inline-block; /* Inline wrapper for animation */
-            white-space: nowrap; /* Prevent text wrapping */
-            animation: scroll-text 15s linear infinite; /* Smooth scrolling effect */
+            white-space: nowrap;
+            position: absolute; /* Position absolutely for full control */
+            animation: scroll-text 20s linear infinite; /* Smooth scrolling effect */
         }
 
         /* Keyframes for smooth scrolling */
         @keyframes scroll-text {
             0% {
-                transform: translateX(100%); /* Start fully off-screen to the right */
+                transform: translateX(100vw); /* Start fully off-screen to the right */
             }
             100% {
                 transform: translateX(-100%); /* Move fully off-screen to the left */
@@ -239,8 +220,6 @@
     <!-- Full-width Shop Header -->
     <div class="shop-header">
         <h1 th:text="${shopName}">Shop Name</h1>
-        <!-- Sign-in Button -->
-        <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
     <!-- Full Width Description Banner -->
