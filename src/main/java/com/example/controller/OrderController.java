@@ -138,7 +138,7 @@ public class OrderController {
                     .orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + productId));
 
             int quantity = (int) item.get("quantity");
-
+            product.setInventory(product.getInventory() - quantity);
             cartItemList.add(new CartItem(cart, product, quantity));
             System.out.println(cartItemList);
         }
