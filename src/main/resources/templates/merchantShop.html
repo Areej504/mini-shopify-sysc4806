@@ -169,6 +169,50 @@
         .edit-button:hover {
             background-color: #144d16;
         }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-family: Arial, sans-serif;
+        }
+
+        .order-table thead tr {
+            background-color: #f4f4f4;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .order-table tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .order-table tbody tr th {
+            font-weight: bold;
+        }
+
+        .order-table a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .order-table a:hover {
+            text-decoration: underline;
+        }
+
+        .order-table tbody tr th[colspan="5"] {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
 
 
         /* Modal Styling */
@@ -287,46 +331,85 @@
 <div class="container">
     <!-- Left Panel -->
     <div class="left-panel">
+        <button onclick="toggleView('products')">View Products</button>
         <button onclick="openModal('addProductModal')">Add Product</button>
         <button onclick="openModal('removeProductModal')">Remove Product</button>
         <button onclick="openModal('setPromotionModal')">Set Promotion</button>
+        <button onclick="toggleView('orders')">View Orders</button>
+<!--        added by warda-->
+<!--        <button onclick="loadOrderList()">View Orders</button>-->
+
     </div>
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <h2>Product List</h2>
-        <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
-
-            <button class="edit-button"
-                    th:data-url="@{/merchantShop/{shopId}/product/{productId}(shopId=${shop.shopId},productId=${product.productId})}"
-                    onclick="openEditModal(this.getAttribute('data-url'))">Edit</button>
-            <!-- Product Details on the Left -->
-            <div class="product-details">
-                <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
-                <h3 th:text="${product.productName}">Product Name</h3>
-
-                <!-- Display discounted and original prices if there is a discount -->
-                <p th:if="${product.discountedPrice != null}">
-                    <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
-                    <br>
-                    <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
-                </p>
-                <!-- Display only the original price if there is no discount -->
-                <p th:if="${product.discountedPrice == null}" class="price" th:text="'Price: $' + ${product.price}"></p>
-
-                <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
-                <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
-                <p class="category" th:text="${product.category}">Category</p>
-                <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+        <!-- Product List -->
+        <div id="productList" class="content-section">
+            <h2>Product List</h2>
+            <div th:each="product : ${products}" th:id="'product-' + ${product.productId}" class="product-card">
+                <button class="edit-button"
+                        th:data-url="@{/merchantShop/{shopId}/product/{productId}(shopId=${shop.shopId},productId=${product.productId})}"
+                        onclick="openEditModal(this.getAttribute('data-url'))">Edit</button>
+                <div class="product-details">
+                    <p class="productId" th:text="'Product ID: ' + ${product.productId}">ProductId</p>
+                    <h3 th:text="${product.productName}">Product Name</h3>
+                    <p th:if="${product.discountedPrice != null}">
+                        <span class="discounted-price" th:text="'Now: $' + ${product.discountedPrice}"></span>
+                        <br>
+                        <span class="original-price" th:text="'Original Price: $' + ${product.price}"></span>
+                    </p>
+                    <p th:if="${product.discountedPrice == null}" class="price" th:text="'Price: $' + ${product.price}"></p>
+                    <p class="inventory" th:text="'Inventory: ' + ${product.inventory}">Inventory</p>
+                    <p class="description" th:text="'Description: ' + ${product.description}">Description</p>
+                    <p class="category" th:text="${product.category}">Category</p>
+                    <p class="promotionType" th:text="${product.promotionType}">Promotion</p>
+                </div>
+                <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
             </div>
-            <!-- Product Image on the Right -->
-            <img th:src="${product.imageURL}" alt="Product Image" class="product-image"/>
+        </div>
+
+        <!-- Order List -->
+        <div id="orderList" class="content-section" style="display: none;">
+            <h2>Order List</h2>
+            <table class="order-table">
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:text="${order.orderDate}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.totalAmount} + ' USD'"></td>
+                    <td>
+                        <button class="view-details-btn" th:attr="data-order-id=${order.orderId}">View Details</button>
+                    </td>
+                </tr>
+                <tr th:if="${orders.size() == 0}">
+                    <td colspan="5">You have no orders.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="simpleModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Order Details</h2>
+                <div id="orderDetails"></div>
+            </div>
         </div>
     </div>
-
 </div>
 
-<!-- Modals -->
+    <!-- Modals -->
 <div id="addProductModal" class="modal">
     <div class="modal-content">
         <h3>Add / Edit Product</h3>
@@ -540,6 +623,7 @@
                 alert("An error occurred while deleting the product.");
             });
     }
+
     function submitStorePromotion(event) {
         event.preventDefault(); // Prevent default form submission behavior
 
@@ -565,8 +649,104 @@
             });
     }
 
+    function toggleView(view) {
+        const productList = document.getElementById('productList');
+        const orderList = document.getElementById('orderList');
 
+        if (view === 'products') {
+            productList.style.display = 'block';
+            orderList.style.display = 'none';
+        } else if (view === 'orders') {
+            productList.style.display = 'none';
+            orderList.style.display = 'block';
+        }
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        fetch(`/orders/${orderId}/status?status=${newStatus}`, {method: 'PUT'})
+            .then(response => {
+                if (response.ok) {
+                    alert('Order status updated successfully');
+                } else {
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => console.error("Error updating order status:", error));
+    }
+        document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("simpleModal");
+        const closeModal = document.querySelector(".close-btn");
+        const orderDetailsContainer = document.getElementById("orderDetails");
+
+        // Add click event listener to the button
+        document.querySelectorAll(".view-details-btn").forEach(button => {
+        button.addEventListener("click", async function () {
+            const orderId = this.getAttribute("data-order-id");
+            console.log("View Details clicked for Order ID:", orderId);
+            // Fetch order details dynamically from the server
+            try {
+                // Fetch order details
+                const response = await fetch(`/api/order-details/${orderId}`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching order details: ${response.statusText}`);
+                }
+
+                const orderDetails = await response.json();
+                console.log("Fetched Order Details:", orderDetails);
+
+                // Clear previous content
+                orderDetailsContainer.innerHTML = '';
+
+                // Render order details
+                if (orderDetails && Array.isArray(orderDetails.cartItems)) {
+                    orderDetailsContainer.innerHTML = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 20px;">
+    <p><strong>Order ID:</strong> ${orderDetails.orderId || 'N/A'}</p>
+    <p><strong>Status:</strong> ${orderDetails.status || 'N/A'}</p>
+
+    <h3 style="margin-top: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">Products:</h3>
+    <ul style="list-style-type: none; padding-left: 0;">
+        ${orderDetails.cartItems.map(item => `
+            <li style="border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 10px;">
+                <p><strong>Product Name:</strong> ${item.productName || 'N/A'}</p>
+                <p><strong>Price:</strong> ${item.price ? item.price.toFixed(2) : 'N/A'} USD</p>
+                <p><strong>Quantity:</strong> ${item.quantity || 0}</p>
+                <p><strong>Total Price:</strong> ${(item.price && item.quantity) ? (item.price * item.quantity).toFixed(2) : 'N/A'} USD</p>
+            </li>
+        `).join('')}
+    </ul>
+
+    <h3 style="margin-top: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">Order Summary:</h3>
+    <p><strong>Final Price:</strong> ${orderDetails.totalPrice ? orderDetails.totalPrice.toFixed(2) : 'N/A'} USD</p>
+</div>
+    `;
+                } else {
+                    orderDetailsContainer.innerHTML = `<p>Error: Unable to load order details.</p>`;
+                }
+
+                // Show the modal
+                modal.style.display = "block";
+            } catch (error) {
+                console.error("Error fetching order details:", error);
+                orderDetailsContainer.innerHTML = "<p>Failed to load order details.</p>";
+            }
+        });
+    });
+
+        // Close modal on clicking the close button
+        closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+        // Close modal if clicking outside of it
+        window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+        modal.style.display = "none";
+    }
+    });
+    });
 </script>
+
 
 </body>
 </html>

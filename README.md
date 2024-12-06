@@ -1,4 +1,4 @@
-SYSC4806 Fall 2024 Project - Mini-SHopify; Milestones 1 & 2; Version 1.0; 25/11/2024
+SYSC4806 Fall 2024 Project - Mini-SHopify; Milestones 1 & 2 & 3; Version 1.0; 06/12/2024
 
 The project can be reached at:
 Azure Deployment: https://mini-shopify-4806-fme9dbcfcmfjbuaw.canadaeast-01.azurewebsites.net/
@@ -47,6 +47,8 @@ Classes and their descriptions are listed below:
 - PromotionType: Enum or class that categorizes different types of promotions, such as discounts or buy-one-get-one offers.
 - Shop: Represents a shop entity that contains details about a store, such as name, description, and merchant association.
 - ShopRepository: Provides database interaction methods for managing Shop entities in the application.
+- Shipping: Encapsulates shipping details for an order, including name, address, and contact information.
+- ShippingRepository: Handles database interactions for Shipping entities.
 - cartView.html: Displays the contents of a shopping cart, including product items, quantities, and total cost.
 - createCustomer.html: Provides a form for creating a new customer profile with fields for personal details.
 - createMerchant.html: Contains a form for registering a new merchant with necessary identification details.
@@ -58,6 +60,10 @@ Classes and their descriptions are listed below:
 - merchantView1.html: Acts as the main screen for merchants, offering options to create shops or manage existing stores.
 - paymentView.html: Presents a checkout form for customers to enter shipping and payment details before placing an order.
 - shopPage.html: Shows an individual shop's page with a list of products, search functionality, and options to add items to the cart.
+- searchShops.html: Provides a search interface for customers to find shops, with real-time filtering functionality based on shop names or categories​.
+- shopCheckout.html: Implements a checkout page for users, supporting both registered and guest checkout options, with dynamic visibility for the password field and guest button based on email validation​.
+- merchantLogin.html: A login interface for merchants.
+- orderConfirmation.html: Displays order details for customers after completing a purchase, likely confirming the successful transaction.
 
 
 Contributions:
@@ -93,6 +99,9 @@ Milestone 2
 Implemented Cart functionality:
 Added items to cart (#36).
 Removed items from cart (#62).
+Update Web Layer Testing/ Redis Testing/ Unit Testing(#101)
+Update Diagrams + README(#110)
+
 
 Warda
 Milestone 1
@@ -104,6 +113,8 @@ Issues addressed:
 Shop Wide Promotions (#80).
 Set Store Promotion (front-end) (#41).
 Backend Model for setting Store Promotion (#43).
+Merchant's should be able to view all orders for their specific stores (#61).
+Update Diagrams + README(#110)
 
 Mahnoor
 Milestone 1
@@ -121,6 +132,9 @@ Milestone 2
 Conducted extensive bug fixing:
 Fixed issues related to shop promotions, carts, and store promotions back-end.
 Added checkout capabilities to the app.
+Adding functionality to the payment's page, process payments
+fix enums, fix shop description and dates(#102).
+
 
 Flo
 Initiated project kickoff and assisted with debugging and Azure deployment.
@@ -172,19 +186,13 @@ ___________
 - passwords are insecure, need to implement password policy
 - allow customers to reset password
 
+Milestone 3 Known Issues:
+___________
+
 
 next steps:
 ___________
-- Add a side panel on the Shop Page to show all the different categories
-- Adding functionality to the payment's page, process payments
-- Customers should be able to access their current and previous Orders
-- Merchant's should be able to view all orders for their specific stores
-- Set up PostgresSQL Remote Database
-- Persist objects in remote database
-- Integrate Spring Security
-- Integrate presentation topic: memcached vs Redis
-- BUG Fix: Product IDs don't start at 1 for every store (it's continuous)
-- BUG FIX: User should be able to upload any picture on their system
+
 
 
 Milestones:
@@ -193,7 +201,7 @@ ___________
 - Milestone 1 (completed milestone): a live demo of an early prototype with one operational use case, a GitHub repo integrated with CI,
 Azure deployment, a ready-to-run JAR file, complete documentation, project tracking, and full team participation.
 - Milestone 2 (completed milestone): Conduct a 10–15 minute demo showcasing integrated features, ensure functional and useful tasks are demonstrated, and update the README with the system’s current capabilities and next sprint plan.
-- Milestone 3 (in progress): Deliver a 10–15 minute demo showcasing the complete, feature-complete product with an intuitive interface, and update the README with the final scope, features, limitations, and user instructions.
+- Milestone 3 (completed milestone): Deliver a 10–15 minute demo showcasing the complete, feature-complete product with an intuitive interface, and update the README with the final scope, features, limitations, and user instructions.
 
 Installation:
 ____________

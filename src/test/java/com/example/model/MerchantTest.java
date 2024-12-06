@@ -98,31 +98,4 @@ public class MerchantTest {
         assertTrue(merchantString.contains("2 shops"), "toString should show the correct number of shops.");
     }
 
-//    // Placeholder tests for unimplemented methods
-//    @Test
-//    public void testCreateShop() {
-//        // Act & Assert
-//        assertDoesNotThrow(() -> {
-//            // Placeholder for creating shop functionality
-//            merchant.createShop();
-//        }, "createShop method should not throw an exception.");
-//    }
-//
-//    @Test
-//    public void testUploadProduct() {
-//        // Act & Assert
-//        assertDoesNotThrow(() -> {
-//            // Placeholder for uploading product functionality
-//            merchant.uploadProduct();
-//        }, "uploadProduct method should not throw an exception.");
-//    }
-//
-//    @Test
-//    public void testUpdateInventory() {
-//        // Act & Assert
-//        assertDoesNotThrow(() -> {
-//            // Placeholder for updating inventory functionality
-//            merchant.updateInventory();
-//        }, "updateInventory method should not throw an exception.");
-//    }
 }
