@@ -14,7 +14,6 @@ public class PaymentTest {
     private Date paymentDate;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
-    private OrderInfo orderInfo;
     private Customer customer;
 
     @BeforeEach
@@ -22,9 +21,9 @@ public class PaymentTest {
         paymentDate = new Date();
         amount = new BigDecimal("150.75");
         paymentMethod = PaymentMethod.CREDIT_CARD;
-        orderInfo = new OrderInfo(); // Assume OrderInfo has a default constructor
+        // Assume OrderInfo has a default constructor
         customer = new Customer();   // Assume Customer has a default constructor
-        payment = new Payment(paymentDate, amount, paymentMethod, orderInfo, customer, "Sample payment details");
+        payment = new Payment(paymentDate, amount, paymentMethod, customer, "Sample payment details");
     }
 
     @Test
@@ -33,7 +32,6 @@ public class PaymentTest {
         assertEquals(paymentDate, payment.getPaymentDate());
         assertEquals(amount, payment.getAmount());
         assertEquals(paymentMethod, payment.getPaymentMethod());
-        assertEquals(orderInfo, payment.getOrder());
         assertEquals(customer, payment.getCustomer());
     }
 
@@ -48,13 +46,11 @@ public class PaymentTest {
         payment.setPaymentDate(newDate);
         payment.setAmount(newAmount);
         payment.setPaymentMethod(newMethod);
-        payment.setOrder(newOrderInfo);
         payment.setCustomer(newCustomer);
 
         assertEquals(newDate, payment.getPaymentDate());
         assertEquals(newAmount, payment.getAmount());
         assertEquals(newMethod, payment.getPaymentMethod());
-        assertEquals(newOrderInfo, payment.getOrder());
         assertEquals(newCustomer, payment.getCustomer());
     }
 
@@ -96,42 +92,33 @@ public class PaymentTest {
 
         // Test null paymentDate
         Exception exception = assertThrows(NullPointerException.class, () -> {
-            new Payment(null, amount, paymentMethod, orderInfo, customer, paymentDetails);
+            new Payment(null, amount, paymentMethod, customer, paymentDetails);
         });
         assertEquals("Payment fields cannot be null", exception.getMessage());
 
         // Test null amount
         exception = assertThrows(NullPointerException.class, () -> {
-            new Payment(paymentDate, null, paymentMethod, orderInfo, customer, paymentDetails);
+            new Payment(paymentDate, null, paymentMethod, customer, paymentDetails);
         });
         assertEquals("Payment fields cannot be null", exception.getMessage());
 
         // Test null paymentMethod
         exception = assertThrows(NullPointerException.class, () -> {
-            new Payment(paymentDate, amount, null, orderInfo, customer, paymentDetails);
+            new Payment(paymentDate, amount, null, customer, paymentDetails);
         });
         assertEquals("Payment fields cannot be null", exception.getMessage());
 
         // Test null customer
         exception = assertThrows(NullPointerException.class, () -> {
-            new Payment(paymentDate, amount, paymentMethod, orderInfo, null, paymentDetails);
+            new Payment(paymentDate, amount, paymentMethod, null, paymentDetails);
         });
         assertEquals("Payment fields cannot be null", exception.getMessage());
 
         // Test null paymentDetails
         exception = assertThrows(NullPointerException.class, () -> {
-            new Payment(paymentDate, amount, paymentMethod, orderInfo, customer, null);
+            new Payment(paymentDate, amount, paymentMethod, customer, null);
         });
         assertEquals("Payment fields cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void testAssociationWithOrderInfo() {
-        assertEquals(orderInfo, payment.getOrder());
-
-        OrderInfo newOrderInfo = new OrderInfo();
-        payment.setOrder(newOrderInfo);
-        assertEquals(newOrderInfo, payment.getOrder());
     }
 
     @Test
@@ -150,7 +137,6 @@ public class PaymentTest {
                 ", paymentDate=" + paymentDate +
                 ", amount=" + amount +
                 ", paymentMethod=" + paymentMethod +
-                ", order=" + orderInfo +
                 ", customer=" + customer +
                 '}';
         assertEquals(expectedString, payment.toString());

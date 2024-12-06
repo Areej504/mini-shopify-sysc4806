@@ -57,7 +57,6 @@ public class OrderInfoTest {
         assertNull(order.getCustomer(), "Customer should be null by default.");
         assertNull(order.getCart(), "Cart should be null by default.");
         assertNull(order.getStatus(), "Order status should be null by default.");
-        assertNull(order.getPayment(), "Payment should be null by default.");
     }
 
     @Test
@@ -73,7 +72,6 @@ public class OrderInfoTest {
         order.setCustomer(mockCustomer);
         order.setCart(mockCart);
         order.setStatus(OrderStatus.SHIPPED);
-        order.setPayment(payment);
 
         // Act & Assert
         assertEquals(1L, order.getOrderId(), "Order ID should be set correctly.");
@@ -82,7 +80,6 @@ public class OrderInfoTest {
         assertEquals(mockCustomer, order.getCustomer(), "Customer should be set correctly.");
         assertEquals(mockCart, order.getCart(), "Cart should be set correctly.");
         assertEquals(OrderStatus.SHIPPED, order.getStatus(), "Order status should be set correctly.");
-        assertEquals(payment, order.getPayment(), "Payment should be set correctly.");
     }
 
     @Test

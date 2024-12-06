@@ -169,7 +169,8 @@
     <!-- Right Column: Payment Form -->
     <div class="payment-form">
         <h2>Payment & Shipping</h2>
-        <form action="/processPayment" method="post" th:object="${shipping}">
+        <form action="/processPayment"  method="post">
+            <input type="hidden" name="storeId" th:value="${cart.getShop().getShopId()}" />
 
             <!-- Shipping Information -->
             <div class="form-block">
@@ -177,31 +178,31 @@
                 <div class="form-group">
                     <div>
                         <label for="shippingName">Full Name</label>
-                        <input type="text" id="shippingName" th:field="*{shippingName}" placeholder="Full Name" required>
+                        <input type="text" id="shippingName" th:field="*{shipping.shippingName}" placeholder="Full Name" required>
                     </div>
                     <div>
                         <label for="shippingPhone">Phone</label>
-                        <input type="tel" id="shippingPhone" th:field="*{shippingPhone}" placeholder="Phone Number" required>
+                        <input type="tel" id="shippingPhone" th:field="*{shipping.shippingPhone}" placeholder="Phone Number" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <div>
                         <label for="shippingAddress">Address</label>
-                        <input type="text" id="shippingAddress" th:field="*{shippingAddress}" placeholder="Street Address" required>
+                        <input type="text" id="shippingAddress" th:field="*{shipping.shippingAddress}" placeholder="Street Address" required>
                     </div>
                     <div>
                         <label for="shippingCity">City</label>
-                        <input type="text" id="shippingCity" th:field="*{shippingCity}" placeholder="City" required>
+                        <input type="text" id="shippingCity" th:field="*{shipping.shippingCity}" placeholder="City" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <div>
                         <label for="shippingState">State</label>
-                        <input type="text" id="shippingState" th:field="*{shippingState}" placeholder="State" required>
+                        <input type="text" id="shippingState" th:field="*{shipping.shippingState}" placeholder="State" required>
                     </div>
                     <div>
                         <label for="shippingZip">Zip Code</label>
-                        <input type="tel" id="shippingZip" th:field="*{shippingZip}" placeholder="Zip Code" required>
+                        <input type="tel" id="shippingZip" th:field="*{shipping.shippingZip}" placeholder="Zip Code" required>
                     </div>
                 </div>
             </div>
