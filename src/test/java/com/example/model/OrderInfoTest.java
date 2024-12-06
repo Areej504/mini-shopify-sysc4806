@@ -21,6 +21,7 @@ public class OrderInfoTest {
     private CartItem mockCartItem2;
     private Product mockProduct1;
     private Product mockProduct2;
+    private Shop mockShop;
 
     @BeforeEach
     public void setUp() {
@@ -30,6 +31,7 @@ public class OrderInfoTest {
         mockCartItem2 = mock(CartItem.class);
         mockProduct1 = mock(Product.class);
         mockProduct2 = mock(Product.class);
+        mockShop = mock(Shop.class);
 
         when(mockCartItem1.getProduct()).thenReturn(mockProduct1);
         when(mockCartItem1.getQuantity()).thenReturn(2);
@@ -42,7 +44,7 @@ public class OrderInfoTest {
 
         when(mockCart.getCartItems()).thenReturn(cartItems);
 
-        order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, mockCart, OrderStatus.PROCESSING);
+        order = new OrderInfo(new Date(), BigDecimal.ZERO, mockCustomer, mockCart, OrderStatus.PROCESSING, mockShop);
     }
 
     @Test
