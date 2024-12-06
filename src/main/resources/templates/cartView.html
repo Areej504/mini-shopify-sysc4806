@@ -150,6 +150,13 @@
         .checkout-button:hover {
             background-color: #126b80;
         }
+
+        .checkout-button:disabled {
+            background-color: #bfbfbf; /* Light grey color */
+            color: #ffffff; /* Optional: Change text color to contrast */
+            cursor: not-allowed; /* Show a 'not-allowed' cursor */
+            opacity: 0.7; /* Optional: Add opacity for a disabled look */
+        }
         .remove-btn {
             border: none;
             background-color: transparent;
@@ -255,7 +262,7 @@
         <p><span>Shipping:</span> $<span th:text="${cart.getShippingCost()}">0.00</span></p>
         <hr>
         <p class="total"><span>Total:</span> $<span th:text="${cart.getFinalPrice()}">0.00</span></p>
-        <button class="checkout-button"
+        <button th:disabled="${cart.cartItems == null or cart.cartItems.isEmpty()}" class="checkout-button"
                 th:onclick="'window.location.href=\'/guestCheckout?storeId=\' + ' + ${storeId}">
             Proceed to Checkout
         </button>
