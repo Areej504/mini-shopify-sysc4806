@@ -17,7 +17,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,6 +30,8 @@ public class ProductController {
     private ProductRepository productRepository;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     @GetMapping("/merchantShop/{shopId}")
     public String viewMerchantShop(@PathVariable Long shopId, Model model) {
@@ -55,6 +60,8 @@ public class ProductController {
         model.addAttribute("promotions", relevantProductPromotions);
         model.addAttribute("storePromotions", relevantStorePromotions);
         model.addAttribute("products", productRepository.findByShop(shop)); // Fetch all products
+        model.addAttribute("orders", orderInfoRepository.findByShop(shop));
+
         return "merchantShop";
     }
 

@@ -3,16 +3,16 @@ package com.example.controller;
 import com.example.model.*;
 import com.example.cache.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class OrderController {
@@ -103,6 +103,19 @@ public class OrderController {
         return "paymentView";
     }
 
+    //added by warda
+    @GetMapping("/merchantShop/{shopId}/orders")
+    public ResponseEntity<List<OrderInfo>> getOrdersByShop(@PathVariable Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Shop not found with ID: " + shopId));
+        List<OrderInfo> orders = orderInfoRepository.findByShop(shop);
+        System.out.println("Orders: " + orders);
+        orders.sort(Comparator.comparing(order ->
+                order.getStatus() == OrderStatus.REFUNDED || order.getStatus() == OrderStatus.CANCELED));
+        return ResponseEntity.ok(orders);
+    }
+
+
     @PostMapping("/processPayment")
     public String processPayment(HttpSession session, Long storeId, @ModelAttribute Shipping shipping, Model model) {
         // Get session-specific cart item count for the store
@@ -149,13 +162,56 @@ public class OrderController {
 
         order.setCart(cart);
         order.setStatus(OrderStatus.PROCESSING);
+        order.setShop(shop);
+        order.setTotalAmount(cart.getTotalPrice());
 
         // Step 6: Save the order
+        order.setStatus(OrderStatus.PROCESSING);
         orderInfoRepository.save(order);
+        System.out.println("Current order: " + order);
+        System.out.println("Saved Orders: " + orderInfoRepository.findByShop(shop));
         cartService.clearCart(sessionId, storeId);
-
 
         model.addAttribute("order", order);
         return "orderConfirmation"; // Redirect to order confirmation view
     }
+
+    @GetMapping("/api/order-details/{orderId}")
+    public ResponseEntity<Map<String, Object>> getOrderDetails(@PathVariable Long orderId) {
+        return orderInfoRepository.findById(orderId)
+                .map(order -> {
+                    // Create a response map
+                    Map<String, Object> response = new LinkedHashMap<>();
+                    response.put("orderId", order.getOrderId());
+                    response.put("status", order.getStatus().toString());
+                    response.put("totalPrice", order.getTotalAmount());
+
+                    // Add cart items if available
+                    if (order.getCart() != null && order.getCart().getCartItems() != null) {
+                        List<Map<String, Object>> cartItems = order.getCart().getCartItems().stream()
+                                .map(cartItem -> {
+                                    Map<String, Object> itemDetails = new LinkedHashMap<>();
+                                    itemDetails.put("productName", cartItem.getProduct().getProductName());
+                                    itemDetails.put("price", cartItem.getProduct().getPrice());
+                                    itemDetails.put("quantity", cartItem.getQuantity());
+                                    return itemDetails;
+                                })
+                                .collect(Collectors.toList());
+                        response.put("cartItems", cartItems);
+                    } else {
+                        response.put("cartItems", Collections.emptyList());
+                    }
+
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> {
+                    // Return a Map for error response
+                    Map<String, Object> errorResponse = new LinkedHashMap<>();
+                    errorResponse.put("error", "Order not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+                });
+    }
+
+
+
 }

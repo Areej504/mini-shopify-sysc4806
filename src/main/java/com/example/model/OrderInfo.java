@@ -19,6 +19,9 @@ public class OrderInfo {
     @ManyToOne
     private Customer customer;
 
+    @ManyToOne
+    private Shop shop;
+
     @OneToOne
     private Cart cart;
 
@@ -41,12 +44,13 @@ public class OrderInfo {
 
     public OrderInfo() {}
 
-    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status) {
+    public OrderInfo(Date orderDate, BigDecimal totalAmount, Customer customer, Cart cart, OrderStatus status, Shop shop) {
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.customer = customer;
         this.cart = cart;
         this.status = status;
+        this.shop = shop;
     }
 
     // Getters and Setters
@@ -83,6 +87,7 @@ public class OrderInfo {
     }
 
     public void setStatus(OrderStatus status){
+
         this.status = status;
     }
 
@@ -117,4 +122,11 @@ public class OrderInfo {
                 '}';
     }
 
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }
