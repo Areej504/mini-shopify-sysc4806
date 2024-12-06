@@ -169,6 +169,50 @@
         .edit-button:hover {
             background-color: #144d16;
         }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-family: Arial, sans-serif;
+        }
+
+        .order-table thead tr {
+            background-color: #f4f4f4;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .order-table tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .order-table tbody tr th {
+            font-weight: bold;
+        }
+
+        .order-table a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .order-table a:hover {
+            text-decoration: underline;
+        }
+
+        .order-table tbody tr th[colspan="5"] {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
 
 
         /* Modal Styling */
@@ -327,7 +371,7 @@
         <!-- Order List -->
         <div id="orderList" class="content-section" style="display: none;">
             <h2>Order List</h2>
-            <table>
+            <table class="order-table">
                 <thead>
                 <tr>
                     <th>Order ID</th>
@@ -344,7 +388,7 @@
                     <td th:text="${order.status}"></td>
                     <td th:text="${order.totalAmount} + ' USD'"></td>
                     <td>
-                        <a th:href="@{/order-details/{id}(id=${order.orderId})}">View Details</a>
+                        <button class="view-details-btn" th:attr="data-order-id=${order.orderId}">View Details</button>
                     </td>
                 </tr>
                 <tr th:if="${orders.size() == 0}">
@@ -352,6 +396,15 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="simpleModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Order Details</h2>
+                <div id="orderDetails"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -570,6 +623,7 @@
                 alert("An error occurred while deleting the product.");
             });
     }
+
     function submitStorePromotion(event) {
         event.preventDefault(); // Prevent default form submission behavior
 
@@ -594,6 +648,7 @@
                 alert('An error occurred while setting the promotion.');
             });
     }
+
     function toggleView(view) {
         const productList = document.getElementById('productList');
         const orderList = document.getElementById('orderList');
@@ -607,36 +662,8 @@
         }
     }
 
-    //added by warda
-    // function loadOrderList() {
-    //     fetch(`/merchantShop/${shopId}/orders`)
-    //         .then(response => response.json())
-    //         .then(orders => {
-    //             const mainContent = document.querySelector('.main-content');
-    //             mainContent.innerHTML = `<h2>Order List</h2>`;
-    //             orders.forEach(order => {
-    //                 mainContent.innerHTML += `
-    //                 <div class="order-card">
-    //                     <p>Order ID: ${order.orderId}</p>
-    //                     <p>Customer: ${order.customer?.name || "Unknown"}</p>
-    //                     <p>Total Amount: $${order.totalAmount || "0.00"}</p>
-    //                     <p>Status:
-    //                         <select onchange="updateOrderStatus(${order.orderId}, this.value)">
-    //                             ${Object.keys(OrderStatus).map(status => `
-    //                                 <option value="${status}" ${order.status === status ? "selected" : ""}>
-    //                                     ${OrderStatus[status].description || status}
-    //                                 </option>`).join('')}
-    //                         </select>
-    //                     </p>
-    //                 </div>
-    //                 `;
-    //             });
-    //         })
-    //         .catch(error => console.error("Error loading orders:", error));
-    // }
-
     function updateOrderStatus(orderId, newStatus) {
-        fetch(`/orders/${orderId}/status?status=${newStatus}`, { method: 'PUT' })
+        fetch(`/orders/${orderId}/status?status=${newStatus}`, {method: 'PUT'})
             .then(response => {
                 if (response.ok) {
                     alert('Order status updated successfully');
@@ -646,57 +673,80 @@
             })
             .catch(error => console.error("Error updating order status:", error));
     }
+        document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("simpleModal");
+        const closeModal = document.querySelector(".close-btn");
+        const orderDetailsContainer = document.getElementById("orderDetails");
 
+        // Add click event listener to the button
+        document.querySelectorAll(".view-details-btn").forEach(button => {
+        button.addEventListener("click", async function () {
+            const orderId = this.getAttribute("data-order-id");
+            console.log("View Details clicked for Order ID:", orderId);
+            // Fetch order details dynamically from the server
+            try {
+                // Fetch order details
+                const response = await fetch(`/api/order-details/${orderId}`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching order details: ${response.statusText}`);
+                }
 
-    // Toggle between products and orders view
-    // function toggleView(view) {
-    //     const productContainer = document.querySelector('.main-content');
-    //     const ordersContainer = document.getElementById('orders-container');
-    //     if (view === 'orders') {
-    //         productContainer.style.display = 'none';
-    //         ordersContainer.style.display = 'block';
-    //     } else {
-    //         productContainer.style.display = 'block';
-    //         ordersContainer.style.display = 'none';
-    //     }
-    // }
-    //
-    // // Function to update order status
-    // function updateOrderStatus(selectElement, orderId) {
-    //     const newStatus = selectElement.value;
-    //     fetch(`/updateOrderStatus/${orderId}`, {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ status: newStatus })
-    //     }).then(response => {
-    //         if (!response.ok) {
-    //             alert('Failed to update order status. Please try again.');
-    //         } else {
-    //             alert('Order status updated successfully.');
-    //             location.reload(); // Reload to refresh data
-    //         }
-    //     }).catch(error => {
-    //         console.error('Error updating order status:', error);
-    //     });
-    // }
-    // function showOrders() {
-    //     document.getElementById('product-list-container').style.display = 'none';
-    //     document.getElementById('order-list-container').style.display = 'block';
-    // }
-    // //added by warda
-    // function updateOrderStatus(selectElement, orderId) {
-    //     const newStatus = selectElement.value;
-    //     fetch(`/updateOrderStatus?orderId=${orderId}&status=${newStatus}`, { method: 'POST' })
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 alert('Failed to update order status.');
-    //             }
-    //         })
-    //         .catch(error => console.error('Error updating order status:', error));
-    // }
+                const orderDetails = await response.json();
+                console.log("Fetched Order Details:", orderDetails);
 
+                // Clear previous content
+                orderDetailsContainer.innerHTML = '';
 
+                // Render order details
+                if (orderDetails && Array.isArray(orderDetails.cartItems)) {
+                    orderDetailsContainer.innerHTML = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 20px;">
+    <p><strong>Order ID:</strong> ${orderDetails.orderId || 'N/A'}</p>
+    <p><strong>Status:</strong> ${orderDetails.status || 'N/A'}</p>
+
+    <h3 style="margin-top: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">Products:</h3>
+    <ul style="list-style-type: none; padding-left: 0;">
+        ${orderDetails.cartItems.map(item => `
+            <li style="border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 10px;">
+                <p><strong>Product Name:</strong> ${item.productName || 'N/A'}</p>
+                <p><strong>Price:</strong> ${item.price ? item.price.toFixed(2) : 'N/A'} USD</p>
+                <p><strong>Quantity:</strong> ${item.quantity || 0}</p>
+                <p><strong>Total Price:</strong> ${(item.price && item.quantity) ? (item.price * item.quantity).toFixed(2) : 'N/A'} USD</p>
+            </li>
+        `).join('')}
+    </ul>
+
+    <h3 style="margin-top: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px;">Order Summary:</h3>
+    <p><strong>Final Price:</strong> ${orderDetails.totalPrice ? orderDetails.totalPrice.toFixed(2) : 'N/A'} USD</p>
+</div>
+    `;
+                } else {
+                    orderDetailsContainer.innerHTML = `<p>Error: Unable to load order details.</p>`;
+                }
+
+                // Show the modal
+                modal.style.display = "block";
+            } catch (error) {
+                console.error("Error fetching order details:", error);
+                orderDetailsContainer.innerHTML = "<p>Failed to load order details.</p>";
+            }
+        });
+    });
+
+        // Close modal on clicking the close button
+        closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+        // Close modal if clicking outside of it
+        window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+        modal.style.display = "none";
+    }
+    });
+    });
 </script>
+
 
 </body>
 </html>

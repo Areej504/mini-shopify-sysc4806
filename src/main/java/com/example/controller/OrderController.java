@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.model.*;
 import com.example.cache.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class OrderController {
@@ -186,4 +188,43 @@ public class OrderController {
         model.addAttribute("order", order);
         return "orderConfirmation"; // Redirect to an order confirmation view
     }
+
+    @GetMapping("/api/order-details/{orderId}")
+    public ResponseEntity<Map<String, Object>> getOrderDetails(@PathVariable Long orderId) {
+        return orderInfoRepository.findById(orderId)
+                .map(order -> {
+                    // Create a response map
+                    Map<String, Object> response = new LinkedHashMap<>();
+                    response.put("orderId", order.getOrderId());
+                    response.put("status", order.getStatus().toString());
+                    response.put("totalPrice", order.getTotalAmount());
+
+                    // Add cart items if available
+                    if (order.getCart() != null && order.getCart().getCartItems() != null) {
+                        List<Map<String, Object>> cartItems = order.getCart().getCartItems().stream()
+                                .map(cartItem -> {
+                                    Map<String, Object> itemDetails = new LinkedHashMap<>();
+                                    itemDetails.put("productName", cartItem.getProduct().getProductName());
+                                    itemDetails.put("price", cartItem.getProduct().getPrice());
+                                    itemDetails.put("quantity", cartItem.getQuantity());
+                                    return itemDetails;
+                                })
+                                .collect(Collectors.toList());
+                        response.put("cartItems", cartItems);
+                    } else {
+                        response.put("cartItems", Collections.emptyList());
+                    }
+
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> {
+                    // Return a Map for error response
+                    Map<String, Object> errorResponse = new LinkedHashMap<>();
+                    errorResponse.put("error", "Order not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+                });
+    }
+
+
+
 }
