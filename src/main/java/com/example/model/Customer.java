@@ -96,17 +96,6 @@ public class Customer {
                 : 0;
     }
 
-    //Methods
-    public void placeOrder(){}
-
-    public void searchShops(){}
-
-    public void makePayment(){}
-
-    public void addToCart(){}
-
-    public void removeFromCart(){}
-
     @Override
     public String toString() {
         return "Customer{" +

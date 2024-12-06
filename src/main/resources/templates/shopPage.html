@@ -54,27 +54,7 @@
             padding: 15px 0;
         }
 
-        /* Shop Actions Section (Sign-in, Checkout Button, etc.) */
-        .sign-in-button {
-            position: absolute;
-            right: 20px; /* Push the button to the right edge */
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: #01a6cf;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .sign-in-button:hover {
-            background-color: #126b80;
-        }
-
+        /* Shop Actions Section (Add to cart, checkout button etc.) */
         .cart-container {
             width: 100%;
             display: flex;
@@ -239,8 +219,6 @@
     <!-- Full-width Shop Header -->
     <div class="shop-header">
         <h1 th:text="${shopName}">Shop Name</h1>
-        <!-- Sign-in Button -->
-        <a href="/customer-login" class="sign-in-button">Sign In</a>
     </div>
 
     <!-- Full Width Description Banner -->
