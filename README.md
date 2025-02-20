@@ -12,8 +12,7 @@ ___________
 2. Rama Alkhouli
 3. Areej Mahmoud
 4. Mahnoor Fatima
-5. Flo, Lavji
-
+   
 Project Description:
 ___________
 
@@ -136,10 +135,6 @@ Adding functionality to the payment's page, process payments
 fix enums, fix shop description and dates(#102).
 
 
-Flo
-Initiated project kickoff and assisted with debugging and Azure deployment.
-
-
 Milestone 1 Deliverables:
 ___________
 Demo: Provide a 10–15 minute live demo of the early prototype on November 11th, showcasing basic system functionality.
@@ -185,14 +180,6 @@ ___________
 - checkout is not fully functional
 - passwords are insecure, need to implement password policy
 - allow customers to reset password
-
-Milestone 3 Known Issues:
-___________
-
-
-next steps:
-___________
-
 
 
 Milestones:
